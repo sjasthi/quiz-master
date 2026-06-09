@@ -1,0 +1,11 @@
+Technology Stack:   Front End (HTML, CSS, JS, JQuery, Bootstrap)
+                    Server (PHP)
+                    Backend (MySQL)
+
+Requirements:  1. Manage the Quizzes  (Quiz = HTML file)  
+               2. Quizzes and the corresponding metadata will need to be managed.
+              3. Students take the Quiz and we manage their scores.
+              4. Students have the option of resubmitting the assignment (if the system lets them) or accepts the assignment.
+              5. Integrtaion into learn and help website.
+
+                                                                          
