@@ -2,10 +2,17 @@ Technology Stack:   Front End (HTML, CSS, JS, JQuery, Bootstrap)
                     Server (PHP)
                     Backend (MySQL)
 
-Requirements:  1. Manage the Quizzes  (Quiz = HTML file)  
-               2. Quizzes and the corresponding metadata will need to be managed.
+Requirements:  1. Manage the Quizzes  (Quiz = HTML file)   For example, please see  https://github.com/sjasthi/python101/blob/main/Quizzes
+
+              Current Pain Point: Stuents download the Quiz, Take the Quiz, Submit the screen shot to google classroom, instructors evaluate and give them score. 
+              Solution: Students shall be able to take the Quiz directly under "Quiz-Master".
+
+               2. Quizzes and the corresponding metadata (class name? points?, can they take multiple times?) will need to be managed.
               3. Students take the Quiz and we manage their scores.
               4. Students have the option of resubmitting the assignment (if the system lets them) or accepts the assignment.
-              5. Integrtaion into learn and help website.
+              5. Integrtaion into learn and help website (www.learnandhelp.com)
+
+FP2: requirements. md (elaboration)
+FP3: 8 week plan including something to show for FP3  (code structure, database schema for managing the quizze, and so on).
 
                                                                           
