@@ -1,44 +1,108 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Python Quiz 1</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .quiz-box {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        h1 {
+            color: #0d6efd;
+        }
+
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .submit-btn {
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .submit-btn:hover {
+            background-color: #0b5ed7;
+        }
+    </style>
 </head>
+
 <body>
 
-<h2>Python Quiz 1</h2>
+<div class="quiz-box">
+    <h1>Python Quiz 1</h1>
+    <p>Answer all questions, then click submit.</p>
 
-<form>
+    <form id="quizForm">
 
-    <p><strong>1. What function is used to display output in Python?</strong></p>
+        <div class="question">
+            <p><strong>1. What function displays output in Python?</strong></p>
+            <label><input type="radio" name="q1" value="a"> input()</label><br>
+            <label><input type="radio" name="q1" value="b"> print()</label><br>
+            <label><input type="radio" name="q1" value="c"> display()</label><br>
+        </div>
 
-    <input type="radio" name="q1" value="a"> input()<br>
-    <input type="radio" name="q1" value="b"> print()<br>
-    <input type="radio" name="q1" value="c"> display()<br>
-    <input type="radio" name="q1" value="d"> output()<br>
+        <div class="question">
+            <p><strong>2. Which data type stores whole numbers?</strong></p>
+            <label><input type="radio" name="q2" value="a"> string</label><br>
+            <label><input type="radio" name="q2" value="b"> float</label><br>
+            <label><input type="radio" name="q2" value="c"> int</label><br>
+        </div>
 
-    <br>
+        <div class="question">
+            <p><strong>3. Which symbol starts a comment in Python?</strong></p>
+            <label><input type="radio" name="q3" value="a"> //</label><br>
+            <label><input type="radio" name="q3" value="b"> #</label><br>
+            <label><input type="radio" name="q3" value="c"> --</label><br>
+        </div>
 
-    <p><strong>2. Which data type stores whole numbers?</strong></p>
+        <button type="button" class="submit-btn" onclick="submitQuiz()">Submit Quiz</button>
+    </form>
+</div>
 
-    <input type="radio" name="q2" value="a"> string<br>
-    <input type="radio" name="q2" value="b"> float<br>
-    <input type="radio" name="q2" value="c"> int<br>
-    <input type="radio" name="q2" value="d"> boolean<br>
+<script>
+    function submitQuiz() {
+        let score = 0;
 
-    <br>
+        if (document.querySelector('input[name="q1"]:checked')?.value === "b") {
+            score += 1;
+        }
 
-    <p><strong>3. Which symbol starts a comment in Python?</strong></p>
+        if (document.querySelector('input[name="q2"]:checked')?.value === "c") {
+            score += 1;
+        }
 
-    <input type="radio" name="q3" value="a"> //<br>
-    <input type="radio" name="q3" value="b"> /*<br>
-    <input type="radio" name="q3" value="c"> #<br>
-    <input type="radio" name="q3" value="d"> --<br>
+        if (document.querySelector('input[name="q3"]:checked')?.value === "b") {
+            score += 1;
+        }
 
-    <br>
+        const finalScore = Math.round((score / 3) * 100);
 
-    <button type="button">Submit Quiz</button>
-
-</form>
+        window.parent.postMessage({
+            quizTitle: "Python Quiz 1",
+            score: finalScore,
+            totalQuestions: 3
+        }, "*");
+    }
+</script>
 
 </body>
 </html>
