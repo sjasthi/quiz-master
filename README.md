@@ -4,6 +4,10 @@ Quiz Master
 ## Front End: Ali & Jama
 ## Back End: Salaman & Abdi
 
+## Running the demo
+From the project root run `php -S localhost:8000`, then open http://localhost:8000/.
+See [DEMO.md](DEMO.md) for the full walkthrough script and what's functional vs. placeholder.
+
 # Weekly Plan:
 
 + **6/15/2026**: Database Schema & Role Assignment

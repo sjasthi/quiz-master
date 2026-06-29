@@ -1,0 +1,208 @@
+/* Quiz Master shared theme.
+   Used by both the student and instructor pages so the whole app looks the
+   same. Layered on top of Bootstrap 5. */
+
+body {
+    background: #f5f7fb;
+    font-family: Arial, sans-serif;
+    color: #111827;
+}
+
+.topbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 18px 0;
+}
+
+.brand {
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.topbar a {
+    text-decoration: none;
+}
+
+.hero {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: white;
+    border-radius: 22px;
+    padding: 35px;
+    margin-top: 30px;
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.25);
+}
+
+.card-box {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    padding: 25px;
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.section-title {
+    font-weight: 800;
+    margin-top: 35px;
+    margin-bottom: 18px;
+}
+
+.quiz-tag {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.tag-open {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.tag-locked {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.btn-main {
+    background: #2563eb;
+    color: white;
+    border: none;
+    font-weight: 700;
+}
+
+.btn-main:hover {
+    background: #1d4ed8;
+    color: white;
+}
+
+.btn-main:disabled {
+    background: #93b4f5;
+    color: white;
+}
+
+.question-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.question-card h5 {
+    font-weight: 800;
+}
+
+.answer-option {
+    display: block;
+    padding: 12px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.answer-option:hover {
+    background: #f3f6ff;
+    border-color: #2563eb;
+}
+
+.result-box {
+    display: none;
+    background: #ecfdf5;
+    border: 1px solid #86efac;
+    color: #166534;
+    border-radius: 18px;
+    padding: 25px;
+    margin-top: 25px;
+}
+
+/* ---- Tables (used by both dashboards and the results pages) ---- */
+
+.data-table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.data-table thead th {
+    border-bottom: 2px solid #e5e7eb;
+    color: #6b7280;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.data-table td,
+.data-table th {
+    padding: 14px 12px;
+    vertical-align: middle;
+}
+
+/* ---- Forms (instructor upload / edit) ---- */
+
+.form-card label.form-label {
+    font-weight: 700;
+}
+
+.form-card .form-control,
+.form-card .form-select {
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+/* ---- Quiz iframe parent (student/quiz_take.php) ---- */
+
+.quiz-frame {
+    width: 100%;
+    min-height: 520px;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    background: white;
+}
+
+.score-box {
+    display: none;
+    background: #ecfdf5;
+    border: 1px solid #86efac;
+    color: #166534;
+    border-radius: 18px;
+    padding: 22px;
+    margin-top: 22px;
+    font-size: 18px;
+}
+
+.hint {
+    color: #6b7280;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* ---- Landing / role chooser (root index.php) ---- */
+
+.role-card {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    padding: 40px 30px;
+    text-align: center;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    height: 100%;
+}
+
+.role-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 34px rgba(37, 99, 235, 0.18);
+}
+
+.role-emoji {
+    font-size: 46px;
+    margin-bottom: 12px;
+}

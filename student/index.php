@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Student Dashboard - Quiz Master</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/student.css?v=6">
+    <link rel="stylesheet" href="../assets/css/quizmaster.css?v=1">
 </head>
 
 <body>

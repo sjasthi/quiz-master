@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Python Quiz 1 - Quiz Master</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/student.css?v=6">
+    <link rel="stylesheet" href="../assets/css/quizmaster.css?v=1">
 </head>
 
 <body>
@@ -21,101 +21,33 @@
 
     <div class="hero">
         <h1>Python Quiz 1</h1>
-        <p class="mb-0">Answer all questions below, then submit to see your grade.</p>
+        <p class="mb-0">Answer the questions below and click <strong>Submit Quiz</strong> inside the quiz.
+            Your score then appears here so you can record the attempt.</p>
     </div>
 
-    <form id="quizForm" class="mt-4">
+    <!-- The quiz HTML file is loaded inside an iframe. When the student submits,
+         it posts the score up to this page (see assets/js/quiz_parent.js). -->
+    <iframe
+        id="quizFrame"
+        class="quiz-frame mt-4"
+        src="../quizzes/python/quiz1.html"
+        title="Python Quiz 1">
+    </iframe>
 
-        <div class="question-card">
-            <h5>1. What function displays output in Python?</h5>
-            <label class="answer-option"><input type="radio" name="q1" value="a"> input()</label>
-            <label class="answer-option"><input type="radio" name="q1" value="b"> print()</label>
-            <label class="answer-option"><input type="radio" name="q1" value="c"> display()</label>
-        </div>
+    <div id="scoreBox" class="score-box"></div>
 
-        <div class="question-card">
-            <h5>2. Which data type stores whole numbers?</h5>
-            <label class="answer-option"><input type="radio" name="q2" value="a"> string</label>
-            <label class="answer-option"><input type="radio" name="q2" value="b"> float</label>
-            <label class="answer-option"><input type="radio" name="q2" value="c"> int</label>
-        </div>
-
-        <div class="question-card">
-            <h5>3. Which symbol starts a comment in Python?</h5>
-            <label class="answer-option"><input type="radio" name="q3" value="a"> //</label>
-            <label class="answer-option"><input type="radio" name="q3" value="b"> #</label>
-            <label class="answer-option"><input type="radio" name="q3" value="c"> --</label>
-        </div>
-
-        <div class="question-card">
-            <h5>4. Which value is a string?</h5>
-            <label class="answer-option"><input type="radio" name="q4" value="a"> 100</label>
-            <label class="answer-option"><input type="radio" name="q4" value="b"> "Hello"</label>
-            <label class="answer-option"><input type="radio" name="q4" value="c"> True</label>
-        </div>
-
-        <button type="button" class="btn btn-main btn-lg w-100 mb-4" onclick="submitQuiz()">
-            Submit Quiz
+    <div class="mt-4 mb-2">
+        <button id="submitButton" class="btn btn-main btn-lg w-100" onclick="recordScore()" disabled>
+            Record My Score
         </button>
+        <p class="hint text-center">Finish the quiz above to enable this button.</p>
+    </div>
 
-    </form>
-
-    <div id="resultBox" class="result-box mb-5"></div>
+    <div class="mb-5"></div>
 
 </div>
 
-<script>
-    function submitQuiz() {
-        const answerKey = {
-            q1: "b",
-            q2: "c",
-            q3: "b",
-            q4: "b"
-        };
-
-        let totalQuestions = Object.keys(answerKey).length;
-        let correctAnswers = 0;
-
-        for (let question in answerKey) {
-            let selectedAnswer = document.querySelector(`input[name="${question}"]:checked`);
-
-            if (selectedAnswer && selectedAnswer.value === answerKey[question]) {
-                correctAnswers++;
-            }
-        }
-
-        let score = Math.round((correctAnswers / totalQuestions) * 100);
-
-        let attempts = JSON.parse(localStorage.getItem("pythonQuizAttempts")) || [];
-
-        attempts.push({
-            quiz: "Python Quiz 1",
-            attempt: attempts.length + 1,
-            score: score,
-            correct: correctAnswers,
-            total: totalQuestions,
-            status: "Submitted",
-            date: new Date().toLocaleDateString()
-        });
-
-        localStorage.setItem("pythonQuizAttempts", JSON.stringify(attempts));
-        localStorage.setItem("pythonQuizScore", score);
-        localStorage.setItem("pythonQuizCorrect", correctAnswers);
-        localStorage.setItem("pythonQuizTotal", totalQuestions);
-
-        let resultBox = document.getElementById("resultBox");
-        resultBox.style.display = "block";
-
-        resultBox.innerHTML = `
-            <h3>Quiz Submitted ✅</h3>
-            <p>You got <strong>${correctAnswers}</strong> out of <strong>${totalQuestions}</strong> correct.</p>
-            <h4>Your Grade: ${score}%</h4>
-            <a href="quiz_results.php" class="btn btn-main mt-3">View Results Page</a>
-        `;
-
-        resultBox.scrollIntoView({ behavior: "smooth" });
-    }
-</script>
+<script src="../assets/js/quiz_parent.js"></script>
 
 </body>
 </html>
