@@ -15,4 +15,7 @@ Requirements:  1. Manage the Quizzes  (Quiz = HTML file)   For example, please s
 FP2: requirements. md (elaboration)
 FP3: 8 week plan including something to show for FP3  (code structure, database schema for managing the quizze, and so on).
 
+FP6: How do these quizzes plug-in to the project?
+https://github.com/sjasthi/python101/tree/main/Quizzes
+
                                                                           
