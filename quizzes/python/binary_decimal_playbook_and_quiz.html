@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binary &amp; Decimal Conversions — Interactive Playbook</title>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #181b24;
+  --surface2: #1f2330;
+  --border: #2a2e3a;
+  --text: #e4e6ed;
+  --text-dim: #8b8fa3;
+  --accent: #00d68f;
+  --accent-glow: rgba(0,214,143,0.15);
+  --accent2: #5b8def;
+  --accent3: #f5a623;
+  --danger: #ef4444;
+  --success: #22c55e;
+  --code-bg: #12141c;
+  --bit-on: #00d68f;
+  --bit-off: #2a2e3a;
+  --radius: 12px;
+  --tab-height: 52px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+/* ─── Header ─── */
+.header {
+  background: linear-gradient(135deg, #0a1628 0%, #0f1117 50%, #0d1a12 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 36px 24px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 260px; height: 260px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+.header h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--accent) 0%, #5befa0 50%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.header .subtitle {
+  color: var(--text-dim);
+  font-size: 0.92rem;
+  margin-top: 6px;
+}
+.header .badge {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  background: var(--accent-glow);
+  color: var(--accent);
+  border: 1px solid rgba(0,214,143,0.2);
+}
+
+/* ─── Tabs ─── */
+.tab-bar {
+  display: flex;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  overflow-x: auto;
+}
+.tab-btn {
+  flex: 1;
+  min-width: 120px;
+  height: var(--tab-height);
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  white-space: nowrap;
+  padding: 0 12px;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active {
+  color: var(--accent);
+}
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 16px; right: 16px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 3px 3px 0 0;
+}
+.tab-icon { font-size: 1.1rem; }
+
+.tab-panel {
+  display: none;
+  padding: 28px 20px 60px;
+  max-width: 860px;
+  margin: 0 auto;
+  animation: fadeIn 0.35s ease;
+}
+.tab-panel.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Cards ─── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.card h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-bottom: 14px;
+  color: var(--accent);
+}
+.card h3 {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin: 18px 0 10px;
+  color: var(--accent2);
+}
+.card p, .card li {
+  color: var(--text);
+  font-size: 0.93rem;
+  margin-bottom: 8px;
+}
+.card ul { padding-left: 20px; }
+.card ul li { margin-bottom: 6px; }
+
+.tip {
+  background: var(--accent-glow);
+  border-left: 3px solid var(--accent);
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  margin: 14px 0;
+  font-size: 0.88rem;
+}
+.tip strong { color: var(--accent); }
+
+/* ─── Tables ─── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 0.9rem;
+}
+th {
+  background: var(--surface2);
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 700;
+  color: var(--accent);
+  border-bottom: 2px solid var(--border);
+}
+td {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+}
+tr:hover td { background: rgba(0,214,143,0.04); }
+
+/* ─── Code blocks ─── */
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px;
+  overflow-x: auto;
+  margin: 12px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+/* ─── Binary Visualizer ─── */
+.bit-row {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin: 16px 0 8px;
+  flex-wrap: wrap;
+}
+.bit-cell {
+  width: 54px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.bit-circle {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+.bit-circle.on {
+  background: var(--bit-on);
+  color: #0f1117;
+  border-color: rgba(0,214,143,0.5);
+  box-shadow: 0 0 16px rgba(0,214,143,0.3);
+}
+.bit-circle.off {
+  background: var(--bit-off);
+  color: var(--text-dim);
+  border-color: var(--border);
+}
+.bit-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+}
+.bit-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--accent2);
+  font-weight: 600;
+}
+
+/* ─── Interactive sections ─── */
+.converter-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin: 16px 0;
+  text-align: center;
+}
+.result-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 12px 0;
+  min-height: 48px;
+}
+.result-label {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+.steps-display {
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  line-height: 1.8;
+  color: var(--text);
+  margin-top: 14px;
+  padding: 14px 18px;
+  background: var(--code-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  min-height: 40px;
+}
+
+input[type="text"], input[type="number"] {
+  background: var(--code-bg);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+  transition: border-color 0.25s;
+}
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+button.action-btn {
+  background: var(--accent);
+  color: #0f1117;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 6px;
+}
+button.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,214,143,0.3);
+}
+button.action-btn.secondary {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+button.action-btn.secondary:hover {
+  border-color: var(--accent);
+  box-shadow: none;
+}
+
+/* ─── Python runner ─── */
+.python-runner {
+  margin: 16px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.python-runner-header {
+  background: var(--surface2);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.python-runner-header span {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.python-runner textarea {
+  width: 100%;
+  background: var(--code-bg);
+  color: var(--text);
+  border: none;
+  padding: 16px 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84rem;
+  line-height: 1.7;
+  resize: vertical;
+  min-height: 100px;
+  tab-size: 4;
+}
+.python-runner textarea:focus { outline: none; }
+.python-output {
+  background: #0a0c12;
+  padding: 12px 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--accent);
+  min-height: 36px;
+  border-top: 1px solid var(--border);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.python-output.error { color: var(--danger); }
+
+/* ─── Quiz ─── */
+.quiz-progress {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.quiz-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  border: 2px solid var(--border);
+  color: var(--text-dim);
+  background: var(--surface2);
+  transition: all 0.3s;
+}
+.quiz-dot.current {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+.quiz-dot.correct {
+  background: var(--success);
+  border-color: var(--success);
+  color: #fff;
+}
+.quiz-dot.wrong {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+.quiz-question {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+.quiz-question code {
+  background: var(--code-bg);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+.quiz-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.quiz-opt {
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  text-align: center;
+  color: var(--text);
+}
+.quiz-opt:hover:not(.disabled) {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
+.quiz-opt.selected-correct {
+  border-color: var(--success);
+  background: rgba(34,197,94,0.12);
+  color: var(--success);
+}
+.quiz-opt.selected-wrong {
+  border-color: var(--danger);
+  background: rgba(239,68,68,0.12);
+  color: var(--danger);
+}
+.quiz-opt.show-correct {
+  border-color: var(--success);
+  background: rgba(34,197,94,0.08);
+}
+.quiz-opt.disabled { cursor: default; }
+
+.quiz-feedback {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 14px 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: none;
+}
+.quiz-feedback.correct {
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.3);
+  color: var(--success);
+  display: block;
+}
+.quiz-feedback.wrong {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.3);
+  color: var(--danger);
+  display: block;
+}
+
+.quiz-score {
+  text-align: center;
+  padding: 40px 20px;
+}
+.quiz-score .score-num {
+  font-family: 'Fraunces', serif;
+  font-size: 4rem;
+  font-weight: 900;
+  color: var(--accent);
+}
+.quiz-score .score-label {
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+}
+
+/* ─── Division steps table ─── */
+.division-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+}
+.division-step .remainder {
+  color: var(--accent);
+  font-weight: 700;
+}
+.arrow-up {
+  color: var(--accent3);
+  font-weight: 700;
+  text-align: center;
+  margin: 8px 0;
+  font-size: 0.82rem;
+}
+
+/* ─── Pyodide loading ─── */
+.pyodide-status {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.5s;
+}
+.pyodide-status .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent3);
+  animation: pulse 1.2s infinite;
+}
+.pyodide-status.ready .dot {
+  background: var(--success);
+  animation: none;
+}
+.pyodide-status.hidden { opacity: 0; pointer-events: none; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 600px) {
+  .tab-btn { font-size: 0.78rem; min-width: 80px; padding: 0 6px; }
+  .tab-icon { display: none; }
+  .quiz-options { grid-template-columns: 1fr; }
+  .bit-cell { width: 42px; }
+  .bit-circle { width: 36px; height: 36px; font-size: 0.95rem; }
+  .result-display { font-size: 1.5rem; }
+  .card { padding: 16px; }
+  .tab-panel { padding: 18px 14px 50px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <h1>Binary &amp; Decimal Conversions</h1>
+  <div class="subtitle">Python 101 — Interactive Playbook</div>
+  <div class="badge">Siva R Jasthi · Metro State</div>
+</div>
+
+<!-- Tab Bar -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('concepts')">
+    <span class="tab-icon">📖</span> Concepts
+  </button>
+  <button class="tab-btn" onclick="showTab('bin2dec')">
+    <span class="tab-icon">🔢</span> Binary → Decimal
+  </button>
+  <button class="tab-btn" onclick="showTab('dec2bin')">
+    <span class="tab-icon">💡</span> Decimal → Binary
+  </button>
+  <button class="tab-btn" onclick="showTab('quiz')">
+    <span class="tab-icon">🧪</span> Quiz
+  </button>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TAB 1: CONCEPTS                             -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-concepts" class="tab-panel active">
+
+  <div class="card">
+    <h2>What is Binary?</h2>
+    <p>Computers only understand two digits: <strong>0</strong> and <strong>1</strong>. This is called the <strong>binary number system</strong> (base-2).</p>
+    <p>We humans use the <strong>decimal number system</strong> (base-10), which has ten digits: 0 through 9. People have 10 fingers — that's why base-10 feels natural. Computers have only two "fingers": 0 and 1.</p>
+
+    <table>
+      <thead><tr><th>Number System</th><th>Base</th><th>Digits Used</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>Decimal</td><td>Base-10</td><td style="font-family:'DM Sans'">0, 1, 2, …, 9</td><td>42</td></tr>
+        <tr><td>Binary</td><td>Base-2</td><td style="font-family:'DM Sans'">0, 1</td><td>101010</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tip">💡 <strong>Tip:</strong> Every number you see on a screen is stored as binary inside the computer!</div>
+  </div>
+
+  <div class="card">
+    <h2>Place Values in Binary</h2>
+    <p>In <strong>decimal</strong>, each place is a power of 10:</p>
+    <pre>Hundreds   Tens   Ones
+  10²      10¹    10⁰
+  100       10      1</pre>
+
+    <p>In <strong>binary</strong>, each place is a power of 2:</p>
+    <pre> 128    64    32    16     8     4     2     1
+  2⁷    2⁶    2⁵    2⁴    2³    2²    2¹    2⁰</pre>
+
+    <div class="tip">💡 <strong>Key idea:</strong> Each position in a binary number represents a power of 2, just like each position in a decimal number represents a power of 10.</div>
+  </div>
+
+  <div class="card">
+    <h2>Binary Counting: 0 to 19</h2>
+    <p>In decimal, we count 0–9, then carry over to 10. In binary, we only have 0 and 1, so we carry over much sooner:</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
+      <table>
+        <thead><tr><th>Decimal</th><th>Binary</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>0</td></tr>
+          <tr><td>1</td><td>1</td></tr>
+          <tr><td>2</td><td>10</td></tr>
+          <tr><td>3</td><td>11</td></tr>
+          <tr><td>4</td><td>100</td></tr>
+          <tr><td>5</td><td>101</td></tr>
+          <tr><td>6</td><td>110</td></tr>
+          <tr><td>7</td><td>111</td></tr>
+          <tr><td>8</td><td>1000</td></tr>
+          <tr><td>9</td><td>1001</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Decimal</th><th>Binary</th></tr></thead>
+        <tbody>
+          <tr><td>10</td><td>1010</td></tr>
+          <tr><td>11</td><td>1011</td></tr>
+          <tr><td>12</td><td>1100</td></tr>
+          <tr><td>13</td><td>1101</td></tr>
+          <tr><td>14</td><td>1110</td></tr>
+          <tr><td>15</td><td>1111</td></tr>
+          <tr><td>16</td><td>10000</td></tr>
+          <tr><td>17</td><td>10001</td></tr>
+          <tr><td>18</td><td>10010</td></tr>
+          <tr><td>19</td><td>10011</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Python Conversion Functions</h2>
+    <h3>Decimal → Binary: <code>bin()</code></h3>
+    <div class="python-runner">
+      <div class="python-runner-header">
+        <span>▶ Python — try it</span>
+        <button class="action-btn" style="padding:5px 14px;font-size:0.78rem;" onclick="runPython(this)">Run</button>
+      </div>
+      <textarea rows="5" spellcheck="false"># bin() converts a decimal integer to a binary string
+print(bin(13))
+print(bin(25))
+print(bin(75))
+print(bin(156))</textarea>
+      <div class="python-output"></div>
+    </div>
+
+    <h3>Binary → Decimal: <code>int()</code> with base 2</h3>
+    <div class="python-runner">
+      <div class="python-runner-header">
+        <span>▶ Python — try it</span>
+        <button class="action-btn" style="padding:5px 14px;font-size:0.78rem;" onclick="runPython(this)">Run</button>
+      </div>
+      <textarea rows="5" spellcheck="false"># int(string, 2) converts a binary string to decimal
+print(int("1101", 2))
+print(int("11001", 2))
+print(int("1001011", 2))
+print(int("10011100", 2))</textarea>
+      <div class="python-output"></div>
+    </div>
+
+    <h3>Binary Literals &amp; Types</h3>
+    <div class="python-runner">
+      <div class="python-runner-header">
+        <span>▶ Python — try it</span>
+        <button class="action-btn" style="padding:5px 14px;font-size:0.78rem;" onclick="runPython(this)">Run</button>
+      </div>
+      <textarea rows="12" spellcheck="false"># Binary string literal (with 0b prefix) - stored as a string
+d = '0b1001'
+print('d =', d, ' type =', type(d))
+
+# Binary literal WITHOUT quotes - stored as an int
+f = 0b1001
+print('f =', f, ' type =', type(f))
+
+# Convert binary string to decimal int (must provide base 2)
+e = int(d, 2)
+print('e =', e, ' type =', type(e))</textarea>
+      <div class="python-output"></div>
+    </div>
+
+    <div class="tip">💡 <strong>Tip:</strong> The <code>0b</code> prefix in Python means "this is a binary number." When converting binary strings to decimal using <code>int()</code>, always pass <code>2</code> as the second argument to specify the base.</div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TAB 2: BINARY → DECIMAL                     -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-bin2dec" class="tab-panel">
+
+  <div class="card">
+    <h2>Binary → Decimal: Interactive Converter</h2>
+    <p>Click the bits below to toggle them ON (1) or OFF (0), or type a binary number. Watch the step-by-step conversion in real time.</p>
+
+    <div class="converter-box">
+      <div class="bit-row" id="b2d-bits">
+        <!-- 8 bits generated by JS -->
+      </div>
+      <div style="margin-top:14px;">
+        <div class="result-label">Decimal Value</div>
+        <div class="result-display" id="b2d-result">0</div>
+      </div>
+      <div style="margin-top:6px;">
+        <input type="text" id="b2d-input" placeholder="Or type binary: e.g. 10110" maxlength="16" oninput="b2dFromInput()">
+      </div>
+    </div>
+
+    <div class="steps-display" id="b2d-steps">Click a bit or type a binary number to see the step-by-step conversion.</div>
+  </div>
+
+  <div class="card">
+    <h2>Method: Place Value Addition</h2>
+    <p>Multiply each binary digit by its place value (power of 2) and <strong>add them all up</strong>.</p>
+
+    <h3>Example: Convert <code>10010101</code> to decimal</h3>
+    <pre>
+Position:  2⁷    2⁶    2⁵    2⁴    2³    2²    2¹    2⁰
+Value:    128    64    32    16     8     4     2     1
+Bits:       1     0     0     1     0     1     0     1
+
+= 128 + 0 + 0 + 16 + 0 + 4 + 0 + 1
+= <strong>149</strong></pre>
+
+    <h3>Example: Convert <code>11111111</code> to decimal</h3>
+    <pre>
+= 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1
+= <strong>255</strong></pre>
+
+    <div class="tip">💡 <strong>Key insight:</strong> An 8-bit binary number can represent values from 0 (<code>00000000</code>) to 255 (<code>11111111</code>).</div>
+  </div>
+
+  <div class="card">
+    <h2>Practice: Convert with Python</h2>
+    <div class="python-runner">
+      <div class="python-runner-header">
+        <span>▶ Python — try it</span>
+        <button class="action-btn" style="padding:5px 14px;font-size:0.78rem;" onclick="runPython(this)">Run</button>
+      </div>
+      <textarea rows="14" spellcheck="false"># Binary to Decimal — step by step
+binary_str = "101010"
+
+# Manual method
+decimal_val = 0
+for i, bit in enumerate(reversed(binary_str)):
+    place_value = 2 ** i
+    contribution = int(bit) * place_value
+    print(f"  2^{i} x {bit} = {place_value} x {bit} = {contribution}")
+    decimal_val += contribution
+
+print(f"\nBinary {binary_str} = Decimal {decimal_val}")
+print(f"Verify with int(): {int(binary_str, 2)}")</textarea>
+      <div class="python-output"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TAB 3: DECIMAL → BINARY                     -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-dec2bin" class="tab-panel">
+
+  <div class="card">
+    <h2>Decimal → Binary: Interactive Converter</h2>
+    <p>Enter a decimal number (0–255) and see the successive division method step by step.</p>
+
+    <div class="converter-box">
+      <input type="number" id="d2b-input" placeholder="Enter a decimal: e.g. 42" min="0" max="65535" oninput="d2bConvert()">
+      <div style="margin-top:14px;">
+        <div class="result-label">Binary Value</div>
+        <div class="result-display" id="d2b-result">—</div>
+      </div>
+    </div>
+
+    <div class="steps-display" id="d2b-steps">Enter a decimal number to see the successive division method.</div>
+
+    <div style="margin-top:16px;" id="d2b-verify-wrap" hidden>
+      <div class="result-label" style="margin-bottom:8px;">Bit Visualization</div>
+      <div class="bit-row" id="d2b-bits"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Method: Successive Division by 2</h2>
+    <p>Repeatedly divide by 2 and record the remainders. Read the remainders from <strong>bottom to top</strong> (last remainder is the MSB).</p>
+
+    <h3>Example: Convert 75 to binary</h3>
+    <pre>
+75 ÷ 2 = 37  remainder <strong>1</strong>  ← LSB (Least Significant Bit)
+37 ÷ 2 = 18  remainder <strong>1</strong>
+18 ÷ 2 =  9  remainder <strong>0</strong>
+ 9 ÷ 2 =  4  remainder <strong>1</strong>
+ 4 ÷ 2 =  2  remainder <strong>0</strong>
+ 2 ÷ 2 =  1  remainder <strong>0</strong>
+ 1 ÷ 2 =  0  remainder <strong>1</strong>  ← MSB (Most Significant Bit)
+
+Read bottom → top: <strong>1001011</strong>
+✅ Check: 64 + 0 + 0 + 8 + 0 + 2 + 1 = 75 ✓</pre>
+  </div>
+
+  <div class="card">
+    <h2>Practice: Convert with Python</h2>
+    <div class="python-runner">
+      <div class="python-runner-header">
+        <span>▶ Python — try it</span>
+        <button class="action-btn" style="padding:5px 14px;font-size:0.78rem;" onclick="runPython(this)">Run</button>
+      </div>
+      <textarea rows="17" spellcheck="false"># Decimal to Binary — successive division method
+decimal_num = 94
+
+print(f"Converting {decimal_num} to binary:\n")
+n = decimal_num
+remainders = []
+
+while n > 0:
+    quotient = n // 2
+    remainder = n % 2
+    print(f"  {n} / 2 = {quotient}  remainder {remainder}")
+    remainders.append(str(remainder))
+    n = quotient
+
+binary_result = ''.join(reversed(remainders))
+print(f"\nRead bottom to top: {binary_result}")
+print(f"Verify with bin(): {bin(decimal_num)}")</textarea>
+      <div class="python-output"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TAB 4: QUIZ                                 -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="tab-panel">
+
+  <div class="card">
+    <h2>Test Your Knowledge</h2>
+    <p>10 randomized questions on binary ↔ decimal conversions. Good luck!</p>
+
+    <div class="quiz-progress" id="quiz-progress"></div>
+
+    <div id="quiz-area">
+      <div class="quiz-question" id="quiz-question"></div>
+      <div class="quiz-options" id="quiz-options"></div>
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+      <div style="text-align:center;margin-top:12px;">
+        <button class="action-btn" id="quiz-next-btn" onclick="quizNext()" style="display:none;">Next Question →</button>
+      </div>
+    </div>
+
+    <div id="quiz-score-area" class="quiz-score" style="display:none;">
+      <div class="score-num" id="final-score"></div>
+      <div class="score-label" id="final-label"></div>
+      <button class="action-btn" onclick="startQuiz()">🔄 Try Again</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Pyodide status indicator -->
+<div class="pyodide-status" id="pyodide-status">
+  <div class="dot"></div>
+  <span>Loading Python…</span>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════════════
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  const tabs = { concepts: 0, bin2dec: 1, dec2bin: 2, quiz: 3 };
+  document.querySelectorAll('.tab-btn')[tabs[name]].classList.add('active');
+  if (name === 'quiz' && quizQuestions.length === 0) startQuiz();
+}
+
+// ═══════════════════════════════════════════════
+// PYODIDE
+// ═══════════════════════════════════════════════
+let pyodide = null;
+async function initPyodide() {
+  try {
+    pyodide = await loadPyodide();
+    const el = document.getElementById('pyodide-status');
+    el.classList.add('ready');
+    el.querySelector('span').textContent = 'Python ready';
+    setTimeout(() => el.classList.add('hidden'), 2500);
+  } catch(e) {
+    const el = document.getElementById('pyodide-status');
+    el.querySelector('span').textContent = 'Python failed to load';
+    el.querySelector('.dot').style.background = 'var(--danger)';
+  }
+}
+initPyodide();
+
+async function runPython(btn) {
+  const runner = btn.closest('.python-runner');
+  const code = runner.querySelector('textarea').value;
+  const output = runner.querySelector('.python-output');
+  output.className = 'python-output';
+
+  if (!pyodide) {
+    output.textContent = '⏳ Python is still loading, please wait...';
+    return;
+  }
+
+  try {
+    pyodide.runPython(`
+import sys, io
+_old_stdout = sys.stdout
+sys.stdout = io.StringIO()
+`);
+    pyodide.runPython(code);
+    const result = pyodide.runPython('sys.stdout.getvalue()');
+    pyodide.runPython('sys.stdout = _old_stdout');
+    output.textContent = result || '(no output)';
+  } catch(e) {
+    pyodide.runPython('sys.stdout = _old_stdout');
+    output.textContent = e.message;
+    output.className = 'python-output error';
+  }
+}
+
+// Handle Tab key in textareas
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Tab' && e.target.tagName === 'TEXTAREA') {
+    e.preventDefault();
+    const ta = e.target;
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    ta.value = ta.value.substring(0, start) + '    ' + ta.value.substring(end);
+    ta.selectionStart = ta.selectionEnd = start + 4;
+  }
+});
+
+// ═══════════════════════════════════════════════
+// BINARY → DECIMAL INTERACTIVE
+// ═══════════════════════════════════════════════
+const B2D_BITS = 8;
+let b2dState = new Array(B2D_BITS).fill(0);
+
+function initB2D() {
+  const container = document.getElementById('b2d-bits');
+  container.innerHTML = '';
+  for (let i = B2D_BITS - 1; i >= 0; i--) {
+    const cell = document.createElement('div');
+    cell.className = 'bit-cell';
+    cell.innerHTML = `
+      <div class="bit-label">2${supScript(i)}</div>
+      <div class="bit-circle off" id="b2d-bit-${i}" onclick="toggleBit(${i})">${b2dState[i]}</div>
+      <div class="bit-value">${Math.pow(2, i)}</div>
+    `;
+    container.appendChild(cell);
+  }
+  updateB2D();
+}
+
+function supScript(n) {
+  const sups = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+  return String(n).split('').map(d => sups[d]).join('');
+}
+
+function toggleBit(i) {
+  b2dState[i] = b2dState[i] ? 0 : 1;
+  const el = document.getElementById('b2d-bit-' + i);
+  el.textContent = b2dState[i];
+  el.className = 'bit-circle ' + (b2dState[i] ? 'on' : 'off');
+
+  // Sync input
+  let binStr = '';
+  for (let j = B2D_BITS - 1; j >= 0; j--) binStr += b2dState[j];
+  document.getElementById('b2d-input').value = binStr.replace(/^0+/, '') || '0';
+
+  updateB2D();
+}
+
+function b2dFromInput() {
+  const raw = document.getElementById('b2d-input').value.replace(/[^01]/g, '');
+  b2dState = new Array(B2D_BITS).fill(0);
+  for (let i = 0; i < raw.length && i < B2D_BITS; i++) {
+    b2dState[i] = parseInt(raw[raw.length - 1 - i]) || 0;
+  }
+  for (let i = B2D_BITS - 1; i >= 0; i--) {
+    const el = document.getElementById('b2d-bit-' + i);
+    el.textContent = b2dState[i];
+    el.className = 'bit-circle ' + (b2dState[i] ? 'on' : 'off');
+  }
+  updateB2D();
+}
+
+function updateB2D() {
+  let total = 0;
+  let parts = [];
+  for (let i = B2D_BITS - 1; i >= 0; i--) {
+    const val = b2dState[i] * Math.pow(2, i);
+    total += val;
+    if (b2dState[i]) parts.push(`(1 × ${Math.pow(2, i)})`);
+  }
+  document.getElementById('b2d-result').textContent = total;
+
+  const stepsEl = document.getElementById('b2d-steps');
+  if (parts.length === 0) {
+    stepsEl.textContent = 'All bits are 0 → Decimal value is 0';
+  } else {
+    let binStr = '';
+    for (let j = B2D_BITS - 1; j >= 0; j--) binStr += b2dState[j];
+    binStr = binStr.replace(/^0+/, '') || '0';
+
+    let lines = [`Binary: ${binStr}\n`];
+    for (let i = B2D_BITS - 1; i >= 0; i--) {
+      const pw = Math.pow(2, i);
+      const bit = b2dState[i];
+      const contribution = bit * pw;
+      if (bit) {
+        lines.push(`  2${supScript(i)} × ${bit} = ${pw} × 1 = ${contribution}`);
+      }
+    }
+    lines.push(`\n  ${parts.join(' + ')}`);
+    lines.push(`  = ${total}`);
+    stepsEl.textContent = lines.join('\n');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// DECIMAL → BINARY INTERACTIVE
+// ═══════════════════════════════════════════════
+function d2bConvert() {
+  const val = parseInt(document.getElementById('d2b-input').value);
+  const resultEl = document.getElementById('d2b-result');
+  const stepsEl = document.getElementById('d2b-steps');
+  const verifyWrap = document.getElementById('d2b-verify-wrap');
+
+  if (isNaN(val) || val < 0) {
+    resultEl.textContent = '—';
+    stepsEl.textContent = 'Enter a valid non-negative integer.';
+    verifyWrap.hidden = true;
+    return;
+  }
+
+  if (val === 0) {
+    resultEl.textContent = '0';
+    stepsEl.textContent = 'Decimal 0 = Binary 0';
+    verifyWrap.hidden = true;
+    return;
+  }
+
+  let n = val;
+  let remainders = [];
+  let lines = [`Successive Division Method for ${val}:\n`];
+
+  while (n > 0) {
+    const q = Math.floor(n / 2);
+    const r = n % 2;
+    const label = remainders.length === 0 ? '  ← LSB' : '';
+    lines.push(`  ${String(n).padStart(5)} ÷ 2 = ${String(q).padStart(5)}  remainder ${r}${label}`);
+    remainders.push(r);
+    n = q;
+  }
+  lines[lines.length - 1] += '  ← MSB';
+
+  const binary = remainders.slice().reverse().join('');
+  lines.push(`\n  ↑ Read bottom to top: ${binary}`);
+
+  // Verify
+  let checkParts = [];
+  for (let i = binary.length - 1; i >= 0; i--) {
+    const bit = parseInt(binary[binary.length - 1 - i]);
+    if (bit) checkParts.push(Math.pow(2, i));
+  }
+  lines.push(`  ✅ Check: ${checkParts.join(' + ')} = ${val}`);
+
+  resultEl.textContent = binary;
+  stepsEl.textContent = lines.join('\n');
+
+  // Show bit visualization
+  verifyWrap.hidden = false;
+  const bitsContainer = document.getElementById('d2b-bits');
+  bitsContainer.innerHTML = '';
+  const padded = binary.padStart(8, '0');
+  for (let i = 0; i < padded.length; i++) {
+    const pos = padded.length - 1 - i;
+    const bit = parseInt(padded[i]);
+    const cell = document.createElement('div');
+    cell.className = 'bit-cell';
+    cell.innerHTML = `
+      <div class="bit-label">2${supScript(pos)}</div>
+      <div class="bit-circle ${bit ? 'on' : 'off'}">${bit}</div>
+      <div class="bit-value">${Math.pow(2, pos)}</div>
+    `;
+    bitsContainer.appendChild(cell);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// QUIZ ENGINE
+// ═══════════════════════════════════════════════
+const QUIZ_COUNT = 10;
+let quizQuestions = [];
+let quizIndex = 0;
+let quizScore = 0;
+let quizAnswered = false;
+
+function generateQuizQuestions() {
+  const questions = [];
+
+  // Binary to Decimal questions
+  for (let i = 0; i < 5; i++) {
+    const dec = Math.floor(Math.random() * 200) + 5;
+    const bin = dec.toString(2);
+    const correct = dec;
+    const wrongs = new Set();
+    while (wrongs.size < 3) {
+      let w = dec + (Math.floor(Math.random() * 40) - 20);
+      if (w !== correct && w > 0) wrongs.add(w);
+    }
+    const options = shuffle([correct, ...wrongs]);
+    questions.push({
+      question: `What is the decimal value of binary <code>${bin}</code>?`,
+      options: options.map(String),
+      correct: String(correct),
+      explanation: `${bin}₂ = ${correct}₁₀`
+    });
+  }
+
+  // Decimal to Binary questions
+  for (let i = 0; i < 3; i++) {
+    const dec = Math.floor(Math.random() * 200) + 5;
+    const correct = dec.toString(2);
+    const wrongs = new Set();
+    while (wrongs.size < 3) {
+      let w = (dec + Math.floor(Math.random() * 20) - 10);
+      if (w > 0) {
+        let wb = w.toString(2);
+        if (wb !== correct) wrongs.add(wb);
+      }
+    }
+    const options = shuffle([correct, ...wrongs]);
+    questions.push({
+      question: `What is the binary representation of decimal <code>${dec}</code>?`,
+      options,
+      correct,
+      explanation: `${dec}₁₀ = ${correct}₂`
+    });
+  }
+
+  // Python code output questions
+  const pyVals = [
+    { code: 'bin(42)', answer: "0b101010" },
+    { code: 'int("1100", 2)', answer: "12" },
+    { code: 'bin(255)', answer: "0b11111111" },
+    { code: 'int("10000", 2)', answer: "16" },
+    { code: 'bin(100)', answer: "0b1100100" },
+    { code: 'int("111", 2)', answer: "7" },
+  ];
+  const pyPick = pyVals[Math.floor(Math.random() * pyVals.length)];
+  const pyPick2 = pyVals.filter(v => v !== pyPick)[Math.floor(Math.random() * (pyVals.length - 1))];
+
+  [pyPick, pyPick2].forEach(pq => {
+    const wrongs = new Set();
+    while (wrongs.size < 3) {
+      const rp = pyVals[Math.floor(Math.random() * pyVals.length)];
+      if (rp.answer !== pq.answer) wrongs.add(rp.answer);
+    }
+    // also add some plausible wrong answers
+    if (wrongs.size < 3) {
+      wrongs.add(pq.answer === "12" ? "14" : "0b110");
+    }
+    const options = shuffle([pq.answer, ...Array.from(wrongs).slice(0, 3)]);
+    questions.push({
+      question: `What does <code>${pq.code}</code> output in Python?`,
+      options,
+      correct: pq.answer,
+      explanation: `${pq.code} → ${pq.answer}`
+    });
+  });
+
+  return shuffle(questions).slice(0, QUIZ_COUNT);
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  quizQuestions = generateQuizQuestions();
+  quizIndex = 0;
+  quizScore = 0;
+  quizAnswered = false;
+  document.getElementById('quiz-score-area').style.display = 'none';
+  document.getElementById('quiz-area').style.display = 'block';
+  renderQuizProgress();
+  renderQuestion();
+}
+
+function renderQuizProgress() {
+  const el = document.getElementById('quiz-progress');
+  el.innerHTML = '';
+  for (let i = 0; i < QUIZ_COUNT; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'quiz-dot';
+    dot.id = 'qdot-' + i;
+    dot.textContent = i + 1;
+    if (i === quizIndex) dot.classList.add('current');
+    el.appendChild(dot);
+  }
+}
+
+function renderQuestion() {
+  const q = quizQuestions[quizIndex];
+  document.getElementById('quiz-question').innerHTML = `<span style="color:var(--text-dim);font-size:0.82rem;">Question ${quizIndex + 1} of ${QUIZ_COUNT}</span><br>${q.question}`;
+
+  const optsEl = document.getElementById('quiz-options');
+  optsEl.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-opt';
+    div.textContent = opt;
+    div.onclick = () => selectAnswer(i, opt, q);
+    optsEl.appendChild(div);
+  });
+
+  document.getElementById('quiz-feedback').className = 'quiz-feedback';
+  document.getElementById('quiz-feedback').textContent = '';
+  document.getElementById('quiz-next-btn').style.display = 'none';
+  quizAnswered = false;
+}
+
+function selectAnswer(idx, selected, q) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+
+  const opts = document.querySelectorAll('#quiz-options .quiz-opt');
+  opts.forEach(o => o.classList.add('disabled'));
+
+  const fb = document.getElementById('quiz-feedback');
+  const dot = document.getElementById('qdot-' + quizIndex);
+
+  if (selected === q.correct) {
+    quizScore++;
+    opts[idx].classList.add('selected-correct');
+    fb.className = 'quiz-feedback correct';
+    fb.textContent = `✅ Correct! ${q.explanation}`;
+    dot.classList.remove('current');
+    dot.classList.add('correct');
+  } else {
+    opts[idx].classList.add('selected-wrong');
+    fb.className = 'quiz-feedback wrong';
+    fb.textContent = `❌ Incorrect. ${q.explanation}`;
+    dot.classList.remove('current');
+    dot.classList.add('wrong');
+    // Highlight correct
+    opts.forEach(o => {
+      if (o.textContent === q.correct) o.classList.add('show-correct');
+    });
+  }
+
+  document.getElementById('quiz-next-btn').style.display = 'inline-block';
+  document.getElementById('quiz-next-btn').textContent = quizIndex < QUIZ_COUNT - 1 ? 'Next Question →' : 'See Results';
+}
+
+function quizNext() {
+  quizIndex++;
+  if (quizIndex >= QUIZ_COUNT) {
+    showQuizResults();
+    return;
+  }
+  const dot = document.getElementById('qdot-' + quizIndex);
+  if (dot) dot.classList.add('current');
+  renderQuestion();
+}
+
+function showQuizResults() {
+  document.getElementById('quiz-area').style.display = 'none';
+  const scoreArea = document.getElementById('quiz-score-area');
+  scoreArea.style.display = 'block';
+  document.getElementById('final-score').textContent = `${quizScore} / ${QUIZ_COUNT}`;
+  const pct = Math.round((quizScore / QUIZ_COUNT) * 100);
+  let msg = '';
+  if (pct === 100) msg = '🏆 Perfect score! You\'re a binary master!';
+  else if (pct >= 80) msg = '🌟 Great job! You\'ve got a solid understanding.';
+  else if (pct >= 60) msg = '👍 Good effort! Review the concepts tab for areas to improve.';
+  else msg = '📚 Keep practicing! Try the interactive converters to build intuition.';
+  document.getElementById('final-label').textContent = msg;
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+initB2D();
+</script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Python Data Types Quiz</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .quiz-box {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #0d6efd;
+            margin-bottom: 10px;
+        }
+
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        label {
+            display: block;
+            margin: 8px 0;
+        }
+
+        .submit-btn {
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .submit-btn:hover {
+            background-color: #0b5ed7;
+        }
+
+        #resultBox {
+            display: none;
+            margin-top: 20px;
+            padding: 18px;
+            background: #e9f7ef;
+            border-left: 5px solid #198754;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="quiz-box">
+    <h1>Python Data Types Quiz</h1>
+    <p>Answer all questions, then click submit.</p>
+
+    <form id="quizForm">
+
+        <div class="question">
+            <p><strong>1. What data type is this value: 42?</strong></p>
+            <label><input type="radio" name="q1" value="a"> int</label>
+            <label><input type="radio" name="q1" value="b"> float</label>
+            <label><input type="radio" name="q1" value="c"> bool</label>
+            <label><input type="radio" name="q1" value="d"> str</label>
+        </div>
+
+        <div class="question">
+            <p><strong>2. What data type is this value: 3.14159?</strong></p>
+            <label><input type="radio" name="q2" value="a"> int</label>
+            <label><input type="radio" name="q2" value="b"> float</label>
+            <label><input type="radio" name="q2" value="c"> bool</label>
+            <label><input type="radio" name="q2" value="d"> str</label>
+        </div>
+
+        <div class="question">
+            <p><strong>3. What data type is this value: True?</strong></p>
+            <label><input type="radio" name="q3" value="a"> int</label>
+            <label><input type="radio" name="q3" value="b"> float</label>
+            <label><input type="radio" name="q3" value="c"> bool</label>
+            <label><input type="radio" name="q3" value="d"> str</label>
+        </div>
+
+        <div class="question">
+            <p><strong>4. What data type is this value: "Hello World"?</strong></p>
+            <label><input type="radio" name="q4" value="a"> int</label>
+            <label><input type="radio" name="q4" value="b"> float</label>
+            <label><input type="radio" name="q4" value="c"> bool</label>
+            <label><input type="radio" name="q4" value="d"> str</label>
+        </div>
+
+        <div class="question">
+            <p><strong>5. Which value is a float?</strong></p>
+            <label><input type="radio" name="q5" value="a"> 100</label>
+            <label><input type="radio" name="q5" value="b"> 2.5</label>
+            <label><input type="radio" name="q5" value="c"> False</label>
+            <label><input type="radio" name="q5" value="d"> "3.14"</label>
+        </div>
+
+        <div class="question">
+            <p><strong>6. What data type is this value: -0?</strong></p>
+            <label><input type="radio" name="q6" value="a"> int</label>
+            <label><input type="radio" name="q6" value="b"> float</label>
+            <label><input type="radio" name="q6" value="c"> bool</label>
+            <label><input type="radio" name="q6" value="d"> str</label>
+        </div>
+
+        <div class="question">
+            <p><strong>7. Which value is a boolean?</strong></p>
+            <label><input type="radio" name="q7" value="a"> "True"</label>
+            <label><input type="radio" name="q7" value="b"> 1</label>
+            <label><input type="radio" name="q7" value="c"> False</label>
+            <label><input type="radio" name="q7" value="d"> 0.0</label>
+        </div>
+
+        <div class="question">
+            <p><strong>8. What data type is this value: 'Python'?</strong></p>
+            <label><input type="radio" name="q8" value="a"> int</label>
+            <label><input type="radio" name="q8" value="b"> float</label>
+            <label><input type="radio" name="q8" value="c"> bool</label>
+            <label><input type="radio" name="q8" value="d"> str</label>
+        </div>
+
+        <div class="question">
+            <p><strong>9. Which value is an integer?</strong></p>
+            <label><input type="radio" name="q9" value="a"> 3.0</label>
+            <label><input type="radio" name="q9" value="b"> -42</label>
+            <label><input type="radio" name="q9" value="c"> True</label>
+            <label><input type="radio" name="q9" value="d"> "100"</label>
+        </div>
+
+        <div class="question">
+            <p><strong>10. What data type is this value: 0.0?</strong></p>
+            <label><input type="radio" name="q10" value="a"> int</label>
+            <label><input type="radio" name="q10" value="b"> float</label>
+            <label><input type="radio" name="q10" value="c"> bool</label>
+            <label><input type="radio" name="q10" value="d"> str</label>
+        </div>
+
+        <button type="button" class="submit-btn" onclick="submitQuiz()">Submit Quiz</button>
+    </form>
+
+    <div id="resultBox"></div>
+</div>
+
+<script>
+function submitQuiz() {
+    const answerKey = {
+        q1: "a",
+        q2: "b",
+        q3: "c",
+        q4: "d",
+        q5: "b",
+        q6: "a",
+        q7: "c",
+        q8: "d",
+        q9: "b",
+        q10: "b"
+    };
+
+    let score = 0;
+    const totalQuestions = Object.keys(answerKey).length;
+
+    for (let question in answerKey) {
+        const selected = document.querySelector(`input[name="${question}"]:checked`);
+
+        if (selected && selected.value === answerKey[question]) {
+            score++;
+        }
+    }
+
+    const finalScore = Math.round((score / totalQuestions) * 100);
+
+    document.getElementById("resultBox").style.display = "block";
+    document.getElementById("resultBox").innerHTML = `
+        <h3>Quiz Submitted ✅</h3>
+        <p>You got <strong>${score}</strong> out of <strong>${totalQuestions}</strong> correct.</p>
+        <h2>Final Score: ${finalScore}%</h2>
+    `;
+
+    window.parent.postMessage({
+        quizTitle: "Demo - Python Data Types Quiz",
+        score: finalScore,
+        correctAnswers: score,
+        totalQuestions: totalQuestions
+    }, "*");
+}
+</script>
+
+</body>
+</html>

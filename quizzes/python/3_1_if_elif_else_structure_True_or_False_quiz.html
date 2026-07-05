@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>If/Elif/Else Structure Quiz - Python 101</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            margin: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            font-weight: normal;
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .instructions h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .instructions p {
+            color: #856404;
+            line-height: 1.6;
+        }
+
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .question.correct {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .question.incorrect {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .options {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .option-btn {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .option-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option-btn.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .option-btn.incorrect {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.95em;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 50px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .results h2 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .results .score {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .results .percentage {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .results .message {
+            font-size: 1.2em;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .screenshot-instructions {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .screenshot-instructions.show {
+            display: block;
+        }
+
+        .screenshot-instructions h3 {
+            color: #0c5460;
+            margin-bottom: 10px;
+        }
+
+        .screenshot-instructions ul {
+            color: #0c5460;
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐍 Python 101 Quiz</h1>
+            <h2>If/Elif/Else Statement Structure</h2>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Instructions:</h3>
+            <p>Read each statement carefully and select whether it is <strong>True</strong> or <strong>False</strong>. Once you've answered all questions, click the <strong>Submit Quiz</strong> button to see your results. Then take a screenshot and submit it to Google Classroom.</p>
+        </div>
+
+        <div id="quiz">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+
+        <div class="submit-section">
+            <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">Submit Quiz</button>
+        </div>
+
+        <div class="results" id="results">
+            <h2>🎉 Quiz Results</h2>
+            <div class="score" id="scoreDisplay"></div>
+            <div class="percentage" id="percentageDisplay"></div>
+            <div class="message" id="messageDisplay"></div>
+        </div>
+
+        <div class="screenshot-instructions" id="screenshotInstructions">
+            <h3>📸 How to Submit:</h3>
+            <ul>
+                <li><strong>Windows:</strong> Press <kbd>Windows + Shift + S</kbd> to take a screenshot</li>
+                <li><strong>Mac:</strong> Press <kbd>Cmd + Shift + 4</kbd> to take a screenshot</li>
+                <li><strong>Chromebook:</strong> Press <kbd>Ctrl + Show Windows</kbd> (or F5) then select area</li>
+                <li>Upload the screenshot to <strong>Google Classroom</strong></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                text: "An elif statement can exist in a program without an if statement.",
+                answer: false,
+                explanation: "An elif statement cannot exist without a preceding if statement. The elif (else if) is a continuation of an if block."
+            },
+            {
+                id: 2,
+                text: "A single conditional block can have two else statements.",
+                answer: false,
+                explanation: "A conditional block can only have one else statement. The else serves as the final catch-all condition."
+            },
+            {
+                id: 3,
+                text: "The else statement can appear before an elif statement in the same conditional block.",
+                answer: false,
+                explanation: "The else statement must come after all elif statements. The proper order is: if → elif (optional) → else (optional)."
+            },
+            {
+                id: 4,
+                text: "You can write an if statement without including an else statement.",
+                answer: true,
+                explanation: "An if statement can stand alone. Both elif and else are optional."
+            },
+            {
+                id: 5,
+                text: "A single conditional block can contain multiple elif statements.",
+                answer: true,
+                explanation: "You can have as many elif statements as needed in a conditional block to check multiple conditions."
+            },
+            {
+                id: 6,
+                text: "In a conditional block, the if statement must always appear first.",
+                answer: true,
+                explanation: "The if statement must be the first statement in any conditional block. You cannot start with elif or else."
+            },
+            {
+                id: 7,
+                text: "You can have an elif statement without an else statement in the same conditional block.",
+                answer: true,
+                explanation: "The else statement is optional. You can have if followed by one or more elif statements without an else."
+            },
+            {
+                id: 8,
+                text: "You can have nested if statements (an if statement inside another if block).",
+                answer: true,
+                explanation: "Nested if statements are allowed and commonly used in Python. You can have an if statement inside any code block."
+            },
+            {
+                id: 9,
+                text: "If an else statement is present in a conditional block, it must always come last.",
+                answer: true,
+                explanation: "If an else statement is present, it must be the last statement in the conditional block. Nothing can come after else in the same block."
+            },
+            {
+                id: 10,
+                text: "A conditional block can consist of just an if and an else statement without any elif statements.",
+                answer: true,
+                explanation: "This is a perfectly valid structure: if condition followed by else. The elif is completely optional."
+            }
+        ];
+
+        let userAnswers = {};
+
+        // Initialize quiz
+        function initQuiz() {
+            const quizContainer = document.getElementById('quiz');
+            
+            questions.forEach(question => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.id = `question-${question.id}`;
+                
+                questionDiv.innerHTML = `
+                    <div class="question-text">
+                        <span class="question-number">Q${question.id}</span>
+                        ${question.text}
+                    </div>
+                    <div class="options">
+                        <button class="option-btn" onclick="selectAnswer(${question.id}, true)">
+                            ✓ True
+                        </button>
+                        <button class="option-btn" onclick="selectAnswer(${question.id}, false)">
+                            ✗ False
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback-${question.id}"></div>
+                `;
+                
+                quizContainer.appendChild(questionDiv);
+            });
+        }
+
+        function selectAnswer(questionId, answer) {
+            // Check if quiz is already submitted
+            if (document.getElementById('submitBtn').disabled) {
+                return;
+            }
+
+            userAnswers[questionId] = answer;
+            
+            // Update button styles
+            const questionDiv = document.getElementById(`question-${questionId}`);
+            const buttons = questionDiv.querySelectorAll('.option-btn');
+            
+            buttons.forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            if (answer === true) {
+                buttons[0].classList.add('selected');
+            } else {
+                buttons[1].classList.add('selected');
+            }
+
+            // Enable submit button if all questions answered
+            updateSubmitButton();
+        }
+
+        function updateSubmitButton() {
+            const submitBtn = document.getElementById('submitBtn');
+            if (Object.keys(userAnswers).length === questions.length) {
+                submitBtn.disabled = false;
+            }
+        }
+
+        function submitQuiz() {
+            if (Object.keys(userAnswers).length !== questions.length) {
+                alert('Please answer all questions before submitting!');
+                return;
+            }
+
+            // Calculate score
+            let correctAnswers = 0;
+            
+            questions.forEach(question => {
+                const questionDiv = document.getElementById(`question-${question.id}`);
+                const buttons = questionDiv.querySelectorAll('.option-btn');
+                const feedbackDiv = document.getElementById(`feedback-${question.id}`);
+                
+                // Disable buttons
+                buttons.forEach(btn => btn.disabled = true);
+                
+                // Check answer
+                const userAnswer = userAnswers[question.id];
+                const isCorrect = userAnswer === question.answer;
+                
+                if (isCorrect) {
+                    correctAnswers++;
+                    questionDiv.classList.add('correct');
+                    feedbackDiv.className = 'feedback correct show';
+                    feedbackDiv.innerHTML = `<strong>✓ Correct!</strong> ${question.explanation}`;
+                } else {
+                    questionDiv.classList.add('incorrect');
+                    feedbackDiv.className = 'feedback incorrect show';
+                    feedbackDiv.innerHTML = `<strong>✗ Incorrect.</strong> ${question.explanation}`;
+                }
+                
+                // Highlight correct/incorrect buttons
+                if (userAnswer === true) {
+                    buttons[0].classList.add(isCorrect ? 'correct' : 'incorrect');
+                    if (!isCorrect) {
+                        buttons[1].classList.add('correct');
+                    }
+                } else {
+                    buttons[1].classList.add(isCorrect ? 'correct' : 'incorrect');
+                    if (!isCorrect) {
+                        buttons[0].classList.add('correct');
+                    }
+                }
+            });
+
+            // Display results
+            const percentage = (correctAnswers / questions.length) * 100;
+            const resultsDiv = document.getElementById('results');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const percentageDisplay = document.getElementById('percentageDisplay');
+            const messageDisplay = document.getElementById('messageDisplay');
+            
+            scoreDisplay.textContent = `${correctAnswers} / ${questions.length}`;
+            percentageDisplay.textContent = `${percentage.toFixed(0)}%`;
+            
+            let message = '';
+            if (percentage === 100) {
+                message = '🌟 Perfect Score! Excellent work!';
+            } else if (percentage >= 90) {
+                message = '🎯 Outstanding! Great understanding of if/elif/else structure!';
+            } else if (percentage >= 80) {
+                message = '👍 Great job! You have a solid grasp of the concepts!';
+            } else if (percentage >= 70) {
+                message = '✅ Good effort! Review the explanations to strengthen your understanding.';
+            } else {
+                message = '📚 Keep practicing! Review the material and try again.';
+            }
+            
+            messageDisplay.textContent = message;
+            resultsDiv.classList.add('show');
+            
+            // Show screenshot instructions
+            document.getElementById('screenshotInstructions').classList.add('show');
+            
+            // Disable submit button
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('submitBtn').textContent = 'Quiz Completed';
+            
+            // Scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Initialize the quiz when page loads
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python List Methods - Interactive Playbook 🐍</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            background: #f8f9fa;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .method-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s;
+        }
+
+        .method-card:hover {
+            transform: translateX(10px);
+        }
+
+        .method-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .method-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+            font-family: 'Courier New', monospace;
+        }
+
+        .method-description {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .visual-demo {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .shape-list {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .shape {
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            color: white;
+            font-weight: bold;
+        }
+
+        .circle {
+            background: #e74c3c;
+            border-radius: 50%;
+        }
+
+        .square {
+            background: #3498db;
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 40px solid #f39c12;
+            background: transparent;
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: #667eea;
+            margin: 0 10px;
+        }
+
+        .demo-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+
+        .demo-button:hover {
+            background: #764ba2;
+        }
+
+        .code-example {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #e8eaf6;
+        }
+
+        .option.correct {
+            border-color: #27ae60;
+            background: #d4edda;
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background: #f8d7da;
+        }
+
+        .check-answer {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+
+        .check-answer:hover {
+            background: #229954;
+        }
+
+        .check-answer:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .score-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+            z-index: 1000;
+        }
+
+        .label {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            margin-right: 10px;
+        }
+
+        .demo-area {
+            background: white;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            min-height: 80px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .method-name {
+                font-size: 1.4em;
+            }
+
+            .shape {
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐍 Python List Methods</h1>
+            <p>Interactive Playbook for Python 101</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('introduction')">📖 Introduction</button>
+            <button class="tab" onclick="switchTab('methods')">📚 List Methods (Concepts)</button>
+            <button class="tab" onclick="switchTab('examples')">💻 List Methods (Examples)</button>
+            <button class="tab" onclick="switchTab('quiz')">🎯 Quiz</button>
+        </div>
+
+        <div class="content">
+            <!-- Introduction Tab -->
+            <div id="introduction" class="tab-content active">
+                <h2 style="color: #667eea; margin-bottom: 20px;">📖 Welcome to Python Lists!</h2>
+                
+                <div class="method-card" style="border-left: 5px solid #e74c3c;">
+                    <h3 style="color: #e74c3c; margin-bottom: 15px;">🎯 What is a List?</h3>
+                    <p style="font-size: 1.1em; line-height: 1.8; margin-bottom: 15px;">
+                        A <strong>list</strong> is like a container that can hold multiple items in order. Think of it like a shopping cart 🛒 
+                        where you can put different items, or a playlist 🎵 where you arrange your favorite songs in a specific order.
+                    </p>
+                    <div class="code-example">
+# Examples of Lists<br>
+fruits = ["apple", "banana", "cherry"]<br>
+numbers = [10, 20, 30, 40, 50]<br>
+mixed = [1, "hello", 3.14, True]<br>
+empty_list = []
+                    </div>
+                    <div style="margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                        <strong>💡 Key Points:</strong>
+                        <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+                            <li>Lists are created using <strong>square brackets [ ]</strong></li>
+                            <li>Items are separated by <strong>commas</strong></li>
+                            <li>Lists can hold any type of data: numbers, strings, even other lists!</li>
+                            <li>Items in a list maintain their <strong>order</strong></li>
+                            <li>Python starts counting from <strong>0</strong> (first item is at position 0)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="method-card" style="border-left: 5px solid #3498db;">
+                    <h3 style="color: #3498db; margin-bottom: 15px;">🔧 Two Ways to Work with Code in Python</h3>
+                    <p style="font-size: 1.1em; line-height: 1.8; margin-bottom: 20px;">
+                        This is SUPER IMPORTANT! There are two different ways to call operations in Python, and they look different:
+                    </p>
+
+                    <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                        <h4 style="color: #f39c12; margin-bottom: 15px;">⭐ Way #1: Built-in Functions (like print and input)</h4>
+                        <p style="line-height: 1.8; margin-bottom: 15px;">
+                            These are <strong>general-purpose functions</strong> that work on their own. You put the data <strong>inside the parentheses</strong>.
+                        </p>
+                        <div class="code-example">
+# Built-in Functions - data goes INSIDE parentheses<br>
+print("Hello World")      # Function name, then (data)<br>
+len([1, 2, 3])           # Function name, then (data)<br>
+input("Enter name: ")     # Function name, then (data)<br>
+max([5, 2, 8])           # Function name, then (data)
+                        </div>
+                        <div style="margin-top: 15px; padding: 12px; background: white; border-radius: 5px; font-weight: bold; color: #e67e22;">
+                            📌 Pattern: <span style="font-family: 'Courier New', monospace; color: #2c3e50;">function_name(data)</span>
+                        </div>
+                    </div>
+
+                    <div style="background: #d1ecf1; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                        <h4 style="color: #0c5460; margin-bottom: 15px;">⭐ Way #2: List Methods (like .append and .sort)</h4>
+                        <p style="line-height: 1.8; margin-bottom: 15px;">
+                            These are <strong>special operations that belong to lists</strong>. You start with the list name, then use a <strong>dot (.)</strong>, 
+                            then the method name. These methods change or work with that specific list.
+                        </p>
+                        <div class="code-example">
+# List Methods - list name FIRST, then dot, then method<br>
+my_list = [1, 2, 3]<br>
+my_list.append(4)         # list_name.method(data)<br>
+my_list.sort()            # list_name.method()<br>
+my_list.reverse()         # list_name.method()<br>
+my_list.pop(0)            # list_name.method(data)
+                        </div>
+                        <div style="margin-top: 15px; padding: 12px; background: white; border-radius: 5px; font-weight: bold; color: #0c5460;">
+                            📌 Pattern: <span style="font-family: 'Courier New', monospace; color: #2c3e50;">list_name.method_name()</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="method-card" style="border-left: 5px solid #27ae60;">
+                    <h3 style="color: #27ae60; margin-bottom: 15px;">❌ Common Mistakes to Avoid</h3>
+                    
+                    <div style="background: #f8d7da; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #dc3545;">
+                        <strong style="color: #721c24;">❌ WRONG - Trying to use list methods like functions:</strong>
+                        <div class="code-example" style="margin-top: 10px;">
+append(my_list, 5)        # ❌ This doesn't work!<br>
+sort(my_list)             # ❌ This doesn't work!<br>
+reverse(my_list)          # ❌ This doesn't work!
+                        </div>
+                    </div>
+
+                    <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #28a745;">
+                        <strong style="color: #155724;">✅ CORRECT - List methods need the list name first with a dot:</strong>
+                        <div class="code-example" style="margin-top: 10px;">
+my_list.append(5)         # ✅ Correct!<br>
+my_list.sort()            # ✅ Correct!<br>
+my_list.reverse()         # ✅ Correct!
+                        </div>
+                    </div>
+
+                    <div style="background: #f8d7da; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #dc3545;">
+                        <strong style="color: #721c24;">❌ WRONG - Trying to use functions like methods:</strong>
+                        <div class="code-example" style="margin-top: 10px;">
+"Hello".print()           # ❌ This doesn't work!<br>
+my_list.len()             # ❌ This doesn't work!<br>
+name.input()              # ❌ This doesn't work!
+                        </div>
+                    </div>
+
+                    <div style="background: #d4edda; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
+                        <strong style="color: #155724;">✅ CORRECT - Functions take data inside parentheses:</strong>
+                        <div class="code-example" style="margin-top: 10px;">
+print("Hello")            # ✅ Correct!<br>
+len(my_list)              # ✅ Correct!<br>
+input("Enter name: ")     # ✅ Correct!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="method-card" style="border-left: 5px solid #9b59b6;">
+                    <h3 style="color: #9b59b6; margin-bottom: 15px;">🧠 How to Remember the Difference</h3>
+                    
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                        <div style="margin-bottom: 20px;">
+                            <h4 style="color: #667eea; margin-bottom: 10px;">🔹 Built-in Functions (print, len, input):</h4>
+                            <ul style="margin-left: 20px; line-height: 2;">
+                                <li><strong>Work on ANY type of data</strong> (strings, lists, numbers, etc.)</li>
+                                <li><strong>Stand alone</strong> - don't need a specific object</li>
+                                <li><strong>Think:</strong> "I want to <em>print</em> something" → <code>print(something)</code></li>
+                                <li><strong>Think:</strong> "I want the <em>length</em> of something" → <code>len(something)</code></li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 style="color: #667eea; margin-bottom: 10px;">🔹 List Methods (.append, .sort, .remove):</h4>
+                            <ul style="margin-left: 20px; line-height: 2;">
+                                <li><strong>Only work on lists</strong> - they belong to the list object</li>
+                                <li><strong>Need a specific list</strong> to operate on</li>
+                                <li><strong>Think:</strong> "I want <em>my list</em> to append something" → <code>my_list.append(something)</code></li>
+                                <li><strong>Think:</strong> "I want <em>this list</em> to sort itself" → <code>this_list.sort()</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white;">
+                    <h3 style="margin-bottom: 15px;">🎓 Quick Reference</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                            <div style="font-size: 1.3em; margin-bottom: 10px;">📞 Functions</div>
+                            <div style="font-family: 'Courier New', monospace; font-size: 1.1em;">
+                                print(data)<br>
+                                len(data)<br>
+                                input(data)
+                            </div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                            <div style="font-size: 1.3em; margin-bottom: 10px;">📝 List Methods</div>
+                            <div style="font-family: 'Courier New', monospace; font-size: 1.1em;">
+                                list.append()<br>
+                                list.sort()<br>
+                                list.remove()
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: #e8f5e9; border-radius: 10px; border-left: 5px solid #4caf50;">
+                    <p style="font-size: 1.2em; line-height: 1.8; margin: 0;">
+                        <strong>🚀 Ready to learn?</strong> Now that you understand the difference between functions and methods, 
+                        click on the <strong>"📚 List Methods"</strong> tab to see all the cool things you can do with lists!
+                    </p>
+                </div>
+            </div>
+
+            <!-- List Methods Tab -->
+            <div id="methods" class="tab-content">
+                <h2 style="color: #667eea; margin-bottom: 20px;">🎨 Learn List Methods with Shapes!</h2>
+                <p style="font-size: 1.1em; margin-bottom: 30px; line-height: 1.6;">
+                    Welcome! In this playbook, we'll use colorful shapes to understand how Python list methods work. 
+                    Each shape represents an item in a list: 🔴 Red Circle, 🔵 Blue Square, and 🔺 Orange Triangle.
+                </p>
+
+                <!-- append() -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.append()</span>
+                    </div>
+                    <div class="method-description">
+                        📌 Adds an item to the END of the list. Think of it like adding a new friend to the end of a line!
+                    </div>
+                    <div class="visual-demo">
+                        <div style="margin-bottom: 10px;"><strong>Before:</strong></div>
+                        <div class="shape-list">
+                            <div class="shape circle"></div>
+                            <div class="shape square"></div>
+                            <div class="shape square"></div>
+                        </div>
+                        <div style="margin: 15px 0;"><strong>my_list.append(🔺)</strong></div>
+                        <div style="margin-bottom: 10px;"><strong>After:</strong></div>
+                        <div class="shape-list">
+                            <div class="shape circle"></div>
+                            <div class="shape square"></div>
+                            <div class="shape square"></div>
+                            <div class="shape triangle"></div>
+                        </div>
+                    </div>
+                    <div class="code-example">
+fruits = ["apple", "banana"]<br>
+fruits.append("orange")<br>
+print(fruits)  # ["apple", "banana", "orange"]
+                    </div>
+                    <button class="demo-button" onclick="demoAppend()">▶️ Try It Live!</button>
+                    <div id="append-demo" class="demo-area"></div>
+                </div>
+
+                <!-- insert() -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.insert()</span>
+                    </div>
+                    <div class="method-description">
+                        📍 Inserts an item at a SPECIFIC position. Like cutting in line at position 1!
+                    </div>
+                    <div class="visual-demo">
+                        <div style="margin-bottom: 10px;"><strong>Before:</strong></div>
+                        <div class="shape-list">
+                            <div class="shape circle"></div>
+                            <div class="shape square"></div>
+                            <div class="shape square"></div>
+                        </div>
+                        <div style="margin: 15px 0;"><strong>my_list.insert(1, 🔺)</strong></div>
+                        <div style="margin-bottom: 10px;"><strong>After:</strong></div>
+                        <div class="shape-list">
+                            <div class="shape circle"></div>
+                            <div class="shape triangle"></div>
+                            <div class="shape square"></div>
+                            <div class="shape square"></div>
+                        </div>
+                    </div>
+                    <div class="code-example">
+colors = ["red", "blue", "blue"]<br>
+colors.insert(1, "yellow")<br>
+print(colors)  # ["red", "yellow", "blue", "blue"]
+                    </div>
+                    <button class="demo-button" onclick="demoInsert()">▶️ Try It Live!</button>
+                    <div id="insert-demo" class="demo-area"></div>
+                </div>
+
+                <!-- pop() -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.pop()</span>
+                    </div>
+                    <div class="method-description">
+                        🎈 Removes and returns an item at a specific position (or the last item if no position given).
+                    </div>
+                    <div class="visual-demo">
+                        <div style="margin-bottom: 10px;"><strong>Before:</strong></div>
+                        <div class="shape-list">
+                            <div class="shape square"></div>
+                            <div class="shape circle"></div>
+                            <div class="shape square"></div>
+                            <div class="shape triangle"></div>
+                        </div>
+                        <div style="margin: 15px 0;"><strong>my_list.pop(1)</strong></div>
+                        <div style="margin-bottom: 10px;"><strong>After:</strong></div>
+                        <div class="shape-list">
+                            <div class="shape square"></div>
+                            <div class="shape square"></div>
+                            <div class="shape triangle"></div>
+                        </div>
+                    </div>
+                    <div class="code-example">
+numbers = [10, 20, 30, 40]<br>
+removed = numbers.pop(1)  # Removes 20<br>
+print(numbers)  # [10, 30, 40]<br>
+print(removed)  # 20
+                    </div>
+                    <button class="demo-button" onclick="demoPop()">▶️ Try It Live!</button>
+                    <div id="pop-demo" class="demo-area"></div>
+                </div>
+
+                <!-- remove() -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.remove()</span>
+                    </div>
+                    <div class="method-description">
+                        ❌ Removes the FIRST occurrence of a specific value from the list.
+                    </div>
+                    <div class="visual-demo">
+                        <div style="margin-bottom: 10px;"><strong>Before:</strong></div>
+                        <div class="shape-list">
+                            <div class="shape circle"></div>
+                            <div class="shape square"></div>
+                            <div class="shape square"></div>
+                            <div class="shape triangle"></div>
+                        </div>
+                        <div style="margin: 15px 0;"><strong>my_list.remove(🔵)</strong></div>
+                        <div style="margin-bottom: 10px;"><strong>After:</strong></div>
+                        <div class="shape-list">
+                            <div class="shape circle"></div>
+                            <div class="shape square"></div>
+                            <div class="shape triangle"></div>
+                        </div>
+                    </div>
+                    <div class="code-example">
+pets = ["cat", "dog", "dog", "bird"]<br>
+pets.remove("dog")  # Removes first "dog"<br>
+print(pets)  # ["cat", "dog", "bird"]
+                    </div>
+                    <button class="demo-button" onclick="demoRemove()">▶️ Try It Live!</button>
+                    <div id="remove-demo" class="demo-area"></div>
+                </div>
+
+                <!-- reverse() -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.reverse()</span>
+                    </div>
+                    <div class="method-description">
+                        🔄 Reverses the order of items in the list. Like reading a word backwards!
+                    </div>
+                    <div class="visual-demo">
+                        <div style="margin-bottom: 10px;"><strong>Before:</strong></div>
+                        <div class="shape-list">
+                            <div class="shape square"></div>
+                            <div class="shape circle"></div>
+                            <div class="shape triangle"></div>
+                        </div>
+                        <div style="margin: 15px 0;"><strong>my_list.reverse()</strong></div>
+                        <div style="margin-bottom: 10px;"><strong>After:</strong></div>
+                        <div class="shape-list">
+                            <div class="shape triangle"></div>
+                            <div class="shape circle"></div>
+                            <div class="shape square"></div>
+                        </div>
+                    </div>
+                    <div class="code-example">
+letters = ["A", "B", "C", "D"]<br>
+letters.reverse()<br>
+print(letters)  # ["D", "C", "B", "A"]
+                    </div>
+                    <button class="demo-button" onclick="demoReverse()">▶️ Try It Live!</button>
+                    <div id="reverse-demo" class="demo-area"></div>
+                </div>
+
+                <!-- sort() -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.sort()</span>
+                    </div>
+                    <div class="method-description">
+                        📊 Sorts the list in ascending order (smallest to largest, or A to Z).
+                    </div>
+                    <div class="visual-demo">
+                        <div style="margin-bottom: 10px;"><strong>Before:</strong></div>
+                        <div class="shape-list">
+                            <div class="shape square"></div>
+                            <div class="shape circle"></div>
+                            <div class="shape triangle"></div>
+                        </div>
+                        <div style="margin: 15px 0;"><strong>my_list.sort()</strong></div>
+                        <div style="margin-bottom: 10px;"><strong>After:</strong></div>
+                        <div class="shape-list">
+                            <div class="shape circle"></div>
+                            <div class="shape square"></div>
+                            <div class="shape triangle"></div>
+                        </div>
+                    </div>
+                    <div class="code-example">
+numbers = [5, 2, 8, 1, 9]<br>
+numbers.sort()<br>
+print(numbers)  # [1, 2, 5, 8, 9]
+                    </div>
+                    <button class="demo-button" onclick="demoSort()">▶️ Try It Live!</button>
+                    <div id="sort-demo" class="demo-area"></div>
+                </div>
+
+                <!-- index() -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.index()</span>
+                    </div>
+                    <div class="method-description">
+                        🔍 Returns the position (index) of the FIRST occurrence of an item.
+                    </div>
+                    <div class="visual-demo">
+                        <div style="margin-bottom: 10px;"><strong>List:</strong></div>
+                        <div class="shape-list">
+                            <div class="shape circle"></div>
+                            <div class="shape square"></div>
+                            <div class="shape triangle"></div>
+                        </div>
+                        <div style="margin: 15px 0;"><strong>my_list.index(🔺)</strong></div>
+                        <div style="margin-bottom: 10px;"><strong>Returns: 2</strong></div>
+                        <div style="font-size: 0.9em; color: #666;">
+                            (Remember: Python counts from 0! So position 2 is the 3rd item)
+                        </div>
+                    </div>
+                    <div class="code-example">
+fruits = ["apple", "banana", "cherry"]<br>
+position = fruits.index("cherry")<br>
+print(position)  # 2
+                    </div>
+                    <button class="demo-button" onclick="demoIndex()">▶️ Try It Live!</button>
+                    <div id="index-demo" class="demo-area"></div>
+                </div>
+
+                <!-- count() -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.count()</span>
+                    </div>
+                    <div class="method-description">
+                        🔢 Counts how many times an item appears in the list.
+                    </div>
+                    <div class="visual-demo">
+                        <div style="margin-bottom: 10px;"><strong>List:</strong></div>
+                        <div class="shape-list">
+                            <div class="shape circle"></div>
+                            <div class="shape square"></div>
+                            <div class="shape square"></div>
+                            <div class="shape triangle"></div>
+                        </div>
+                        <div style="margin: 15px 0;"><strong>my_list.count(🔵)</strong></div>
+                        <div style="margin-bottom: 10px;"><strong>Returns: 2</strong></div>
+                        <div style="font-size: 0.9em; color: #666;">
+                            (There are 2 blue squares in the list)
+                        </div>
+                    </div>
+                    <div class="code-example">
+scores = [10, 20, 10, 30, 10]<br>
+how_many = scores.count(10)<br>
+print(how_many)  # 3
+                    </div>
+                    <button class="demo-button" onclick="demoCount()">▶️ Try It Live!</button>
+                    <div id="count-demo" class="demo-area"></div>
+                </div>
+            </div>
+
+            <!-- Example Set 2 Tab -->
+            <div id="examples" class="tab-content">
+                <h2 style="color: #667eea; margin-bottom: 20px;">💻 List Methods with Numbers & Strings</h2>
+                <p style="font-size: 1.1em; margin-bottom: 30px; line-height: 1.6;">
+                    Now let's see how these same methods work with actual numbers and strings in Python! 
+                    Click the "Run Code" buttons to see the results in action.
+                </p>
+
+                <!-- append() with real data -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.append()</span>
+                    </div>
+                    <div class="method-description">
+                        📌 Adds an item to the END of the list
+                    </div>
+                    <div class="code-example">
+# Example with Numbers<br>
+numbers = [10, 20, 30]<br>
+print("Before:", numbers)<br>
+numbers.append(40)<br>
+print("After:", numbers)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># Before: [10, 20, 30]</span><br>
+<span style="color: #2ecc71;"># After: [10, 20, 30, 40]</span>
+                    </div>
+                    <div class="code-example">
+# Example with Strings<br>
+fruits = ["apple", "banana"]<br>
+print("Before:", fruits)<br>
+fruits.append("cherry")<br>
+print("After:", fruits)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># Before: ['apple', 'banana']</span><br>
+<span style="color: #2ecc71;"># After: ['apple', 'banana', 'cherry']</span>
+                    </div>
+                    <button class="demo-button" onclick="runAppendExample()">▶️ Run Code</button>
+                    <div id="append-example" class="demo-area"></div>
+                </div>
+
+                <!-- insert() with real data -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.insert()</span>
+                    </div>
+                    <div class="method-description">
+                        📍 Inserts an item at a SPECIFIC position
+                    </div>
+                    <div class="code-example">
+# Example with Numbers<br>
+scores = [85, 90, 95]<br>
+print("Before:", scores)<br>
+scores.insert(1, 88)<br>
+print("After:", scores)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># Before: [85, 90, 95]</span><br>
+<span style="color: #2ecc71;"># After: [85, 88, 90, 95]</span>
+                    </div>
+                    <div class="code-example">
+# Example with Strings<br>
+colors = ["red", "blue"]<br>
+print("Before:", colors)<br>
+colors.insert(1, "green")<br>
+print("After:", colors)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># Before: ['red', 'blue']</span><br>
+<span style="color: #2ecc71;"># After: ['red', 'green', 'blue']</span>
+                    </div>
+                    <button class="demo-button" onclick="runInsertExample()">▶️ Run Code</button>
+                    <div id="insert-example" class="demo-area"></div>
+                </div>
+
+                <!-- pop() with real data -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.pop()</span>
+                    </div>
+                    <div class="method-description">
+                        🎈 Removes and returns an item at a specific position
+                    </div>
+                    <div class="code-example">
+# Example with Numbers<br>
+numbers = [100, 200, 300, 400]<br>
+print("Before:", numbers)<br>
+removed = numbers.pop(1)<br>
+print("After:", numbers)<br>
+print("Removed item:", removed)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># Before: [100, 200, 300, 400]</span><br>
+<span style="color: #2ecc71;"># After: [100, 300, 400]</span><br>
+<span style="color: #2ecc71;"># Removed item: 200</span>
+                    </div>
+                    <div class="code-example">
+# Example with Strings<br>
+animals = ["cat", "dog", "bird", "fish"]<br>
+print("Before:", animals)<br>
+removed = animals.pop(2)<br>
+print("After:", animals)<br>
+print("Removed item:", removed)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># Before: ['cat', 'dog', 'bird', 'fish']</span><br>
+<span style="color: #2ecc71;"># After: ['cat', 'dog', 'fish']</span><br>
+<span style="color: #2ecc71;"># Removed item: bird</span>
+                    </div>
+                    <button class="demo-button" onclick="runPopExample()">▶️ Run Code</button>
+                    <div id="pop-example" class="demo-area"></div>
+                </div>
+
+                <!-- remove() with real data -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.remove()</span>
+                    </div>
+                    <div class="method-description">
+                        ❌ Removes the FIRST occurrence of a specific value
+                    </div>
+                    <div class="code-example">
+# Example with Numbers<br>
+numbers = [5, 10, 15, 10, 20]<br>
+print("Before:", numbers)<br>
+numbers.remove(10)<br>
+print("After:", numbers)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># Before: [5, 10, 15, 10, 20]</span><br>
+<span style="color: #2ecc71;"># After: [5, 15, 10, 20]</span>
+                    </div>
+                    <div class="code-example">
+# Example with Strings<br>
+pets = ["cat", "dog", "cat", "bird"]<br>
+print("Before:", pets)<br>
+pets.remove("cat")<br>
+print("After:", pets)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># Before: ['cat', 'dog', 'cat', 'bird']</span><br>
+<span style="color: #2ecc71;"># After: ['dog', 'cat', 'bird']</span>
+                    </div>
+                    <button class="demo-button" onclick="runRemoveExample()">▶️ Run Code</button>
+                    <div id="remove-example" class="demo-area"></div>
+                </div>
+
+                <!-- reverse() with real data -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.reverse()</span>
+                    </div>
+                    <div class="method-description">
+                        🔄 Reverses the order of items in the list
+                    </div>
+                    <div class="code-example">
+# Example with Numbers<br>
+numbers = [1, 2, 3, 4, 5]<br>
+print("Before:", numbers)<br>
+numbers.reverse()<br>
+print("After:", numbers)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># Before: [1, 2, 3, 4, 5]</span><br>
+<span style="color: #2ecc71;"># After: [5, 4, 3, 2, 1]</span>
+                    </div>
+                    <div class="code-example">
+# Example with Strings<br>
+letters = ["A", "B", "C", "D"]<br>
+print("Before:", letters)<br>
+letters.reverse()<br>
+print("After:", letters)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># Before: ['A', 'B', 'C', 'D']</span><br>
+<span style="color: #2ecc71;"># After: ['D', 'C', 'B', 'A']</span>
+                    </div>
+                    <button class="demo-button" onclick="runReverseExample()">▶️ Run Code</button>
+                    <div id="reverse-example" class="demo-area"></div>
+                </div>
+
+                <!-- sort() with real data -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.sort()</span>
+                    </div>
+                    <div class="method-description">
+                        📊 Sorts the list in ascending order (smallest to largest, or A to Z)
+                    </div>
+                    <div class="code-example">
+# Example with Numbers<br>
+numbers = [45, 12, 89, 23, 5]<br>
+print("Before:", numbers)<br>
+numbers.sort()<br>
+print("After:", numbers)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># Before: [45, 12, 89, 23, 5]</span><br>
+<span style="color: #2ecc71;"># After: [5, 12, 23, 45, 89]</span>
+                    </div>
+                    <div class="code-example">
+# Example with Strings<br>
+names = ["Zoe", "Alice", "Mike", "Bob"]<br>
+print("Before:", names)<br>
+names.sort()<br>
+print("After:", names)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># Before: ['Zoe', 'Alice', 'Mike', 'Bob']</span><br>
+<span style="color: #2ecc71;"># After: ['Alice', 'Bob', 'Mike', 'Zoe']</span>
+                    </div>
+                    <button class="demo-button" onclick="runSortExample()">▶️ Run Code</button>
+                    <div id="sort-example" class="demo-area"></div>
+                </div>
+
+                <!-- index() with real data -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.index()</span>
+                    </div>
+                    <div class="method-description">
+                        🔍 Returns the position (index) of the FIRST occurrence of an item
+                    </div>
+                    <div class="code-example">
+# Example with Numbers<br>
+numbers = [10, 20, 30, 40, 50]<br>
+position = numbers.index(30)<br>
+print("List:", numbers)<br>
+print("Position of 30:", position)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># List: [10, 20, 30, 40, 50]</span><br>
+<span style="color: #2ecc71;"># Position of 30: 2</span>
+                    </div>
+                    <div class="code-example">
+# Example with Strings<br>
+fruits = ["apple", "banana", "cherry", "date"]<br>
+position = fruits.index("cherry")<br>
+print("List:", fruits)<br>
+print("Position of 'cherry':", position)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># List: ['apple', 'banana', 'cherry', 'date']</span><br>
+<span style="color: #2ecc71;"># Position of 'cherry': 2</span>
+                    </div>
+                    <button class="demo-button" onclick="runIndexExample()">▶️ Run Code</button>
+                    <div id="index-example" class="demo-area"></div>
+                </div>
+
+                <!-- count() with real data -->
+                <div class="method-card">
+                    <div class="method-header">
+                        <span class="method-name">.count()</span>
+                    </div>
+                    <div class="method-description">
+                        🔢 Counts how many times an item appears in the list
+                    </div>
+                    <div class="code-example">
+# Example with Numbers<br>
+numbers = [5, 10, 5, 20, 5, 30]<br>
+count = numbers.count(5)<br>
+print("List:", numbers)<br>
+print("Count of 5:", count)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># List: [5, 10, 5, 20, 5, 30]</span><br>
+<span style="color: #2ecc71;"># Count of 5: 3</span>
+                    </div>
+                    <div class="code-example">
+# Example with Strings<br>
+colors = ["red", "blue", "red", "green", "red"]<br>
+count = colors.count("red")<br>
+print("List:", colors)<br>
+print("Count of 'red':", count)<br>
+<span style="color: #2ecc71;"># Output:</span><br>
+<span style="color: #2ecc71;"># List: ['red', 'blue', 'red', 'green', 'red']</span><br>
+<span style="color: #2ecc71;"># Count of 'red': 3</span>
+                    </div>
+                    <button class="demo-button" onclick="runCountExample()">▶️ Run Code</button>
+                    <div id="count-example" class="demo-area"></div>
+                </div>
+            </div>
+
+            <!-- Quiz Tab -->
+            <div id="quiz" class="tab-content">
+                <h2 style="color: #667eea; margin-bottom: 20px;">🎯 Test Your Knowledge!</h2>
+                <p style="font-size: 1.1em; margin-bottom: 30px;">
+                    Answer these 10 questions to check your understanding of Python list methods. Click on your answer choice and then click "Check Answer". Good luck! 🍀
+                </p>
+
+                <!-- Question 1 -->
+                <div class="quiz-question">
+                    <div class="question-text">1️⃣ Which method adds an item to the END of a list?</div>
+                    <div class="option" onclick="selectOption(1, 1)">A) .insert()</div>
+                    <div class="option" onclick="selectOption(1, 2)">B) .append()</div>
+                    <div class="option" onclick="selectOption(1, 3)">C) .add()</div>
+                    <div class="option" onclick="selectOption(1, 4)">D) .push()</div>
+                    <div id="feedback-1" class="feedback"></div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="quiz-question">
+                    <div class="question-text">2️⃣ What does my_list.pop(0) do?</div>
+                    <div class="option" onclick="selectOption(2, 1)">A) Removes and returns the FIRST item</div>
+                    <div class="option" onclick="selectOption(2, 2)">B) Removes and returns the LAST item</div>
+                    <div class="option" onclick="selectOption(2, 3)">C) Adds an item at position 0</div>
+                    <div class="option" onclick="selectOption(2, 4)">D) Returns the first item without removing it</div>
+                    <div id="feedback-2" class="feedback"></div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="quiz-question">
+                    <div class="question-text">3️⃣ If you have: numbers = [5, 2, 8, 1]. What does numbers.sort() do?</div>
+                    <div class="option" onclick="selectOption(3, 1)">A) Changes the list to [1, 2, 5, 8]</div>
+                    <div class="option" onclick="selectOption(3, 2)">B) Changes the list to [8, 5, 2, 1]</div>
+                    <div class="option" onclick="selectOption(3, 3)">C) Doesn't change the list</div>
+                    <div class="option" onclick="selectOption(3, 4)">D) Removes all items</div>
+                    <div id="feedback-3" class="feedback"></div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="quiz-question">
+                    <div class="question-text">4️⃣ What does colors.insert(1, "blue") do to the list ["red", "green"]?</div>
+                    <div class="option" onclick="selectOption(4, 1)">A) ["red", "blue", "green"]</div>
+                    <div class="option" onclick="selectOption(4, 2)">B) ["blue", "red", "green"]</div>
+                    <div class="option" onclick="selectOption(4, 3)">C) ["red", "green", "blue"]</div>
+                    <div class="option" onclick="selectOption(4, 4)">D) ["blue", "green"]</div>
+                    <div id="feedback-4" class="feedback"></div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="quiz-question">
+                    <div class="question-text">5️⃣ If pets = ["cat", "dog", "cat", "bird"], what does pets.count("cat") return?</div>
+                    <div class="option" onclick="selectOption(5, 1)">A) 1</div>
+                    <div class="option" onclick="selectOption(5, 2)">B) 2</div>
+                    <div class="option" onclick="selectOption(5, 3)">C) 3</div>
+                    <div class="option" onclick="selectOption(5, 4)">D) 4</div>
+                    <div id="feedback-5" class="feedback"></div>
+                </div>
+
+                <!-- Question 6 -->
+                <div class="quiz-question">
+                    <div class="question-text">6️⃣ What does the .reverse() method do?</div>
+                    <div class="option" onclick="selectOption(6, 1)">A) Sorts the list from Z to A</div>
+                    <div class="option" onclick="selectOption(6, 2)">B) Flips the order of items in the list</div>
+                    <div class="option" onclick="selectOption(6, 3)">C) Removes all items</div>
+                    <div class="option" onclick="selectOption(6, 4)">D) Returns the last item</div>
+                    <div id="feedback-6" class="feedback"></div>
+                </div>
+
+                <!-- Question 7 -->
+                <div class="quiz-question">
+                    <div class="question-text">7️⃣ If fruits = ["apple", "banana", "cherry"], what does fruits.index("banana") return?</div>
+                    <div class="option" onclick="selectOption(7, 1)">A) 0</div>
+                    <div class="option" onclick="selectOption(7, 2)">B) 1</div>
+                    <div class="option" onclick="selectOption(7, 3)">C) 2</div>
+                    <div class="option" onclick="selectOption(7, 4)">D) "banana"</div>
+                    <div id="feedback-7" class="feedback"></div>
+                </div>
+
+                <!-- Question 8 -->
+                <div class="quiz-question">
+                    <div class="question-text">8️⃣ What's the difference between .remove() and .pop()?</div>
+                    <div class="option" onclick="selectOption(8, 1)">A) .remove() uses value, .pop() uses position</div>
+                    <div class="option" onclick="selectOption(8, 2)">B) .remove() uses position, .pop() uses value</div>
+                    <div class="option" onclick="selectOption(8, 3)">C) They do the exact same thing</div>
+                    <div class="option" onclick="selectOption(8, 4)">D) .remove() is faster than .pop()</div>
+                    <div id="feedback-8" class="feedback"></div>
+                </div>
+
+                <!-- Question 9 -->
+                <div class="quiz-question">
+                    <div class="question-text">9️⃣ If numbers = [3, 1, 4, 1, 5], what does numbers.remove(1) do?</div>
+                    <div class="option" onclick="selectOption(9, 1)">A) Removes the FIRST 1, leaving [3, 4, 1, 5]</div>
+                    <div class="option" onclick="selectOption(9, 2)">B) Removes ALL 1s, leaving [3, 4, 5]</div>
+                    <div class="option" onclick="selectOption(9, 3)">C) Removes the LAST 1, leaving [3, 1, 4, 5]</div>
+                    <div class="option" onclick="selectOption(9, 4)">D) Does nothing</div>
+                    <div id="feedback-9" class="feedback"></div>
+                </div>
+
+                <!-- Question 10 -->
+                <div class="quiz-question">
+                    <div class="question-text">🔟 Which method would you use to find out how many times "python" appears in a list?</div>
+                    <div class="option" onclick="selectOption(10, 1)">A) .index("python")</div>
+                    <div class="option" onclick="selectOption(10, 2)">B) .count("python")</div>
+                    <div class="option" onclick="selectOption(10, 3)">C) .find("python")</div>
+                    <div class="option" onclick="selectOption(10, 4)">D) .search("python")</div>
+                    <div id="feedback-10" class="feedback"></div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <button class="demo-button" onclick="submitQuiz()" style="background: #27ae60; font-size: 1.2em; padding: 15px 40px;">
+                        📝 Submit Quiz
+                    </button>
+                    <div id="quiz-result" style="display: none; margin-top: 20px;"></div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h3 style="color: #667eea;">🎉 Final Score: <span id="final-score">0/10</span></h3>
+                    <button class="demo-button" onclick="resetQuiz()" style="margin-top: 15px;">🔄 Reset Quiz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="score-display" id="score-display" style="display: none;">
+        Score: <span id="score">0</span>/10
+    </div>
+
+    <script>
+        let selectedAnswers = {};
+        let score = 0;
+        let quizSubmitted = false;
+
+        // Correct answers for all questions
+        const correctAnswers = {
+            1: 2,  // .append()
+            2: 1,  // pop(0) removes first item
+            3: 1,  // sort() changes to [1, 2, 5, 8]
+            4: 1,  // insert(1, "blue") gives ["red", "blue", "green"]
+            5: 2,  // count("cat") returns 2
+            6: 2,  // .reverse() flips order
+            7: 2,  // index("banana") returns 1
+            8: 1,  // .remove() uses value, .pop() uses position
+            9: 1,  // remove(1) removes FIRST 1
+            10: 2  // .count("python")
+        };
+
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+
+            // Show score display only in quiz tab
+            if (tabName === 'quiz') {
+                document.getElementById('score-display').style.display = 'block';
+            } else {
+                document.getElementById('score-display').style.display = 'none';
+            }
+        }
+
+        function selectOption(questionNum, optionNum) {
+            // Prevent selection after quiz is submitted
+            if (quizSubmitted) {
+                return;
+            }
+
+            // Remove previous selection
+            const question = document.querySelectorAll('.quiz-question')[questionNum - 1];
+            const options = question.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            // Add selected class to clicked option
+            options[optionNum - 1].classList.add('selected');
+            selectedAnswers[questionNum] = optionNum;
+        }
+
+        function submitQuiz() {
+            // Check if all questions are answered
+            for (let i = 1; i <= 10; i++) {
+                if (!selectedAnswers[i]) {
+                    alert('Please answer all questions before submitting! 🤔');
+                    return;
+                }
+            }
+
+            quizSubmitted = true;
+            score = 0;
+
+            // Grade all questions
+            for (let questionNum = 1; questionNum <= 10; questionNum++) {
+                const question = document.querySelectorAll('.quiz-question')[questionNum - 1];
+                const options = question.querySelectorAll('.option');
+                const feedback = document.getElementById(`feedback-${questionNum}`);
+                const correctAnswer = correctAnswers[questionNum];
+
+                // Add correct class to correct answer
+                options[correctAnswer - 1].classList.add('correct');
+
+                // Check if answer is correct
+                if (selectedAnswers[questionNum] === correctAnswer) {
+                    feedback.textContent = '✅ Correct!';
+                    feedback.className = 'feedback correct show';
+                    score++;
+                } else {
+                    // Add incorrect class to selected wrong answer
+                    options[selectedAnswers[questionNum] - 1].classList.add('incorrect');
+                    feedback.textContent = '❌ Incorrect. The correct answer is highlighted in green.';
+                    feedback.className = 'feedback incorrect show';
+                }
+            }
+
+            // Update score displays
+            updateScore();
+
+            // Show quiz result message
+            const resultDiv = document.getElementById('quiz-result');
+            resultDiv.style.display = 'block';
+            
+            let message = '';
+            let bgColor = '';
+            if (score === 10) {
+                message = '🌟 Perfect Score! You\'re a Python List Master! 🌟';
+                bgColor = '#d4edda';
+            } else if (score >= 8) {
+                message = '🎉 Excellent work! You really understand list methods!';
+                bgColor = '#d4edda';
+            } else if (score >= 6) {
+                message = '👍 Good job! Review the methods you missed and try again!';
+                bgColor = '#fff3cd';
+            } else {
+                message = '📚 Keep studying! Review the List Methods tabs and try again!';
+                bgColor = '#f8d7da';
+            }
+            
+            resultDiv.innerHTML = `<div style="padding: 15px; background: ${bgColor}; border-radius: 8px; font-size: 1.2em; font-weight: bold;">${message}</div>`;
+
+            // Scroll to result
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('final-score').textContent = `${score}/10`;
+        }
+
+        function resetQuiz() {
+            selectedAnswers = {};
+            score = 0;
+            quizSubmitted = false;
+            updateScore();
+
+            // Hide result message
+            document.getElementById('quiz-result').style.display = 'none';
+
+            // Reset all questions
+            const questions = document.querySelectorAll('.quiz-question');
+            questions.forEach(question => {
+                const options = question.querySelectorAll('.option');
+                options.forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                const feedback = question.querySelector('.feedback');
+                feedback.className = 'feedback';
+            });
+        }
+
+        // Interactive Demos for Example Set 2
+        function runAppendExample() {
+            const demo = document.getElementById('append-example');
+            demo.innerHTML = `
+                <div style="padding: 15px; background: #2c3e50; color: #ecf0f1; border-radius: 8px; font-family: 'Courier New', monospace;">
+                    <div style="color: #3498db;">>>> numbers = [10, 20, 30]</div>
+                    <div style="color: #3498db;">>>> print("Before:", numbers)</div>
+                    <div style="color: #2ecc71;">Before: [10, 20, 30]</div>
+                    <div style="color: #3498db;">>>> numbers.append(40)</div>
+                    <div style="color: #3498db;">>>> print("After:", numbers)</div>
+                    <div style="color: #2ecc71;">After: [10, 20, 30, 40]</div>
+                    <br>
+                    <div style="color: #3498db;">>>> fruits = ["apple", "banana"]</div>
+                    <div style="color: #3498db;">>>> fruits.append("cherry")</div>
+                    <div style="color: #3498db;">>>> print(fruits)</div>
+                    <div style="color: #2ecc71;">['apple', 'banana', 'cherry']</div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px; color: #155724;">
+                    ✅ The new item (40 and "cherry") was added to the end of each list!
+                </div>
+            `;
+        }
+
+        function runInsertExample() {
+            const demo = document.getElementById('insert-example');
+            demo.innerHTML = `
+                <div style="padding: 15px; background: #2c3e50; color: #ecf0f1; border-radius: 8px; font-family: 'Courier New', monospace;">
+                    <div style="color: #3498db;">>>> scores = [85, 90, 95]</div>
+                    <div style="color: #3498db;">>>> print("Before:", scores)</div>
+                    <div style="color: #2ecc71;">Before: [85, 90, 95]</div>
+                    <div style="color: #3498db;">>>> scores.insert(1, 88)</div>
+                    <div style="color: #3498db;">>>> print("After:", scores)</div>
+                    <div style="color: #2ecc71;">After: [85, 88, 90, 95]</div>
+                    <br>
+                    <div style="color: #3498db;">>>> colors = ["red", "blue"]</div>
+                    <div style="color: #3498db;">>>> colors.insert(1, "green")</div>
+                    <div style="color: #3498db;">>>> print(colors)</div>
+                    <div style="color: #2ecc71;">['red', 'green', 'blue']</div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px; color: #155724;">
+                    ✅ The new item was inserted at position 1 (second position)!
+                </div>
+            `;
+        }
+
+        function runPopExample() {
+            const demo = document.getElementById('pop-example');
+            demo.innerHTML = `
+                <div style="padding: 15px; background: #2c3e50; color: #ecf0f1; border-radius: 8px; font-family: 'Courier New', monospace;">
+                    <div style="color: #3498db;">>>> numbers = [100, 200, 300, 400]</div>
+                    <div style="color: #3498db;">>>> removed = numbers.pop(1)</div>
+                    <div style="color: #3498db;">>>> print("After:", numbers)</div>
+                    <div style="color: #2ecc71;">After: [100, 300, 400]</div>
+                    <div style="color: #3498db;">>>> print("Removed:", removed)</div>
+                    <div style="color: #2ecc71;">Removed: 200</div>
+                    <br>
+                    <div style="color: #3498db;">>>> animals = ["cat", "dog", "bird", "fish"]</div>
+                    <div style="color: #3498db;">>>> removed = animals.pop(2)</div>
+                    <div style="color: #3498db;">>>> print(animals)</div>
+                    <div style="color: #2ecc71;">['cat', 'dog', 'fish']</div>
+                    <div style="color: #3498db;">>>> print("Removed:", removed)</div>
+                    <div style="color: #2ecc71;">Removed: bird</div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px; color: #155724;">
+                    ✅ The item at the specified position was removed AND returned!
+                </div>
+            `;
+        }
+
+        function runRemoveExample() {
+            const demo = document.getElementById('remove-example');
+            demo.innerHTML = `
+                <div style="padding: 15px; background: #2c3e50; color: #ecf0f1; border-radius: 8px; font-family: 'Courier New', monospace;">
+                    <div style="color: #3498db;">>>> numbers = [5, 10, 15, 10, 20]</div>
+                    <div style="color: #3498db;">>>> print("Before:", numbers)</div>
+                    <div style="color: #2ecc71;">Before: [5, 10, 15, 10, 20]</div>
+                    <div style="color: #3498db;">>>> numbers.remove(10)</div>
+                    <div style="color: #3498db;">>>> print("After:", numbers)</div>
+                    <div style="color: #2ecc71;">After: [5, 15, 10, 20]</div>
+                    <br>
+                    <div style="color: #3498db;">>>> pets = ["cat", "dog", "cat", "bird"]</div>
+                    <div style="color: #3498db;">>>> pets.remove("cat")</div>
+                    <div style="color: #3498db;">>>> print(pets)</div>
+                    <div style="color: #2ecc71;">['dog', 'cat', 'bird']</div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px; color: #155724;">
+                    ✅ Only the FIRST occurrence of the value was removed!
+                </div>
+            `;
+        }
+
+        function runReverseExample() {
+            const demo = document.getElementById('reverse-example');
+            demo.innerHTML = `
+                <div style="padding: 15px; background: #2c3e50; color: #ecf0f1; border-radius: 8px; font-family: 'Courier New', monospace;">
+                    <div style="color: #3498db;">>>> numbers = [1, 2, 3, 4, 5]</div>
+                    <div style="color: #3498db;">>>> print("Before:", numbers)</div>
+                    <div style="color: #2ecc71;">Before: [1, 2, 3, 4, 5]</div>
+                    <div style="color: #3498db;">>>> numbers.reverse()</div>
+                    <div style="color: #3498db;">>>> print("After:", numbers)</div>
+                    <div style="color: #2ecc71;">After: [5, 4, 3, 2, 1]</div>
+                    <br>
+                    <div style="color: #3498db;">>>> letters = ["A", "B", "C", "D"]</div>
+                    <div style="color: #3498db;">>>> letters.reverse()</div>
+                    <div style="color: #3498db;">>>> print(letters)</div>
+                    <div style="color: #2ecc71;">['D', 'C', 'B', 'A']</div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px; color: #155724;">
+                    ✅ The entire list was reversed - last item becomes first!
+                </div>
+            `;
+        }
+
+        function runSortExample() {
+            const demo = document.getElementById('sort-example');
+            demo.innerHTML = `
+                <div style="padding: 15px; background: #2c3e50; color: #ecf0f1; border-radius: 8px; font-family: 'Courier New', monospace;">
+                    <div style="color: #3498db;">>>> numbers = [45, 12, 89, 23, 5]</div>
+                    <div style="color: #3498db;">>>> print("Before:", numbers)</div>
+                    <div style="color: #2ecc71;">Before: [45, 12, 89, 23, 5]</div>
+                    <div style="color: #3498db;">>>> numbers.sort()</div>
+                    <div style="color: #3498db;">>>> print("After:", numbers)</div>
+                    <div style="color: #2ecc71;">After: [5, 12, 23, 45, 89]</div>
+                    <br>
+                    <div style="color: #3498db;">>>> names = ["Zoe", "Alice", "Mike", "Bob"]</div>
+                    <div style="color: #3498db;">>>> names.sort()</div>
+                    <div style="color: #3498db;">>>> print(names)</div>
+                    <div style="color: #2ecc71;">['Alice', 'Bob', 'Mike', 'Zoe']</div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px; color: #155724;">
+                    ✅ Lists are sorted in ascending order: numbers smallest→largest, strings A→Z!
+                </div>
+            `;
+        }
+
+        function runIndexExample() {
+            const demo = document.getElementById('index-example');
+            demo.innerHTML = `
+                <div style="padding: 15px; background: #2c3e50; color: #ecf0f1; border-radius: 8px; font-family: 'Courier New', monospace;">
+                    <div style="color: #3498db;">>>> numbers = [10, 20, 30, 40, 50]</div>
+                    <div style="color: #3498db;">>>> position = numbers.index(30)</div>
+                    <div style="color: #3498db;">>>> print("Position of 30:", position)</div>
+                    <div style="color: #2ecc71;">Position of 30: 2</div>
+                    <br>
+                    <div style="color: #3498db;">>>> fruits = ["apple", "banana", "cherry", "date"]</div>
+                    <div style="color: #3498db;">>>> position = fruits.index("cherry")</div>
+                    <div style="color: #3498db;">>>> print("Position of 'cherry':", position)</div>
+                    <div style="color: #2ecc71;">Position of 'cherry': 2</div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px; color: #155724;">
+                    ✅ Remember: Python starts counting from 0! Position 2 is the 3rd item.
+                </div>
+            `;
+        }
+
+        function runCountExample() {
+            const demo = document.getElementById('count-example');
+            demo.innerHTML = `
+                <div style="padding: 15px; background: #2c3e50; color: #ecf0f1; border-radius: 8px; font-family: 'Courier New', monospace;">
+                    <div style="color: #3498db;">>>> numbers = [5, 10, 5, 20, 5, 30]</div>
+                    <div style="color: #3498db;">>>> count = numbers.count(5)</div>
+                    <div style="color: #3498db;">>>> print("Count of 5:", count)</div>
+                    <div style="color: #2ecc71;">Count of 5: 3</div>
+                    <br>
+                    <div style="color: #3498db;">>>> colors = ["red", "blue", "red", "green", "red"]</div>
+                    <div style="color: #3498db;">>>> count = colors.count("red")</div>
+                    <div style="color: #3498db;">>>> print("Count of 'red':", count)</div>
+                    <div style="color: #2ecc71;">Count of 'red': 3</div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px; color: #155724;">
+                    ✅ .count() tells you exactly how many times an item appears!
+                </div>
+            `;
+        }
+
+        // Interactive Demos
+        function demoAppend() {
+            const demo = document.getElementById('append-demo');
+            demo.innerHTML = `
+                <div style="margin-bottom: 10px;"><strong>Starting list:</strong></div>
+                <div class="shape-list">
+                    <div class="shape circle">1</div>
+                    <div class="shape square">2</div>
+                    <div class="shape square">3</div>
+                </div>
+                <div style="margin: 15px 0; color: #667eea; font-weight: bold;">Calling .append(🔺)...</div>
+                <div style="margin-bottom: 10px;"><strong>Result:</strong></div>
+                <div class="shape-list">
+                    <div class="shape circle">1</div>
+                    <div class="shape square">2</div>
+                    <div class="shape square">3</div>
+                    <div class="shape triangle" style="animation: slideIn 0.5s;"></div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px;">
+                    ✅ The triangle was added to the end!
+                </div>
+            `;
+        }
+
+        function demoInsert() {
+            const demo = document.getElementById('insert-demo');
+            demo.innerHTML = `
+                <div style="margin-bottom: 10px;"><strong>Starting list:</strong></div>
+                <div class="shape-list">
+                    <div class="shape circle">0</div>
+                    <div class="shape square">1</div>
+                    <div class="shape square">2</div>
+                </div>
+                <div style="margin: 15px 0; color: #667eea; font-weight: bold;">Calling .insert(1, 🔺)...</div>
+                <div style="margin-bottom: 10px;"><strong>Result:</strong></div>
+                <div class="shape-list">
+                    <div class="shape circle">0</div>
+                    <div class="shape triangle" style="animation: slideIn 0.5s;"></div>
+                    <div class="shape square">1</div>
+                    <div class="shape square">2</div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px;">
+                    ✅ The triangle was inserted at position 1!
+                </div>
+            `;
+        }
+
+        function demoPop() {
+            const demo = document.getElementById('pop-demo');
+            demo.innerHTML = `
+                <div style="margin-bottom: 10px;"><strong>Starting list:</strong></div>
+                <div class="shape-list">
+                    <div class="shape square">0</div>
+                    <div class="shape circle">1</div>
+                    <div class="shape square">2</div>
+                    <div class="shape triangle">3</div>
+                </div>
+                <div style="margin: 15px 0; color: #667eea; font-weight: bold;">Calling .pop(1)...</div>
+                <div style="margin-bottom: 10px;"><strong>Result:</strong></div>
+                <div class="shape-list">
+                    <div class="shape square">0</div>
+                    <div class="shape square">1</div>
+                    <div class="shape triangle">2</div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px;">
+                    ✅ The red circle at position 1 was removed and returned!
+                </div>
+            `;
+        }
+
+        function demoRemove() {
+            const demo = document.getElementById('remove-demo');
+            demo.innerHTML = `
+                <div style="margin-bottom: 10px;"><strong>Starting list:</strong></div>
+                <div class="shape-list">
+                    <div class="shape circle"></div>
+                    <div class="shape square"></div>
+                    <div class="shape square"></div>
+                    <div class="shape triangle"></div>
+                </div>
+                <div style="margin: 15px 0; color: #667eea; font-weight: bold;">Calling .remove(🔵)...</div>
+                <div style="margin-bottom: 10px;"><strong>Result:</strong></div>
+                <div class="shape-list">
+                    <div class="shape circle"></div>
+                    <div class="shape square"></div>
+                    <div class="shape triangle"></div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px;">
+                    ✅ The first blue square was removed!
+                </div>
+            `;
+        }
+
+        function demoReverse() {
+            const demo = document.getElementById('reverse-demo');
+            demo.innerHTML = `
+                <div style="margin-bottom: 10px;"><strong>Starting list:</strong></div>
+                <div class="shape-list">
+                    <div class="shape square">0</div>
+                    <div class="shape circle">1</div>
+                    <div class="shape triangle">2</div>
+                </div>
+                <div style="margin: 15px 0; color: #667eea; font-weight: bold;">Calling .reverse()...</div>
+                <div style="margin-bottom: 10px;"><strong>Result:</strong></div>
+                <div class="shape-list">
+                    <div class="shape triangle">0</div>
+                    <div class="shape circle">1</div>
+                    <div class="shape square">2</div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px;">
+                    ✅ The list order was completely reversed!
+                </div>
+            `;
+        }
+
+        function demoSort() {
+            const demo = document.getElementById('sort-demo');
+            demo.innerHTML = `
+                <div style="margin-bottom: 10px;"><strong>Starting list:</strong></div>
+                <div class="shape-list">
+                    <div class="shape square"></div>
+                    <div class="shape circle"></div>
+                    <div class="shape triangle"></div>
+                </div>
+                <div style="margin: 15px 0; color: #667eea; font-weight: bold;">Calling .sort()...</div>
+                <div style="margin-bottom: 10px;"><strong>Result:</strong></div>
+                <div class="shape-list">
+                    <div class="shape circle"></div>
+                    <div class="shape square"></div>
+                    <div class="shape triangle"></div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px;">
+                    ✅ The list was sorted! (For numbers: 5, 8, 42, 99...)
+                </div>
+            `;
+        }
+
+        function demoIndex() {
+            const demo = document.getElementById('index-demo');
+            demo.innerHTML = `
+                <div style="margin-bottom: 10px;"><strong>List with positions:</strong></div>
+                <div class="shape-list">
+                    <div class="shape circle">0</div>
+                    <div class="shape square">1</div>
+                    <div class="shape triangle" style="border: 3px solid #667eea;">2</div>
+                </div>
+                <div style="margin: 15px 0; color: #667eea; font-weight: bold;">Calling .index(🔺)...</div>
+                <div style="margin-bottom: 10px;"><strong>Returns:</strong></div>
+                <div style="font-size: 2em; color: #667eea; font-weight: bold;">2</div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px;">
+                    ✅ The triangle is at position 2!
+                </div>
+            `;
+        }
+
+        function demoCount() {
+            const demo = document.getElementById('count-demo');
+            demo.innerHTML = `
+                <div style="margin-bottom: 10px;"><strong>List:</strong></div>
+                <div class="shape-list">
+                    <div class="shape circle"></div>
+                    <div class="shape square" style="border: 3px solid #667eea;"></div>
+                    <div class="shape square" style="border: 3px solid #667eea;"></div>
+                    <div class="shape triangle"></div>
+                </div>
+                <div style="margin: 15px 0; color: #667eea; font-weight: bold;">Calling .count(🔵)...</div>
+                <div style="margin-bottom: 10px;"><strong>Returns:</strong></div>
+                <div style="font-size: 2em; color: #667eea; font-weight: bold;">2</div>
+                <div style="margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px;">
+                    ✅ There are 2 blue squares in the list!
+                </div>
+            `;
+        }
+
+        // Add slide-in animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateX(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

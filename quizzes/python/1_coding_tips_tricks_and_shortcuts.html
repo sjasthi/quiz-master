@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows Shortcuts Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .shortcuts-guide {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .shortcuts-guide h2 {
+            color: #4a5568;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .shortcut-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .shortcut-card:nth-child(2) {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .shortcut-card:nth-child(3) {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .shortcut-card:nth-child(4) {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #4a5568;
+        }
+
+        .shortcut-card:nth-child(5) {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .shortcut-card:nth-child(6) {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .shortcut-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        .shortcut-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .shortcut-icon {
+            font-size: 2.5rem;
+        }
+
+        .shortcut-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .shortcut-keys {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        .practice-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .practice-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .practice-section h3 {
+            color: #4a5568;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .text-editor {
+            width: 100%;
+            min-height: 200px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        .text-editor:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .clipboard-display {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            min-height: 120px;
+            border: 2px solid #4a5568;
+            position: relative;
+        }
+
+        .clipboard-label {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .clipboard-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #48bb78;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .clipboard-empty {
+            color: #a0aec0;
+            font-style: italic;
+        }
+
+        .status-display {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #48bb78;
+        }
+
+        .challenge-section {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .challenge-section h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .challenge-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .challenge-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #48bb78;
+        }
+
+        .challenge-card.completed {
+            background: rgba(72, 187, 120, 0.2);
+            border-color: #48bb78;
+        }
+
+        .challenge-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .challenge-description {
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .challenge-status {
+            margin-top: 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-section {
+            background: linear-gradient(135deg, #ffeef8 0%, #f0e6ff 100%);
+            border-radius: 15px;
+            padding: 25px;
+            color: #4a5568;
+        }
+
+        .tips-section h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .tip-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .tip-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .button:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .button.success {
+            background: #48bb78;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            background: #48bb78;
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .selection-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            z-index: 1000;
+            display: none;
+        }
+
+        .clipboard-history {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .clipboard-history-item {
+            padding: 5px 10px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            border-left: 3px solid #667eea;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .practice-area {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+
+            .shortcuts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .challenges-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .highlight {
+            background: #fef5e7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #f6ad55;
+        }
+
+        .keystroke-animation {
+            animation: keyPress 0.3s ease;
+        }
+
+        @keyframes keyPress {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .success-animation {
+            animation: successGlow 0.6s ease;
+        }
+
+        @keyframes successGlow {
+            0%, 100% { box-shadow: none; }
+            50% { box-shadow: 0 0 20px rgba(72, 187, 120, 0.5); }
+        }
+
+        .clipboard-timestamp {
+            font-size: 0.8rem;
+            color: #a0aec0;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="selection-indicator" id="selectionIndicator">Selection: 0 characters</div>
+    
+    <div class="container">
+        <h1>⌨️ Windows Shortcuts Practice for Coding</h1>
+        
+        <div class="shortcuts-guide">
+            <h2>Essential Shortcuts Every Coder Should Know</h2>
+            
+            <div class="shortcuts-grid">
+                <div class="shortcut-card">
+                    <div class="shortcut-header">
+                        <div class="shortcut-icon">📋</div>
+                        <div class="shortcut-info">
+                            <h3>Copy</h3>
+                            <div class="shortcut-keys">Ctrl + C</div>
+                        </div>
+                    </div>
+                    <p>Copy selected text to clipboard. Essential for duplicating code snippets!</p>
+                </div>
+                
+                <div class="shortcut-card">
+                    <div class="shortcut-header">
+                        <div class="shortcut-icon">📄</div>
+                        <div class="shortcut-info">
+                            <h3>Paste</h3>
+                            <div class="shortcut-keys">Ctrl + V</div>
+                        </div>
+                    </div>
+                    <p>Paste clipboard content at cursor position. Perfect for reusing code!</p>
+                </div>
+                
+                <div class="shortcut-card">
+                    <div class="shortcut-header">
+                        <div class="shortcut-icon">✂️</div>
+                        <div class="shortcut-info">
+                            <h3>Cut</h3>
+                            <div class="shortcut-keys">Ctrl + X</div>
+                        </div>
+                    </div>
+                    <p>Cut (remove and copy) selected text. Great for moving code around!</p>
+                </div>
+                
+                <div class="shortcut-card">
+                    <div class="shortcut-header">
+                        <div class="shortcut-icon">🖱️</div>
+                        <div class="shortcut-info">
+                            <h3>Select Word</h3>
+                            <div class="shortcut-keys">Double Click</div>
+                        </div>
+                    </div>
+                    <p>Quickly select entire words. Perfect for variable names and functions!</p>
+                </div>
+                
+                <div class="shortcut-card">
+                    <div class="shortcut-header">
+                        <div class="shortcut-icon">📝</div>
+                        <div class="shortcut-info">
+                            <h3>Select Paragraph</h3>
+                            <div class="shortcut-keys">Triple Click</div>
+                        </div>
+                    </div>
+                    <p>Select entire paragraphs or lines. Useful for selecting code blocks!</p>
+                </div>
+                
+                <div class="shortcut-card">
+                    <div class="shortcut-header">
+                        <div class="shortcut-icon">🌐</div>
+                        <div class="shortcut-info">
+                            <h3>Select All</h3>
+                            <div class="shortcut-keys">Ctrl + A</div>
+                        </div>
+                    </div>
+                    <p>Select all text in the current field. Great for copying entire files!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="practice-area">
+            <div class="practice-section">
+                <h3>🖥️ Code Editor Practice</h3>
+                <p>Try the shortcuts on this sample Python code:</p>
+                <textarea class="text-editor" id="codeEditor" placeholder="Start practicing here...">def calculate_area(length, width):
+    """Calculate the area of a rectangle."""
+    area = length * width
+    return area
+
+def greet_user(name):
+    """Greet a user with their name."""
+    message = f"Hello, {name}! Welcome to Python programming."
+    print(message)
+
+# Main program
+user_name = input("Enter your name: ")
+greet_user(user_name)
+
+# Calculate rectangle area
+rect_length = 10
+rect_width = 5
+result = calculate_area(rect_length, rect_width)
+print(f"Rectangle area: {result} square units")</textarea>
+                
+                <div class="status-display" id="statusDisplay">
+                    👋 Welcome! Start practicing by selecting text and using shortcuts.
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <button class="button" onclick="clearEditor()">🗑️ Clear Editor</button>
+                    <button class="button" onclick="resetToSample()">🔄 Reset Sample Code</button>
+                </div>
+            </div>
+            
+            <div class="practice-section">
+                <h3>📋 Clipboard Monitor</h3>
+                <p>Your clipboard content will appear here:</p>
+                <div class="clipboard-display" id="clipboardDisplay">
+                    <div class="clipboard-label">📋 Current Clipboard</div>
+                    <div id="clipboardContent" class="clipboard-empty">Nothing copied yet... Try selecting text and pressing Ctrl+C!</div>
+                    
+                    <div class="clipboard-history">
+                        <strong>📚 Recent Actions:</strong>
+                        <div id="clipboardHistory"></div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <p><strong>Selection Info:</strong></p>
+                    <div id="selectionInfo" style="background: #f7fafc; padding: 10px; border-radius: 5px; font-family: monospace;">
+                        No text selected
+                    </div>
+                    
+                    <button class="button" onclick="clearClipboard()">🧹 Clear Clipboard</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="challenge-section">
+            <h3>🎯 Practice Challenges</h3>
+            <p>Complete these challenges to master the shortcuts:</p>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="challengeProgress" style="width: 0%"></div>
+            </div>
+            
+            <div class="challenges-grid">
+                <div class="challenge-card" id="challenge1" onclick="startChallenge(1)">
+                    <div class="challenge-title">
+                        <span>1️⃣</span> Copy a Function Name
+                    </div>
+                    <div class="challenge-description">
+                        Double-click to select "calculate_area" and copy it with Ctrl+C
+                    </div>
+                    <div class="challenge-status" id="status1">
+                        <span>⏳</span> Not completed
+                    </div>
+                </div>
+                
+                <div class="challenge-card" id="challenge2" onclick="startChallenge(2)">
+                    <div class="challenge-title">
+                        <span>2️⃣</span> Cut and Move a Line
+                    </div>
+                    <div class="challenge-description">
+                        Triple-click to select a line, cut it with Ctrl+X, then paste elsewhere
+                    </div>
+                    <div class="challenge-status" id="status2">
+                        <span>⏳</span> Not completed
+                    </div>
+                </div>
+                
+                <div class="challenge-card" id="challenge3" onclick="startChallenge(3)">
+                    <div class="challenge-title">
+                        <span>3️⃣</span> Select All and Copy
+                    </div>
+                    <div class="challenge-description">
+                        Use Ctrl+A to select all text, then copy it with Ctrl+C
+                    </div>
+                    <div class="challenge-status" id="status3">
+                        <span>⏳</span> Not completed
+                    </div>
+                </div>
+                
+                <div class="challenge-card" id="challenge4" onclick="startChallenge(4)">
+                    <div class="challenge-title">
+                        <span>4️⃣</span> Quick Word Replace
+                    </div>
+                    <div class="challenge-description">
+                        Double-click "user_name", type "student_name" to replace it
+                    </div>
+                    <div class="challenge-status" id="status4">
+                        <span>⏳</span> Not completed
+                    </div>
+                </div>
+                
+                <div class="challenge-card" id="challenge5" onclick="startChallenge(5)">
+                    <div class="challenge-title">
+                        <span>5️⃣</span> Duplicate a Code Block
+                    </div>
+                    <div class="challenge-description">
+                        Select multiple lines, copy them, then paste to duplicate the code
+                    </div>
+                    <div class="challenge-status" id="status5">
+                        <span>⏳</span> Not completed
+                    </div>
+                </div>
+                
+                <div class="challenge-card" id="challenge6" onclick="startChallenge(6)">
+                    <div class="challenge-title">
+                        <span>6️⃣</span> Master Combo
+                    </div>
+                    <div class="challenge-description">
+                        Perform all shortcuts in sequence: Select word → Copy → Select all → Paste
+                    </div>
+                    <div class="challenge-status" id="status6">
+                        <span>⏳</span> Not completed
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tips-section">
+            <h3>💡 Pro Tips for Coding Efficiency</h3>
+            
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <h4>🎯 Precision Selection</h4>
+                    <p>Double-click to select variable names perfectly. Triple-click for entire function definitions or comments.</p>
+                </div>
+                
+                <div class="tip-card">
+                    <h4>⚡ Speed Editing</h4>
+                    <p>Use Ctrl+X to cut and move code lines quickly. Much faster than delete and retype!</p>
+                </div>
+                
+                <div class="tip-card">
+                    <h4>🔄 Code Reuse</h4>
+                    <p>Copy frequently used code patterns (like function templates) and paste them when needed.</p>
+                </div>
+                
+                <div class="tip-card">
+                    <h4>📋 Clipboard Management</h4>
+                    <p>Remember that each copy/cut replaces the clipboard. Plan your copy-paste sequence!</p>
+                </div>
+                
+                <div class="tip-card">
+                    <h4>🖱️ Mouse + Keyboard</h4>
+                    <p>Combine mouse selection with keyboard shortcuts for maximum efficiency.</p>
+                </div>
+                
+                <div class="tip-card">
+                    <h4>🎓 Practice Makes Perfect</h4>
+                    <p>Use these shortcuts daily when coding. They'll become second nature!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let challengesCompleted = [];
+        let simulatedClipboard = '';
+        let lastAction = '';
+        let clipboardHistory = [];
+        let actionCount = {
+            copy: 0,
+            cut: 0,
+            paste: 0,
+            selectAll: 0,
+            doubleClick: 0,
+            tripleClick: 0
+        };
+
+        const codeEditor = document.getElementById('codeEditor');
+        const clipboardContent = document.getElementById('clipboardContent');
+        const clipboardHistoryDiv = document.getElementById('clipboardHistory');
+        const statusDisplay = document.getElementById('statusDisplay');
+        const selectionInfo = document.getElementById('selectionInfo');
+        const selectionIndicator = document.getElementById('selectionIndicator');
+
+        // Sample code for reset
+        const sampleCode = `def calculate_area(length, width):
+    """Calculate the area of a rectangle."""
+    area = length * width
+    return area
+
+def greet_user(name):
+    """Greet a user with their name."""
+    message = f"Hello, {name}! Welcome to Python programming."
+    print(message)
+
+# Main program
+user_name = input("Enter your name: ")
+greet_user(user_name)
+
+# Calculate rectangle area
+rect_length = 10
+rect_width = 5
+result = calculate_area(rect_length, rect_width)
+print(f"Rectangle area: {result} square units")`;
+
+        // Monitor text selection
+        codeEditor.addEventListener('mouseup', updateSelectionInfo);
+        codeEditor.addEventListener('keyup', updateSelectionInfo);
+        codeEditor.addEventListener('select', updateSelectionInfo);
+
+        // Monitor keyboard shortcuts
+        codeEditor.addEventListener('keydown', function(e) {
+            if (e.ctrlKey) {
+                if (e.key === 'c') {
+                    e.preventDefault(); // Prevent default to handle our simulation
+                    handleCopy();
+                } else if (e.key === 'v') {
+                    e.preventDefault();
+                    handlePaste();
+                } else if (e.key === 'x') {
+                    e.preventDefault();
+                    handleCut();
+                } else if (e.key === 'a') {
+                    setTimeout(handleSelectAll, 10);
+                }
+            }
+        });
+
+        // Monitor double and triple clicks
+        let clickCount = 0;
+        let clickTimer = null;
+        
+        codeEditor.addEventListener('click', function(e) {
+            clickCount++;
+            
+            if (clickCount === 1) {
+                clickTimer = setTimeout(function() {
+                    clickCount = 0;
+                }, 300);
+            } else if (clickCount === 2) {
+                clearTimeout(clickTimer);
+                handleDoubleClick();
+                clickCount = 0;
+            } else if (clickCount === 3) {
+                clearTimeout(clickTimer);
+                handleTripleClick();
+                clickCount = 0;
+            }
+        });
+
+        function updateSelectionInfo() {
+            const start = codeEditor.selectionStart;
+            const end = codeEditor.selectionEnd;
+            const selectedText = codeEditor.value.substring(start, end);
+            
+            if (selectedText.length > 0) {
+                selectionInfo.innerHTML = `Selected: <strong>${selectedText.length}</strong> characters<br>
+                    <div style="background: #e2e8f0; padding: 8px; border-radius: 4px; margin-top: 5px; max-height: 100px; overflow-y: auto;">
+                        "${selectedText.substring(0, 100)}${selectedText.length > 100 ? '...' : ''}"
+                    </div>`;
+                
+                selectionIndicator.textContent = `Selection: ${selectedText.length} characters`;
+                selectionIndicator.style.display = 'block';
+            } else {
+                selectionInfo.textContent = 'No text selected';
+                selectionIndicator.style.display = 'none';
+            }
+        }
+
+        function updateClipboardDisplay() {
+            if (simulatedClipboard.length > 0) {
+                clipboardContent.innerHTML = `<div class="clipboard-content">${simulatedClipboard}</div>`;
+                clipboardContent.classList.remove('clipboard-empty');
+            } else {
+                clipboardContent.innerHTML = 'Nothing copied yet... Try selecting text and pressing Ctrl+C!';
+                clipboardContent.classList.add('clipboard-empty');
+            }
+        }
+
+        function addToHistory(action, content) {
+            const timestamp = new Date().toLocaleTimeString();
+            const historyItem = {
+                action,
+                content: content.substring(0, 50) + (content.length > 50 ? '...' : ''),
+                timestamp
+            };
+            
+            clipboardHistory.unshift(historyItem);
+            if (clipboardHistory.length > 5) {
+                clipboardHistory.pop(); // Keep only last 5 actions
+            }
+            
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            if (clipboardHistory.length === 0) {
+                clipboardHistoryDiv.innerHTML = '<div class="clipboard-empty">No recent actions</div>';
+                return;
+            }
+            
+            clipboardHistoryDiv.innerHTML = clipboardHistory.map(item => 
+                `<div class="clipboard-history-item">
+                    <div class="clipboard-timestamp">${item.timestamp}</div>
+                    <strong>${item.action}:</strong> ${item.content}
+                </div>`
+            ).join('');
+        }
+
+        function handleCopy() {
+            const selectedText = codeEditor.value.substring(codeEditor.selectionStart, codeEditor.selectionEnd);
+            if (selectedText.length > 0) {
+                simulatedClipboard = selectedText;
+                updateClipboardDisplay();
+                addToHistory('COPY', selectedText);
+                
+                statusDisplay.innerHTML = `✅ Copied ${selectedText.length} characters to clipboard!`;
+                lastAction = 'copy';
+                actionCount.copy++;
+                checkChallengeCompletion();
+                animateSuccess();
+                
+                // Try to use actual clipboard if available (modern browsers)
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(selectedText).catch(() => {
+                        // Fallback to our simulation if clipboard API fails
+                    });
+                }
+            }
+        }
+
+        function handlePaste() {
+            if (simulatedClipboard.length > 0) {
+                const start = codeEditor.selectionStart;
+                const end = codeEditor.selectionEnd;
+                const beforeText = codeEditor.value.substring(0, start);
+                const afterText = codeEditor.value.substring(end);
+                
+                codeEditor.value = beforeText + simulatedClipboard + afterText;
+                
+                // Set cursor position after pasted text
+                const newCursorPos = start + simulatedClipboard.length;
+                codeEditor.setSelectionRange(newCursorPos, newCursorPos);
+                
+                addToHistory('PASTE', simulatedClipboard);
+                statusDisplay.innerHTML = `📄 Pasted content from clipboard! (Ctrl+V)`;
+                lastAction = 'paste';
+                actionCount.paste++;
+                setTimeout(updateSelectionInfo, 10);
+                checkChallengeCompletion();
+                animateSuccess();
+            } else {
+                statusDisplay.innerHTML = `⚠️ Nothing to paste! Copy something first with Ctrl+C.`;
+            }
+        }
+
+        function handleCut() {
+            const selectedText = codeEditor.value.substring(codeEditor.selectionStart, codeEditor.selectionEnd);
+            if (selectedText.length > 0) {
+                simulatedClipboard = selectedText;
+                updateClipboardDisplay();
+                addToHistory('CUT', selectedText);
+                
+                // Remove the selected text
+                const start = codeEditor.selectionStart;
+                const end = codeEditor.selectionEnd;
+                const beforeText = codeEditor.value.substring(0, start);
+                const afterText = codeEditor.value.substring(end);
+                codeEditor.value = beforeText + afterText;
+                codeEditor.setSelectionRange(start, start);
+                
+                statusDisplay.innerHTML = `✂️ Cut ${selectedText.length} characters to clipboard!`;
+                lastAction = 'cut';
+                actionCount.cut++;
+                checkChallengeCompletion();
+                animateSuccess();
+                
+                // Try to use actual clipboard if available
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(selectedText).catch(() => {});
+                }
+            }
+        }
+
+        function handleSelectAll() {
+            statusDisplay.innerHTML = `🌐 Selected all text! (Ctrl+A)`;
+            lastAction = 'selectAll';
+            actionCount.selectAll++;
+            setTimeout(updateSelectionInfo, 10);
+            checkChallengeCompletion();
+        }
+
+        function handleDoubleClick() {
+            statusDisplay.innerHTML = `🖱️ Double-clicked to select word!`;
+            lastAction = 'doubleClick';
+            actionCount.doubleClick++;
+            setTimeout(updateSelectionInfo, 10);
+            checkChallengeCompletion();
+        }
+
+        function handleTripleClick() {
+            statusDisplay.innerHTML = `🖱️ Triple-clicked to select line/paragraph!`;
+            lastAction = 'tripleClick';
+            actionCount.tripleClick++;
+            setTimeout(updateSelectionInfo, 10);
+            checkChallengeCompletion();
+        }
+
+        function animateSuccess() {
+            codeEditor.classList.add('success-animation');
+            setTimeout(() => {
+                codeEditor.classList.remove('success-animation');
+            }, 600);
+        }
+
+        function checkChallengeCompletion() {
+            // Challenge 1: Copy function name
+            if (!challengesCompleted.includes(1) && lastAction === 'copy' && 
+                simulatedClipboard.includes('calculate_area')) {
+                completeChallenge(1);
+            }
+            
+            // Challenge 2: Cut and move line
+            if (!challengesCompleted.includes(2) && lastAction === 'cut' && 
+                simulatedClipboard.length > 20) {
+                completeChallenge(2);
+            }
+            
+            // Challenge 3: Select all and copy
+            if (!challengesCompleted.includes(3) && lastAction === 'copy' && 
+                simulatedClipboard.length > 200) { // Assuming full text is long
+                completeChallenge(3);
+            }
+            
+            // Challenge 4: Word replacement (double click then type)
+            if (!challengesCompleted.includes(4) && actionCount.doubleClick > 0 &&
+                codeEditor.value.includes('student_name')) {
+                completeChallenge(4);
+            }
+            
+            // Challenge 5: Duplicate code block
+            if (!challengesCompleted.includes(5) && lastAction === 'paste' && 
+                simulatedClipboard.length > 50) { // Multi-line code
+                completeChallenge(5);
+            }
+            
+            // Challenge 6: Master combo (all key actions used)
+            if (!challengesCompleted.includes(6) && 
+                actionCount.copy > 0 && actionCount.paste > 0 && 
+                actionCount.selectAll > 0 && actionCount.doubleClick > 0) {
+                completeChallenge(6);
+            }
+        }
+
+        function completeChallenge(challengeNum) {
+            if (!challengesCompleted.includes(challengeNum)) {
+                challengesCompleted.push(challengeNum);
+                
+                const challengeCard = document.getElementById(`challenge${challengeNum}`);
+                const statusElement = document.getElementById(`status${challengeNum}`);
+                
+                challengeCard.classList.add('completed');
+                statusElement.innerHTML = '<span>✅</span> Completed!';
+                
+                updateProgress();
+                
+                // Celebration message
+                statusDisplay.innerHTML = `🎉 Challenge ${challengeNum} completed! Great job!`;
+                
+                // Add celebration to history
+                addToHistory('CHALLENGE COMPLETED', `Challenge ${challengeNum}: Success!`);
+            }
+        }
+
+        function updateProgress() {
+            const progressPercent = (challengesCompleted.length / 6) * 100;
+            document.getElementById('challengeProgress').style.width = progressPercent + '%';
+            
+            if (challengesCompleted.length === 6) {
+                statusDisplay.innerHTML = `🏆 All challenges completed! You're a shortcut master!`;
+                addToHistory('ALL CHALLENGES COMPLETE', 'Congratulations! 🎉');
+            }
+        }
+
+        function startChallenge(challengeNum) {
+            const challenges = {
+                1: "Try double-clicking on 'calculate_area' in the code, then press Ctrl+C to copy it!",
+                2: "Triple-click to select an entire line, then use Ctrl+X to cut it, and Ctrl+V to paste elsewhere!",
+                3: "Press Ctrl+A to select all text, then Ctrl+C to copy everything!",
+                4: "Double-click on 'user_name' to select it, then type 'student_name' to replace it!",
+                5: "Select multiple lines of code, copy with Ctrl+C, then paste with Ctrl+V to duplicate!",
+                6: "Show mastery by using double-click, Ctrl+C, Ctrl+A, and Ctrl+V in sequence!"
+            };
+            
+            if (!challengesCompleted.includes(challengeNum)) {
+                statusDisplay.innerHTML = `🎯 Challenge ${challengeNum}: ${challenges[challengeNum]}`;
+                codeEditor.focus();
+            } else {
+                statusDisplay.innerHTML = `✅ Challenge ${challengeNum} already completed!`;
+            }
+        }
+
+        function clearEditor() {
+            codeEditor.value = '';
+            statusDisplay.innerHTML = '🗑️ Editor cleared! Ready for new practice.';
+            selectionInfo.textContent = 'No text selected';
+            selectionIndicator.style.display = 'none';
+            addToHistory('EDITOR CLEARED', 'Text editor was cleared');
+            codeEditor.focus();
+        }
+
+        function clearClipboard() {
+            simulatedClipboard = '';
+            updateClipboardDisplay();
+            clipboardHistory = [];
+            updateHistoryDisplay();
+            statusDisplay.innerHTML = '🧹 Clipboard and history cleared!';
+        }
+
+        function resetToSample() {
+            codeEditor.value = sampleCode;
+            statusDisplay.innerHTML = '🔄 Sample code restored! Ready to practice shortcuts.';
+            updateSelectionInfo();
+            addToHistory('RESET TO SAMPLE', 'Sample Python code restored');
+            codeEditor.focus();
+        }
+
+        // Try to read from actual clipboard when page gets focus (if supported)
+        window.addEventListener('focus', async function() {
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                try {
+                    const clipText = await navigator.clipboard.readText();
+                    if (clipText && clipText !== simulatedClipboard) {
+                        // Update our simulated clipboard with system clipboard if different
+                        simulatedClipboard = clipText;
+                        updateClipboardDisplay();
+                        addToHistory('SYSTEM SYNC', 'Synced with system clipboard');
+                    }
+                } catch (err) {
+                    // Clipboard access denied or not supported, continue with simulation
+                }
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            resetToSample();
+            updateClipboardDisplay();
+            updateHistoryDisplay();
+            statusDisplay.innerHTML = '👋 Welcome! Try selecting text and using the shortcuts. Click on challenges to get started!';
+        });
+    </script>
+</body>
+</html>

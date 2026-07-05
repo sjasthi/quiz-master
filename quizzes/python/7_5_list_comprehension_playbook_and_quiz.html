@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python List Comprehension - Interactive Playbook</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-main: #0f172a;
+    --bg-card: #1e293b;
+    --bg-card-alt: #253349;
+    --bg-code: #0d1520;
+    --accent-orange: #f97316;
+    --accent-yellow: #fbbf24;
+    --accent-green: #34d399;
+    --accent-blue: #38bdf8;
+    --accent-purple: #a78bfa;
+    --accent-pink: #f472b6;
+    --accent-red: #f87171;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border: #334155;
+    --success: #22c55e;
+    --error: #ef4444;
+    --glow-orange: rgba(249, 115, 22, 0.15);
+    --glow-green: rgba(52, 211, 153, 0.15);
+    --glow-blue: rgba(56, 189, 248, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 20% 50%, rgba(249,115,22,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(56,189,248,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(167,139,250,0.06) 0%, transparent 50%);
+    z-index: -1;
+    animation: bgShift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgShift {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(-3%, -3%) rotate(3deg); }
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    padding: 40px 20px 30px;
+    position: relative;
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+    color: var(--bg-main);
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .header h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow), var(--accent-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .header p {
+    color: var(--text-secondary);
+    font-size: 16px;
+  }
+
+  /* ── TABS ── */
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 6px;
+    margin-bottom: 30px;
+    border: 1px solid var(--border);
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 14px 10px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .tab-btn:hover { color: var(--text-secondary); }
+
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--accent-orange), #e8590c);
+    color: white;
+    box-shadow: 0 4px 20px rgba(249, 115, 22, 0.35);
+  }
+
+  .tab-icon { margin-right: 6px; font-size: 18px; }
+
+  .tab-panel { display: none; animation: fadeIn 0.4s ease; }
+  .tab-panel.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+    transition: border-color 0.3s ease;
+  }
+
+  .card:hover { border-color: rgba(249, 115, 22, 0.3); }
+
+  .card-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-title .icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .icon-orange { background: var(--glow-orange); color: var(--accent-orange); }
+  .icon-green { background: var(--glow-green); color: var(--accent-green); }
+  .icon-blue { background: var(--glow-blue); color: var(--accent-blue); }
+
+  .card p, .card li {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  .card ul { padding-left: 20px; margin-top: 8px; }
+  .card li { margin-bottom: 6px; }
+
+  .highlight {
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+  }
+
+  .keyword {
+    display: inline-block;
+    background: rgba(249, 115, 22, 0.12);
+    color: var(--accent-orange);
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* ── SYNTAX BOX ── */
+  .syntax-box {
+    background: var(--bg-code);
+    border: 2px solid var(--accent-orange);
+    border-radius: 14px;
+    padding: 24px;
+    margin: 20px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .syntax-box::before {
+    content: 'SYNTAX';
+    position: absolute;
+    top: 0; left: 0;
+    background: var(--accent-orange);
+    color: var(--bg-main);
+    font-family: 'Fredoka', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 4px 14px;
+    border-radius: 0 0 10px 0;
+  }
+
+  .syntax-box code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    color: var(--accent-yellow);
+    line-height: 1.8;
+  }
+
+  .syntax-part {
+    display: inline-block;
+    margin: 4px 2px;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .part-expr { background: rgba(251, 191, 36, 0.15); color: var(--accent-yellow); }
+  .part-iter { background: rgba(56, 189, 248, 0.15); color: var(--accent-blue); }
+  .part-cond { background: rgba(52, 211, 153, 0.15); color: var(--accent-green); }
+
+  .syntax-labels {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .syntax-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .label-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot-expr { background: var(--accent-yellow); }
+  .dot-iter { background: var(--accent-blue); }
+  .dot-cond { background: var(--accent-green); }
+
+  /* ── ANALOGY BOX ── */
+  .analogy-box {
+    background: linear-gradient(135deg, rgba(167,139,250,0.08), rgba(244,114,182,0.08));
+    border: 1px solid rgba(167,139,250,0.25);
+    border-radius: 14px;
+    padding: 24px;
+    margin: 20px 0;
+  }
+
+  .analogy-box .analogy-title {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--accent-purple);
+    margin-bottom: 10px;
+  }
+
+  /* ── IF PLACEMENT TABLE ── */
+  .placement-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 16px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .placement-table th {
+    background: var(--bg-card-alt);
+    padding: 12px 16px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: left;
+    color: var(--accent-orange);
+  }
+
+  .placement-table td {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .placement-table code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--bg-code);
+    padding: 3px 8px;
+    border-radius: 6px;
+    color: var(--accent-yellow);
+    display: inline-block;
+    margin-top: 4px;
+  }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-header span {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .code-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .code-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: block;
+  }
+
+  .dot-r { background: #ef4444; }
+  .dot-y { background: #eab308; }
+  .dot-g { background: #22c55e; }
+
+  .code-block pre {
+    padding: 18px;
+    overflow-x: auto;
+    margin: 0;
+  }
+
+  .code-block code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    white-space: pre;
+    display: block;
+  }
+
+  /* Syntax highlighting */
+  .kw { color: var(--accent-purple); font-weight: 600; }
+  .fn { color: var(--accent-blue); }
+  .str { color: var(--accent-green); }
+  .num { color: var(--accent-orange); }
+  .cm { color: var(--text-muted); font-style: italic; }
+  .op { color: var(--accent-pink); }
+  .var { color: var(--accent-yellow); }
+
+  /* ── RUN BUTTON & OUTPUT ── */
+  .run-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--accent-green), #10b981);
+    color: var(--bg-main);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 12px 0;
+  }
+
+  .run-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 211, 153, 0.3);
+  }
+
+  .output-box {
+    background: var(--bg-code);
+    border: 1px dashed var(--accent-green);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 8px;
+    display: none;
+  }
+
+  .output-box.visible { display: block; animation: fadeIn 0.3s ease; }
+
+  .output-label {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-green);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .output-box code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent-yellow);
+    white-space: pre;
+    display: block;
+  }
+
+  /* ── EXAMPLES TAB ── */
+  .example-nav {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .example-btn {
+    padding: 10px 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .example-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+  }
+
+  .example-btn.active {
+    background: linear-gradient(135deg, var(--accent-blue), #0284c7);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 16px rgba(56, 189, 248, 0.25);
+  }
+
+  .example-panel { display: none; animation: fadeIn 0.3s ease; }
+  .example-panel.active { display: block; }
+
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+
+  @media (max-width: 700px) {
+    .comparison-grid { grid-template-columns: 1fr; }
+  }
+
+  .comparison-col {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-label {
+    padding: 10px 16px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+
+  .label-old {
+    background: rgba(248, 113, 113, 0.12);
+    color: var(--accent-red);
+  }
+
+  .label-new {
+    background: rgba(52, 211, 153, 0.12);
+    color: var(--accent-green);
+  }
+
+  .comparison-col pre {
+    padding: 16px;
+    background: var(--bg-code);
+    margin: 0;
+  }
+
+  .comparison-col code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    white-space: pre;
+    display: block;
+  }
+
+  .example-desc {
+    background: var(--bg-card-alt);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    border-left: 3px solid var(--accent-blue);
+  }
+
+  .arrow-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    font-size: 24px;
+    color: var(--accent-orange);
+  }
+
+  /* ── QUIZ TAB ── */
+  .quiz-progress {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+  }
+
+  .progress-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: var(--bg-code);
+    border-radius: 4px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-orange), var(--accent-yellow));
+    border-radius: 4px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .progress-text {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .quiz-question {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease;
+  }
+
+  .quiz-question.answered-correct { border-color: var(--success); }
+  .quiz-question.answered-wrong { border-color: var(--error); }
+
+  .q-number {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-orange);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+
+  .q-text {
+    font-size: 16px;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    line-height: 1.6;
+    font-weight: 600;
+  }
+
+  .q-code {
+    background: var(--bg-code);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 12px 0;
+    overflow-x: auto;
+  }
+
+  .q-code code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    white-space: pre;
+    display: block;
+  }
+
+  .q-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .q-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .q-option:hover:not(.disabled) {
+    border-color: var(--accent-blue);
+    background: rgba(56, 189, 248, 0.05);
+  }
+
+  .q-option .radio {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+  }
+
+  .q-option.selected .radio {
+    border-color: var(--accent-blue);
+    background: var(--accent-blue);
+  }
+
+  .q-option.selected .radio::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+  }
+
+  .q-option.correct-answer {
+    border-color: var(--success);
+    background: rgba(34, 197, 94, 0.08);
+    color: var(--text-primary);
+  }
+
+  .q-option.correct-answer .radio {
+    border-color: var(--success);
+    background: var(--success);
+  }
+
+  .q-option.wrong-answer {
+    border-color: var(--error);
+    background: rgba(239, 68, 68, 0.08);
+    color: var(--text-primary);
+  }
+
+  .q-option.wrong-answer .radio {
+    border-color: var(--error);
+    background: var(--error);
+  }
+
+  .q-option.disabled { cursor: default; }
+
+  .q-explanation {
+    margin-top: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    display: none;
+  }
+
+  .q-explanation.visible { display: block; animation: fadeIn 0.3s ease; }
+
+  .q-explanation.correct-exp {
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    color: var(--accent-green);
+  }
+
+  .q-explanation.wrong-exp {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: var(--accent-red);
+  }
+
+  .q-explanation code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: rgba(0,0,0,0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* ── SUBMIT & SCORE ── */
+  .submit-section {
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .submit-btn {
+    background: linear-gradient(135deg, var(--accent-orange), #e8590c);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 16px 48px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(249, 115, 22, 0.4);
+  }
+
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .score-display {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+    margin-top: 24px;
+    background: var(--bg-card);
+    border-radius: 20px;
+    border: 2px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .score-display.visible { display: block; animation: fadeIn 0.5s ease; }
+
+  .score-display::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(249,115,22,0.1), transparent 70%);
+  }
+
+  .score-icon { font-size: 60px; margin-bottom: 16px; position: relative; }
+
+  .score-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .score-number {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 64px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    position: relative;
+  }
+
+  .score-detail {
+    color: var(--text-secondary);
+    font-size: 16px;
+    margin-top: 6px;
+    position: relative;
+  }
+
+  .score-name-section {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    position: relative;
+  }
+
+  .score-name-section label {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .name-input {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    color: var(--text-primary);
+    width: 100%;
+    max-width: 340px;
+    text-align: center;
+    transition: border-color 0.3s ease;
+  }
+
+  .name-input:focus {
+    outline: none;
+    border-color: var(--accent-orange);
+  }
+
+  .screenshot-tip {
+    margin-top: 20px;
+    padding: 14px 20px;
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 12px;
+    color: var(--accent-yellow);
+    font-size: 14px;
+    font-weight: 600;
+    position: relative;
+  }
+
+  .reset-btn {
+    background: var(--bg-card-alt);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 24px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    margin-top: 16px;
+    position: relative;
+  }
+
+  .reset-btn:hover {
+    border-color: var(--accent-orange);
+    color: var(--accent-orange);
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  .footer a {
+    color: var(--accent-orange);
+    text-decoration: none;
+  }
+
+  .tip-box {
+    background: rgba(56, 189, 248, 0.06);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .tip-box strong { color: var(--accent-blue); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-badge">Python 101 — Chapter 7</div>
+    <h1>List Comprehension</h1>
+    <p>Interactive Playbook &amp; Quiz</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('concept')">
+      <span class="tab-icon">📘</span>Concept
+    </button>
+    <button class="tab-btn" onclick="switchTab('examples')">
+      <span class="tab-icon">💻</span>Examples
+    </button>
+    <button class="tab-btn" onclick="switchTab('quiz')">
+      <span class="tab-icon">🎯</span>Quiz
+    </button>
+  </div>
+
+  <!-- ═══════════ TAB 1: LIST COMPREHENSION CONCEPT ═══════════ -->
+  <div id="tab-concept" class="tab-panel active">
+
+    <!-- What is it? -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon icon-orange">💡</div>
+        What Is List Comprehension?
+      </div>
+      <p>List Comprehension is a <strong class="highlight">shortcut</strong> for creating a new list from an existing list. Instead of writing a <span class="keyword">for</span> loop with <span class="keyword">append()</span>, you can do it all in <strong>one clean line</strong>.</p>
+      <div class="analogy-box">
+        <div class="analogy-title">🍕 Real-World Analogy</div>
+        <p style="color:var(--text-secondary); line-height:1.7; font-size:15px;">Imagine you have a box of assorted candies. You want to pick out <strong style="color:var(--accent-pink);">only the chocolate ones</strong> and <strong style="color:var(--accent-yellow);">wrap each one in gold foil</strong>. List comprehension lets you say: <em>"Give me each candy wrapped in gold, but only if it's chocolate"</em> — all in one sentence!</p>
+      </div>
+      <p style="margin-top:14px;">It can do two powerful things:</p>
+      <ul>
+        <li><strong style="color:var(--accent-yellow);">Mapping</strong> — transform every element (e.g., add 10 to each number)</li>
+        <li><strong style="color:var(--accent-green);">Filtering</strong> — keep only elements that match a condition (e.g., only even numbers)</li>
+      </ul>
+    </div>
+
+    <!-- Syntax -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon icon-blue">🧩</div>
+        The Syntax
+      </div>
+      <div class="syntax-box">
+        <code>new_list = [</code><span class="syntax-part part-expr">expression</span>
+        <code> </code><span class="syntax-part part-iter">for item in iterable</span>
+        <code> </code><span class="syntax-part part-cond">if condition</span><code>]</code>
+        <div class="syntax-labels">
+          <div class="syntax-label"><div class="label-dot dot-expr"></div>What to do with each item</div>
+          <div class="syntax-label"><div class="label-dot dot-iter"></div>What to loop through</div>
+          <div class="syntax-label"><div class="label-dot dot-cond"></div>Filter (optional)</div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <strong>💡 Remember:</strong> The result is always a <strong>new list</strong>. The original list stays unchanged. And always use <strong>square brackets <code style="font-family:'JetBrains Mono',monospace;background:var(--bg-code);padding:2px 6px;border-radius:4px;">[ ]</code></strong> — not parentheses!
+      </div>
+    </div>
+
+    <!-- Mapping Only -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon icon-orange">🔄</div>
+        Mapping — Transform Every Element
+      </div>
+      <p>When there's <strong>no condition</strong>, the expression is applied to <em>every</em> element.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span>Python</span>
+        </div>
+        <pre><code><span class="var">numbers</span> = [<span class="num">1</span>, <span class="num">4</span>, <span class="num">7</span>, <span class="num">1</span>]
+
+<span class="cm"># Add 10 to every element</span>
+<span class="var">new_list</span> = [<span class="var">x</span> + <span class="num">10</span> <span class="kw">for</span> <span class="var">x</span> <span class="kw">in</span> <span class="var">numbers</span>]
+
+<span class="fn">print</span>(<span class="var">new_list</span>)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-map1', '[11, 14, 17, 11]')">▶ Run Code</button>
+      <div id="out-map1" class="output-box">
+        <div class="output-label">Output</div>
+        <code></code>
+      </div>
+    </div>
+
+    <!-- Mapping + Filtering -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon icon-green">🔍</div>
+        Mapping + Filtering — Transform Some Elements
+      </div>
+      <p>Add a condition to include only elements that pass the test.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span>Python</span>
+        </div>
+        <pre><code><span class="var">numbers</span> = [<span class="num">1</span>, <span class="num">4</span>, <span class="num">7</span>, <span class="num">1</span>, <span class="num">2</span>]
+
+<span class="cm"># Add 5, but only if even</span>
+<span class="var">new_list</span> = [<span class="var">x</span> + <span class="num">5</span> <span class="kw">for</span> <span class="var">x</span> <span class="kw">in</span> <span class="var">numbers</span> <span class="kw">if</span> <span class="var">x</span> % <span class="num">2</span> == <span class="num">0</span>]
+
+<span class="fn">print</span>(<span class="var">new_list</span>)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-mapfilt', '[9, 7]')">▶ Run Code</button>
+      <div id="out-mapfilt" class="output-box">
+        <div class="output-label">Output</div>
+        <code></code>
+      </div>
+      <p style="margin-top:12px;color:var(--text-muted);font-size:14px;">Only <code style="font-family:'JetBrains Mono',monospace;font-size:13px;">4</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:13px;">2</code> are even → <code style="font-family:'JetBrains Mono',monospace;font-size:13px;">4+5=9</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:13px;">2+5=7</code></p>
+    </div>
+
+    <!-- If...Else in Expression -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon icon-blue">⚡</div>
+        If…Else Inside the Expression
+      </div>
+      <p>Sometimes you don't want to <em>exclude</em> items — you want to <strong>treat them differently</strong>. Place <span class="keyword">if...else</span> <strong>before</strong> the <span class="keyword">for</span>.</p>
+      <div class="syntax-box">
+        <code>new_list = [</code><span class="syntax-part part-expr">expr1 <strong>if</strong> cond <strong>else</strong> expr2</span>
+        <code> </code><span class="syntax-part part-iter">for item in iterable</span><code>]</code>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span>Python</span>
+        </div>
+        <pre><code><span class="var">numbers</span> = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]
+
+<span class="cm"># Label each as "even" or "odd"</span>
+<span class="var">labels</span> = [<span class="str">"even"</span> <span class="kw">if</span> <span class="var">x</span> % <span class="num">2</span> == <span class="num">0</span> <span class="kw">else</span> <span class="str">"odd"</span> <span class="kw">for</span> <span class="var">x</span> <span class="kw">in</span> <span class="var">numbers</span>]
+
+<span class="fn">print</span>(<span class="var">labels</span>)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-ifelse', `['odd', 'even', 'odd', 'even', 'odd']`)">▶ Run Code</button>
+      <div id="out-ifelse" class="output-box">
+        <div class="output-label">Output</div>
+        <code></code>
+      </div>
+    </div>
+
+    <!-- Where does if go? -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon icon-orange">📍</div>
+        Where Does the <code style="font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--accent-purple);">if</code> Go?
+      </div>
+      <table class="placement-table">
+        <thead>
+          <tr>
+            <th>Goal</th>
+            <th>Position of <code style="background:transparent;padding:0;color:var(--accent-purple);">if</code></th>
+            <th>Syntax</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--accent-green);">Filter</strong> items (exclude some)</td>
+            <td>After iterable</td>
+            <td><code>[expr for x in list if cond]</code></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent-yellow);">Transform</strong> items differently</td>
+            <td>Before <code style="background:transparent;padding:0;color:var(--accent-purple);">for</code></td>
+            <td><code>[a if cond else b for x in list]</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- ═══════════ TAB 2: EXAMPLES ═══════════ -->
+  <div id="tab-examples" class="tab-panel">
+
+    <div class="example-nav">
+      <button class="example-btn active" onclick="switchExample(0)">Ex 1: Add 10</button>
+      <button class="example-btn" onclick="switchExample(1)">Ex 2: Even Only</button>
+      <button class="example-btn" onclick="switchExample(2)">Ex 3: Fruits with "a"</button>
+      <button class="example-btn" onclick="switchExample(3)">Ex 4: Squares</button>
+      <button class="example-btn" onclick="switchExample(4)">Ex 5: Reverse Strings</button>
+    </div>
+
+    <!-- Example 1 -->
+    <div class="example-panel active" id="ex-0">
+      <div class="example-desc">
+        <strong>Goal:</strong> Given <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-code);padding:2px 8px;border-radius:4px;">given_list = [1, 4, 7, 1]</code>, create a new list by <strong>adding 10</strong> to each element.
+      </div>
+      <div class="comparison-grid">
+        <div class="comparison-col">
+          <div class="comparison-label label-old">❌ Without List Comprehension</div>
+          <pre><code><span class="var">given_list</span> = [<span class="num">1</span>, <span class="num">4</span>, <span class="num">7</span>, <span class="num">1</span>]
+
+<span class="var">new_list</span> = []
+<span class="kw">for</span> <span class="var">item</span> <span class="kw">in</span> <span class="var">given_list</span>:
+    <span class="var">new_list</span>.<span class="fn">append</span>(<span class="var">item</span> + <span class="num">10</span>)
+
+<span class="fn">print</span>(<span class="var">new_list</span>)</code></pre>
+        </div>
+        <div class="comparison-col">
+          <div class="comparison-label label-new">✅ With List Comprehension</div>
+          <pre><code><span class="var">given_list</span> = [<span class="num">1</span>, <span class="num">4</span>, <span class="num">7</span>, <span class="num">1</span>]
+
+<span class="var">new_list</span> = [<span class="var">item</span> + <span class="num">10</span> <span class="kw">for</span> <span class="var">item</span> <span class="kw">in</span> <span class="var">given_list</span>]
+
+<span class="fn">print</span>(<span class="var">new_list</span>)</code></pre>
+        </div>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-ex0', '[11, 14, 17, 11]')">▶ Run Both</button>
+      <div id="out-ex0" class="output-box">
+        <div class="output-label">Output (both produce the same result)</div>
+        <code></code>
+      </div>
+    </div>
+
+    <!-- Example 2 -->
+    <div class="example-panel" id="ex-1">
+      <div class="example-desc">
+        <strong>Goal:</strong> Given <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-code);padding:2px 8px;border-radius:4px;">numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</code>, create a new list with <strong>only even numbers</strong>.
+      </div>
+      <div class="comparison-grid">
+        <div class="comparison-col">
+          <div class="comparison-label label-old">❌ Without List Comprehension</div>
+          <pre><code><span class="var">numbers</span> = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>, <span class="num">6</span>, <span class="num">7</span>, <span class="num">8</span>, <span class="num">9</span>, <span class="num">10</span>]
+
+<span class="var">evens</span> = []
+<span class="kw">for</span> <span class="var">num</span> <span class="kw">in</span> <span class="var">numbers</span>:
+    <span class="kw">if</span> <span class="var">num</span> % <span class="num">2</span> == <span class="num">0</span>:
+        <span class="var">evens</span>.<span class="fn">append</span>(<span class="var">num</span>)
+
+<span class="fn">print</span>(<span class="var">evens</span>)</code></pre>
+        </div>
+        <div class="comparison-col">
+          <div class="comparison-label label-new">✅ With List Comprehension</div>
+          <pre><code><span class="var">numbers</span> = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>, <span class="num">6</span>, <span class="num">7</span>, <span class="num">8</span>, <span class="num">9</span>, <span class="num">10</span>]
+
+<span class="var">evens</span> = [<span class="var">num</span> <span class="kw">for</span> <span class="var">num</span> <span class="kw">in</span> <span class="var">numbers</span> <span class="kw">if</span> <span class="var">num</span> % <span class="num">2</span> == <span class="num">0</span>]
+
+<span class="fn">print</span>(<span class="var">evens</span>)</code></pre>
+        </div>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-ex1', '[2, 4, 6, 8, 10]')">▶ Run Both</button>
+      <div id="out-ex1" class="output-box">
+        <div class="output-label">Output (both produce the same result)</div>
+        <code></code>
+      </div>
+    </div>
+
+    <!-- Example 3 -->
+    <div class="example-panel" id="ex-2">
+      <div class="example-desc">
+        <strong>Goal:</strong> From a list of fruits, create a new list with only fruits that contain the letter <strong>"a"</strong>.
+      </div>
+      <div class="comparison-grid">
+        <div class="comparison-col">
+          <div class="comparison-label label-old">❌ Without List Comprehension</div>
+          <pre><code><span class="var">fruits</span> = [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"cherry"</span>,
+          <span class="str">"kiwi"</span>, <span class="str">"mango"</span>]
+
+<span class="var">new_list</span> = []
+<span class="kw">for</span> <span class="var">fruit</span> <span class="kw">in</span> <span class="var">fruits</span>:
+    <span class="kw">if</span> <span class="str">"a"</span> <span class="kw">in</span> <span class="var">fruit</span>:
+        <span class="var">new_list</span>.<span class="fn">append</span>(<span class="var">fruit</span>)
+
+<span class="fn">print</span>(<span class="var">new_list</span>)</code></pre>
+        </div>
+        <div class="comparison-col">
+          <div class="comparison-label label-new">✅ With List Comprehension</div>
+          <pre><code><span class="var">fruits</span> = [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"cherry"</span>,
+          <span class="str">"kiwi"</span>, <span class="str">"mango"</span>]
+
+<span class="var">new_list</span> = [<span class="var">f</span> <span class="kw">for</span> <span class="var">f</span> <span class="kw">in</span> <span class="var">fruits</span> <span class="kw">if</span> <span class="str">"a"</span> <span class="kw">in</span> <span class="var">f</span>]
+
+<span class="fn">print</span>(<span class="var">new_list</span>)</code></pre>
+        </div>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-ex2', `['apple', 'banana', 'mango']`)">▶ Run Both</button>
+      <div id="out-ex2" class="output-box">
+        <div class="output-label">Output (both produce the same result)</div>
+        <code></code>
+      </div>
+    </div>
+
+    <!-- Example 4 -->
+    <div class="example-panel" id="ex-3">
+      <div class="example-desc">
+        <strong>Goal:</strong> Given <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-code);padding:2px 8px;border-radius:4px;">numbers = [1, 2, 3, 4, 5]</code>, create a new list with each number <strong>squared</strong>.
+      </div>
+      <div class="comparison-grid">
+        <div class="comparison-col">
+          <div class="comparison-label label-old">❌ Without List Comprehension</div>
+          <pre><code><span class="var">numbers</span> = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]
+
+<span class="var">squares</span> = []
+<span class="kw">for</span> <span class="var">num</span> <span class="kw">in</span> <span class="var">numbers</span>:
+    <span class="var">squares</span>.<span class="fn">append</span>(<span class="var">num</span> ** <span class="num">2</span>)
+
+<span class="fn">print</span>(<span class="var">squares</span>)</code></pre>
+        </div>
+        <div class="comparison-col">
+          <div class="comparison-label label-new">✅ With List Comprehension</div>
+          <pre><code><span class="var">numbers</span> = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]
+
+<span class="var">squares</span> = [<span class="var">num</span> ** <span class="num">2</span> <span class="kw">for</span> <span class="var">num</span> <span class="kw">in</span> <span class="var">numbers</span>]
+
+<span class="fn">print</span>(<span class="var">squares</span>)</code></pre>
+        </div>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-ex3', '[1, 4, 9, 16, 25]')">▶ Run Both</button>
+      <div id="out-ex3" class="output-box">
+        <div class="output-label">Output (both produce the same result)</div>
+        <code></code>
+      </div>
+    </div>
+
+    <!-- Example 5 -->
+    <div class="example-panel" id="ex-4">
+      <div class="example-desc">
+        <strong>Goal:</strong> Given a list of words, <strong>reverse each string</strong> in the list.
+      </div>
+      <div class="comparison-grid">
+        <div class="comparison-col">
+          <div class="comparison-label label-old">❌ Without List Comprehension</div>
+          <pre><code><span class="var">words</span> = [<span class="str">"hello"</span>, <span class="str">"world"</span>, <span class="str">"python"</span>]
+
+<span class="var">reversed_words</span> = []
+<span class="kw">for</span> <span class="var">word</span> <span class="kw">in</span> <span class="var">words</span>:
+    <span class="var">reversed_words</span>.<span class="fn">append</span>(<span class="var">word</span>[::-<span class="num">1</span>])
+
+<span class="fn">print</span>(<span class="var">reversed_words</span>)</code></pre>
+        </div>
+        <div class="comparison-col">
+          <div class="comparison-label label-new">✅ With List Comprehension</div>
+          <pre><code><span class="var">words</span> = [<span class="str">"hello"</span>, <span class="str">"world"</span>, <span class="str">"python"</span>]
+
+<span class="var">reversed_words</span> = [<span class="var">w</span>[::-<span class="num">1</span>] <span class="kw">for</span> <span class="var">w</span> <span class="kw">in</span> <span class="var">words</span>]
+
+<span class="fn">print</span>(<span class="var">reversed_words</span>)</code></pre>
+        </div>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-ex4', `['olleh', 'dlrow', 'nohtyp']`)">▶ Run Both</button>
+      <div id="out-ex4" class="output-box">
+        <div class="output-label">Output (both produce the same result)</div>
+        <code></code>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════ TAB 3: QUIZ ═══════════ -->
+  <div id="tab-quiz" class="tab-panel">
+
+    <div class="quiz-progress">
+      <div class="progress-text">Answer all 10 questions, then click Submit to see your score.</div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <div id="quizContainer"></div>
+
+    <div class="submit-section">
+      <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">Submit Quiz</button>
+    </div>
+
+    <div class="score-display" id="scoreDisplay">
+      <div class="score-icon" id="scoreIcon"></div>
+      <div class="score-title" id="scoreTitle"></div>
+      <div class="score-number" id="scoreNumber"></div>
+      <div class="score-detail" id="scoreDetail"></div>
+      <div class="score-name-section">
+        <label for="studentName">Enter Your Name for the Screenshot:</label>
+        <input type="text" id="studentName" class="name-input" placeholder="Your Full Name" oninput="updateScoreName()">
+        <div id="studentNameDisplay" style="font-family:'Fredoka',sans-serif;font-size:20px;font-weight:700;color:var(--accent-orange);margin-top:12px;min-height:28px;"></div>
+      </div>
+      <div class="screenshot-tip">
+        📸 Take a screenshot of this score and submit it to <strong>Google Classroom</strong>.
+      </div>
+      <button class="reset-btn" onclick="resetQuiz()">🔄 Retake Quiz</button>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    Python 101 — List Comprehension Playbook &amp; Quiz | Siva R Jasthi<br>
+    <a href="https://www.learnandhelp.com" target="_blank">www.learnandhelp.com</a>
+  </div>
+</div>
+
+<script>
+// ── TAB SWITCHING ──
+function switchTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  const tabs = ['concept', 'examples', 'quiz'];
+  document.querySelectorAll('.tab-btn')[tabs.indexOf(tab)].classList.add('active');
+}
+
+// ── EXAMPLE SWITCHING ──
+function switchExample(idx) {
+  document.querySelectorAll('.example-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.example-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('ex-' + idx).classList.add('active');
+  document.querySelectorAll('.example-btn')[idx].classList.add('active');
+}
+
+// ── RUN CODE OUTPUT ──
+function showOutput(id, text) {
+  const box = document.getElementById(id);
+  box.querySelector('code').textContent = text;
+  box.classList.add('visible');
+}
+
+// ── QUIZ DATA ──
+const quizData = [
+  {
+    question: "What does list comprehension create?",
+    code: null,
+    options: [
+      "A modified version of the original list",
+      "A new list based on an existing iterable",
+      "A tuple from a list",
+      "A dictionary from a list"
+    ],
+    correct: 1,
+    explanation: "List comprehension always creates a <strong>new list</strong>. The original list remains unchanged."
+  },
+  {
+    question: "What is the output of this code?",
+    code: 'nums = [1, 2, 3, 4]\nresult = [x * 2 for x in nums]\nprint(result)',
+    options: [
+      "[1, 2, 3, 4]",
+      "[2, 4, 6, 8]",
+      "[3, 5, 7, 9]",
+      "[1, 4, 9, 16]"
+    ],
+    correct: 1,
+    explanation: "Each element is multiplied by 2: <code>1*2=2</code>, <code>2*2=4</code>, <code>3*2=6</code>, <code>4*2=8</code>."
+  },
+  {
+    question: "What is the output of this code?",
+    code: 'nums = [10, 15, 20, 25, 30]\nresult = [x for x in nums if x > 18]\nprint(result)',
+    options: [
+      "[10, 15]",
+      "[20, 25, 30]",
+      "[True, False, True, True, True]",
+      "[15, 20, 25, 30]"
+    ],
+    correct: 1,
+    explanation: "The condition <code>x > 18</code> filters the list — only 20, 25, and 30 pass the test."
+  },
+  {
+    question: "Which bracket type must you use for list comprehension?",
+    code: null,
+    options: [
+      "Parentheses ( )",
+      "Curly braces { }",
+      "Square brackets [ ]",
+      "Angle brackets < >"
+    ],
+    correct: 2,
+    explanation: "List comprehension uses <strong>square brackets <code>[ ]</code></strong>. Parentheses <code>( )</code> create a generator, which is different!"
+  },
+  {
+    question: "What is the output of this code?",
+    code: 'words = ["Cat", "DOG", "Bird"]\nresult = [w.lower() for w in words]\nprint(result)',
+    options: [
+      "['CAT', 'DOG', 'BIRD']",
+      "['Cat', 'DOG', 'Bird']",
+      "['cat', 'dog', 'bird']",
+      "['c', 'd', 'b']"
+    ],
+    correct: 2,
+    explanation: "The <code>.lower()</code> method converts each string to lowercase: <code>'cat'</code>, <code>'dog'</code>, <code>'bird'</code>."
+  },
+  {
+    question: "What is the output of this code?",
+    code: 'nums = [1, 2, 3, 4, 5]\nresult = [x ** 2 for x in nums if x % 2 != 0]\nprint(result)',
+    options: [
+      "[1, 9, 25]",
+      "[4, 16]",
+      "[1, 4, 9, 16, 25]",
+      "[2, 4]"
+    ],
+    correct: 0,
+    explanation: "First, we filter for odd numbers (<code>x % 2 != 0</code>): 1, 3, 5. Then square each: <code>1, 9, 25</code>."
+  },
+  {
+    question: "Where does the <code>if</code> go when you want to FILTER items out?",
+    code: null,
+    options: [
+      "Before the expression",
+      "Before the for keyword",
+      "After the iterable (at the end)",
+      "It doesn't matter"
+    ],
+    correct: 2,
+    explanation: "To filter: <code>[expr for x in list <strong>if condition</strong>]</code>. The condition goes <strong>after</strong> the iterable."
+  },
+  {
+    question: "What is the output of this code?",
+    code: 'nums = [1, 2, 3, 4]\nresult = ["even" if x % 2 == 0 else "odd" for x in nums]\nprint(result)',
+    options: [
+      "[2, 4]",
+      "['odd', 'even', 'odd', 'even']",
+      "['even', 'odd', 'even', 'odd']",
+      "[1, 3]"
+    ],
+    correct: 1,
+    explanation: "The <code>if...else</code> in the expression labels each number: 1→odd, 2→even, 3→odd, 4→even."
+  },
+  {
+    question: "What is the output of this code?",
+    code: 'word = "python"\nresult = [ch for ch in word if ch in "aeiou"]\nprint(result)',
+    options: [
+      "['p', 'y', 't', 'h', 'n']",
+      "['o']",
+      "['y', 'o']",
+      "['p', 'y', 't', 'h', 'o', 'n']"
+    ],
+    correct: 2,
+    explanation: "We loop through each character in <code>'python'</code> and keep only vowels. <code>'y'</code> and <code>'o'</code> are in <code>'aeiou'</code>... wait — actually <code>'y'</code> is NOT in <code>'aeiou'</code>! Only <code>'o'</code> matches. The answer is <code>['o']</code>."
+  },
+  {
+    question: "What is the output of this code?",
+    code: 'temps_f = [32, 212]\ntemps_c = [round((f - 32) * 5/9) for f in temps_f]\nprint(temps_c)',
+    options: [
+      "[0, 100]",
+      "[32, 212]",
+      "[0.0, 100.0]",
+      "[-32, 180]"
+    ],
+    correct: 0,
+    explanation: "Fahrenheit to Celsius: <code>(32-32)*5/9 = 0</code> and <code>(212-32)*5/9 = 100</code>. The <code>round()</code> gives integers."
+  }
+];
+
+// Fix Q9 — 'y' is NOT a vowel in 'aeiou', correct answer is ['o'] which is index 1
+quizData[8].correct = 1;
+quizData[8].explanation = "We keep only characters found in <code>'aeiou'</code>. From <code>'python'</code>, only <code>'o'</code> is a vowel. So the result is <code>['o']</code>.";
+
+// ── BUILD QUIZ ──
+const quizState = { answers: new Array(quizData.length).fill(-1), submitted: false };
+
+function buildQuiz() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+
+  quizData.forEach((q, qi) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-question';
+    div.id = 'question-' + qi;
+
+    let codeHTML = '';
+    if (q.code) {
+      codeHTML = `<div class="q-code"><code>${escapeAndHighlight(q.code)}</code></div>`;
+    }
+
+    let optionsHTML = '';
+    q.options.forEach((opt, oi) => {
+      optionsHTML += `
+        <button class="q-option" id="opt-${qi}-${oi}" onclick="selectAnswer(${qi}, ${oi})">
+          <div class="radio"></div>
+          <span>${opt}</span>
+        </button>`;
+    });
+
+    div.innerHTML = `
+      <div class="q-number">Question ${qi + 1} of ${quizData.length}</div>
+      <div class="q-text">${q.question}</div>
+      ${codeHTML}
+      <div class="q-options">${optionsHTML}</div>
+      <div class="q-explanation" id="explain-${qi}"></div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+function escapeAndHighlight(code) {
+  return code
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\b(for|in|if|else|not|and|or|def|return|import|from|while|True|False|None)\b/g, '<span class="kw">$1</span>')
+    .replace(/\b(print|len|range|round|int|str|float|list|append|lower|upper|sort)\b/g, '<span class="fn">$1</span>')
+    .replace(/(["'])(.*?)\1/g, '<span class="str">$&</span>')
+    .replace(/\b(\d+)\b/g, '<span class="num">$1</span>')
+    .replace(/(#.*)/g, '<span class="cm">$1</span>');
+}
+
+function selectAnswer(qi, oi) {
+  if (quizState.submitted) return;
+  quizState.answers[qi] = oi;
+
+  // Update UI
+  document.querySelectorAll(`[id^="opt-${qi}-"]`).forEach(btn => btn.classList.remove('selected'));
+  document.getElementById(`opt-${qi}-${oi}`).classList.add('selected');
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = quizState.answers.filter(a => a !== -1).length;
+  const pct = (answered / quizData.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function submitQuiz() {
+  const unanswered = quizState.answers.filter(a => a === -1).length;
+  if (unanswered > 0) {
+    alert(`Please answer all questions before submitting. You still have ${unanswered} unanswered question(s).`);
+    return;
+  }
+
+  quizState.submitted = true;
+  let score = 0;
+
+  quizData.forEach((q, qi) => {
+    const selected = quizState.answers[qi];
+    const correct = q.correct;
+    const questionDiv = document.getElementById('question-' + qi);
+    const explainDiv = document.getElementById('explain-' + qi);
+
+    // Disable all options
+    document.querySelectorAll(`[id^="opt-${qi}-"]`).forEach(btn => btn.classList.add('disabled'));
+
+    if (selected === correct) {
+      score++;
+      document.getElementById(`opt-${qi}-${selected}`).classList.add('correct-answer');
+      questionDiv.classList.add('answered-correct');
+      explainDiv.className = 'q-explanation visible correct-exp';
+      explainDiv.innerHTML = '✅ Correct! ' + q.explanation;
+    } else {
+      document.getElementById(`opt-${qi}-${selected}`).classList.add('wrong-answer');
+      document.getElementById(`opt-${qi}-${correct}`).classList.add('correct-answer');
+      questionDiv.classList.add('answered-wrong');
+      explainDiv.className = 'q-explanation visible wrong-exp';
+      explainDiv.innerHTML = '❌ Incorrect. ' + q.explanation;
+    }
+  });
+
+  // Show score
+  const scoreDisplay = document.getElementById('scoreDisplay');
+  const pct = Math.round((score / quizData.length) * 100);
+
+  let icon, title;
+  if (pct === 100) { icon = '🏆'; title = 'Perfect Score! Amazing!'; }
+  else if (pct >= 80) { icon = '🌟'; title = 'Great Job!'; }
+  else if (pct >= 60) { icon = '👍'; title = 'Good Effort!'; }
+  else if (pct >= 40) { icon = '📚'; title = 'Keep Practicing!'; }
+  else { icon = '💪'; title = "Don't Give Up!"; }
+
+  document.getElementById('scoreIcon').textContent = icon;
+  document.getElementById('scoreTitle').textContent = title;
+  document.getElementById('scoreNumber').textContent = `${score} / ${quizData.length}`;
+  document.getElementById('scoreDetail').textContent = `You scored ${pct}%`;
+  scoreDisplay.classList.add('visible');
+
+  // Hide submit
+  document.getElementById('submitBtn').style.display = 'none';
+
+  // Scroll to score
+  scoreDisplay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function updateScoreName() {
+  const name = document.getElementById('studentName').value.trim();
+  document.getElementById('studentNameDisplay').textContent = name ? `Student: ${name}` : '';
+}
+
+function resetQuiz() {
+  quizState.answers = new Array(quizData.length).fill(-1);
+  quizState.submitted = false;
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('scoreDisplay').classList.remove('visible');
+  document.getElementById('submitBtn').style.display = '';
+  document.getElementById('studentName').value = '';
+  document.getElementById('studentNameDisplay').textContent = '';
+  buildQuiz();
+  document.getElementById('quizContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── INIT ──
+buildQuiz();
+</script>
+</body>
+</html>

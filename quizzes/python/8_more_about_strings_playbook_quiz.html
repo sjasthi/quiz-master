@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>More About Strings — Interactive Playbook &amp; Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-main: #0f172a;
+  --bg-card: #1e293b;
+  --bg-card-alt: #253349;
+  --bg-code: #0d1520;
+  --accent-orange: #f97316;
+  --accent-yellow: #fbbf24;
+  --accent-green: #34d399;
+  --accent-blue: #38bdf8;
+  --accent-purple: #a78bfa;
+  --accent-pink: #f472b6;
+  --accent-red: #f87171;
+  --accent-teal: #2dd4bf;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: #334155;
+  --success: #22c55e;
+  --error: #ef4444;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(ellipse at 20% 50%, rgba(45,212,191,0.05) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 20%, rgba(167,139,250,0.05) 0%, transparent 50%),
+              radial-gradient(ellipse at 50% 80%, rgba(56,189,248,0.05) 0%, transparent 50%);
+  z-index: -1;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 24px 20px 60px; }
+
+/* ── HEADER ── */
+.header { text-align: center; padding: 36px 20px 24px; }
+
+.header-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue));
+  color: #0f172a;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 5px 16px;
+  border-radius: 20px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.header h1 {
+  font-family: 'Fredoka', sans-serif;
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow), var(--accent-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.header p {
+  color: var(--text-secondary);
+  font-size: 15px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ── TAB NAV ── */
+.tab-nav {
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  background: var(--bg-card);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  margin-bottom: 28px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.tab-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue));
+  color: #0f172a;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(45,212,191,0.25);
+}
+
+.tab-content { display: none; animation: fadeIn 0.35s ease; }
+.tab-content.active { display: block; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── CARDS ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  color: var(--text-primary);
+}
+
+.icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.icon-orange { background: rgba(249,115,22,0.15); }
+.icon-green  { background: rgba(52,211,153,0.15); }
+.icon-blue   { background: rgba(56,189,248,0.15); }
+.icon-purple { background: rgba(167,139,250,0.15); }
+.icon-teal   { background: rgba(45,212,191,0.15); }
+.icon-pink   { background: rgba(244,114,182,0.15); }
+.icon-yellow { background: rgba(251,191,36,0.15); }
+
+.card p, .card li { color: var(--text-secondary); line-height: 1.7; margin-bottom: 10px; font-size: 15px; }
+.card ul, .card ol { padding-left: 20px; }
+.card li { margin-bottom: 6px; }
+
+.highlight { color: var(--accent-yellow); font-weight: 600; }
+.highlight-green { color: var(--accent-green); font-weight: 600; }
+.highlight-blue { color: var(--accent-blue); font-weight: 600; }
+.highlight-red { color: var(--accent-red); font-weight: 600; }
+.highlight-purple { color: var(--accent-purple); font-weight: 600; }
+.highlight-teal { color: var(--accent-teal); font-weight: 600; }
+
+/* ── CODE BLOCKS ── */
+.code-block {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 14px 0;
+}
+
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.code-dots { display: flex; gap: 6px; }
+.dot-r, .dot-y, .dot-g { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r { background: #ef4444; }
+.dot-y { background: #eab308; }
+.dot-g { background: #22c55e; }
+
+.code-block pre {
+  padding: 16px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  -webkit-overflow-scrolling: touch;
+}
+
+.code-block code { white-space: pre; }
+
+.kw { color: var(--accent-purple); }
+.fn { color: var(--accent-blue); }
+.str { color: var(--accent-green); }
+.num { color: var(--accent-orange); }
+.cm { color: var(--text-muted); font-style: italic; }
+.var { color: var(--accent-yellow); }
+.op { color: var(--accent-pink); }
+.err { color: var(--accent-red); }
+.bi { color: var(--accent-teal); }
+
+/* ── RUN BUTTON ── */
+.run-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-top: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+}
+
+.run-btn {
+  padding: 6px 18px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent-green), var(--accent-teal));
+  color: #0f172a;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.run-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(52,211,153,0.3); }
+
+.run-output {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  background: rgba(0,0,0,0.2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--accent-green);
+  white-space: pre;
+  display: none;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.run-output.visible { display: block; }
+.run-output.error-output { color: var(--accent-red); }
+
+/* ── CALLOUT ── */
+.callout {
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin: 14px 0;
+  font-size: 14px;
+  line-height: 1.6;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.callout-tip { background: rgba(52,211,153,0.08); border-left: 3px solid var(--accent-green); color: var(--accent-green); }
+.callout-warn { background: rgba(251,191,36,0.08); border-left: 3px solid var(--accent-yellow); color: var(--accent-yellow); }
+.callout-error { background: rgba(239,68,68,0.08); border-left: 3px solid var(--accent-red); color: var(--accent-red); }
+.callout-info { background: rgba(56,189,248,0.08); border-left: 3px solid var(--accent-blue); color: var(--accent-blue); }
+
+.callout-icon { font-size: 18px; flex-shrink: 0; }
+
+/* ── TABLES ── */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 14px;
+}
+
+.compare-table th {
+  text-align: left;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.04);
+  color: var(--accent-teal);
+  font-weight: 600;
+  border-bottom: 2px solid var(--border);
+}
+
+.compare-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+}
+
+.compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+code.inline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 7px;
+  border-radius: 5px;
+  color: var(--accent-yellow);
+}
+
+/* ── SYNTAX BOX ── */
+.syntax-box {
+  background: var(--bg-card-alt);
+  border: 1px dashed var(--accent-teal);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 16px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  text-align: center;
+  line-height: 2;
+}
+
+.syntax-box .syntax-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* ── INDEX VISUALIZATION ── */
+.index-vis {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 18px 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.index-row {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+
+.index-row .label {
+  width: 60px;
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+  padding-right: 8px;
+}
+
+.index-cell {
+  width: 48px; height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.index-cell.char-cell {
+  background: rgba(56,189,248,0.12);
+  border: 1px solid rgba(56,189,248,0.25);
+  color: var(--accent-blue);
+  font-size: 16px;
+}
+
+.index-cell.pos-cell {
+  color: var(--accent-green);
+  font-size: 12px;
+}
+
+.index-cell.neg-cell {
+  color: var(--accent-orange);
+  font-size: 12px;
+}
+
+/* ── QUIZ ── */
+.quiz-q {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 20px;
+  transition: border-color 0.3s ease;
+}
+
+.quiz-q.correct { border-color: var(--success); }
+.quiz-q.incorrect { border-color: var(--error); }
+
+.q-number {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-teal);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.q-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.q-text code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  background: rgba(255,255,255,0.06);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--accent-yellow);
+}
+
+.q-options { display: flex; flex-direction: column; gap: 8px; }
+
+.q-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.q-option:hover { border-color: var(--accent-teal); background: rgba(45,212,191,0.05); }
+
+.q-option input { display: none; }
+
+.q-radio {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.q-option.selected .q-radio {
+  border-color: var(--accent-teal);
+  background: var(--accent-teal);
+}
+
+.q-option.selected .q-radio::after {
+  content: '';
+  width: 8px; height: 8px;
+  background: #0f172a;
+  border-radius: 50%;
+}
+
+.q-option.selected { border-color: var(--accent-teal); background: rgba(45,212,191,0.08); color: var(--text-primary); }
+
+.q-option.correct-answer { border-color: var(--success); background: rgba(34,197,94,0.1); }
+.q-option.correct-answer .q-radio { border-color: var(--success); background: var(--success); }
+.q-option.wrong-answer { border-color: var(--error); background: rgba(239,68,68,0.1); }
+.q-option.wrong-answer .q-radio { border-color: var(--error); background: var(--error); }
+
+.q-explanation {
+  display: none;
+  margin-top: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.q-explanation.show { display: block; }
+.q-explanation.correct-expl { background: rgba(34,197,94,0.08); color: var(--accent-green); }
+.q-explanation.incorrect-expl { background: rgba(239,68,68,0.08); color: var(--accent-red); }
+
+/* ── SUBMIT / SCORE ── */
+.submit-section { text-align: center; margin-top: 30px; }
+
+.submit-btn {
+  padding: 14px 40px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+  color: #0f172a;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(249,115,22,0.3); }
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.score-card {
+  display: none;
+  margin-top: 24px;
+  padding: 32px;
+  background: var(--bg-card);
+  border: 2px solid var(--accent-teal);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.score-card.visible { display: block; animation: fadeIn 0.5s ease; }
+
+.score-label {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.score-value {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 56px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.score-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.score-reminder {
+  margin-top: 16px;
+  padding: 12px 18px;
+  background: rgba(251,191,36,0.08);
+  border-radius: 10px;
+  border-left: 3px solid var(--accent-yellow);
+  font-size: 14px;
+  color: var(--accent-yellow);
+}
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 30px 20px;
+  color: var(--text-muted);
+  font-size: 13px;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+
+@media (max-width: 600px) {
+  .container { padding: 16px 12px 40px; }
+  .card { padding: 20px 16px; }
+  .tab-btn { min-width: 90px; padding: 10px 12px; font-size: 13px; }
+  .index-cell { width: 36px; height: 34px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">Python 101 — Chapter 8</div>
+  <h1>More About Strings</h1>
+  <p>Interactive Playbook &amp; Quiz — Master indexing, slicing, immutability, string methods, and more!</p>
+</div>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('basics')">📝 Basics</button>
+  <button class="tab-btn" onclick="switchTab('methods')">🔧 Methods</button>
+  <button class="tab-btn" onclick="switchTab('advanced')">🚀 Advanced</button>
+  <button class="tab-btn" onclick="switchTab('quiz')">📋 Quiz</button>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--               TAB 1: BASICS                -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-basics" class="tab-content active">
+
+  <!-- Strings = Character Lists -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon icon-blue">🔤</div>
+      Strings = Character Lists
+    </div>
+    <p>A string in Python is a <span class="highlight">sequence of characters</span> — think of it as a list where each element is a single character. You can even convert a string to a list using <code class="inline">list()</code>:</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>strings_as_lists.py</span>
+      </div>
+      <pre><code><span class="var">name</span> = <span class="str">'Siva Jasthi'</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="var">name</span>))
+
+<span class="var">name_lst</span> = <span class="fn">list</span>(<span class="var">name</span>)
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="var">name_lst</span>))
+<span class="fn">print</span>(<span class="var">name_lst</span>)</code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `name = 'Siva Jasthi'\nprint(type(name))\n\nname_lst = list(name)\nprint(type(name_lst))\nprint(name_lst)`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">💡</span>
+      <span>Each character in the string — <strong>including spaces</strong> — gets its own index position, just like elements in a list.</span>
+    </div>
+  </div>
+
+  <!-- Indexing -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon icon-green">📍</div>
+      String Indexing
+    </div>
+    <p>Since strings are sequences, you can access individual characters using <span class="highlight-green">positive</span> (left→right) or <span class="highlight">negative</span> (right→left) indexing:</p>
+
+    <div class="index-vis">
+      <div class="index-row">
+        <div class="label">chars:</div>
+        <div class="index-cell char-cell">P</div>
+        <div class="index-cell char-cell">Y</div>
+        <div class="index-cell char-cell">T</div>
+        <div class="index-cell char-cell">H</div>
+        <div class="index-cell char-cell">O</div>
+        <div class="index-cell char-cell">N</div>
+      </div>
+      <div class="index-row">
+        <div class="label">positive:</div>
+        <div class="index-cell pos-cell">0</div>
+        <div class="index-cell pos-cell">1</div>
+        <div class="index-cell pos-cell">2</div>
+        <div class="index-cell pos-cell">3</div>
+        <div class="index-cell pos-cell">4</div>
+        <div class="index-cell pos-cell">5</div>
+      </div>
+      <div class="index-row">
+        <div class="label">negative:</div>
+        <div class="index-cell neg-cell">-6</div>
+        <div class="index-cell neg-cell">-5</div>
+        <div class="index-cell neg-cell">-4</div>
+        <div class="index-cell neg-cell">-3</div>
+        <div class="index-cell neg-cell">-2</div>
+        <div class="index-cell neg-cell">-1</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>indexing.py</span>
+      </div>
+      <pre><code><span class="var">lang</span> = <span class="str">'PYTHON'</span>
+
+<span class="fn">print</span>(<span class="var">lang</span>[<span class="num">0</span>])    <span class="cm"># P  — first character</span>
+<span class="fn">print</span>(<span class="var">lang</span>[<span class="num">5</span>])    <span class="cm"># N  — last character</span>
+<span class="fn">print</span>(<span class="var">lang</span>[<span class="num">-1</span>])   <span class="cm"># N  — last (negative)</span>
+<span class="fn">print</span>(<span class="var">lang</span>[<span class="num">-6</span>])   <span class="cm"># P  — first (negative)</span></code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `lang = 'PYTHON'\n\nprint(lang[0])    # P\nprint(lang[5])    # N\nprint(lang[-1])   # N\nprint(lang[-6])   # P`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+
+    <div class="callout callout-error">
+      <span class="callout-icon">⚠️</span>
+      <span><strong>IndexError:</strong> Accessing <code class="inline">lang[6]</code> or <code class="inline">lang[-7]</code> raises an IndexError because those positions don't exist in a 6-character string!</span>
+    </div>
+  </div>
+
+  <!-- Slicing -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon icon-purple">✂️</div>
+      String Slicing
+    </div>
+    <p>Slicing extracts a <span class="highlight-purple">portion</span> of a string using the syntax: <code class="inline">string[start : stop : step]</code></p>
+    <ul>
+      <li><span class="highlight-green">start</span> — where the slice begins (inclusive, default 0)</li>
+      <li><span class="highlight-red">stop</span> — where the slice ends (exclusive, default end)</li>
+      <li><span class="highlight-blue">step</span> — how many to skip (default 1)</li>
+    </ul>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>slicing.py</span>
+      </div>
+      <pre><code><span class="var">text</span> = <span class="str">'Programming'</span>
+
+<span class="fn">print</span>(<span class="var">text</span>[<span class="num">1</span>:<span class="num">3</span>])     <span class="cm"># ro</span>
+<span class="fn">print</span>(<span class="var">text</span>[:<span class="num">3</span>])      <span class="cm"># Pro</span>
+<span class="fn">print</span>(<span class="var">text</span>[<span class="num">-2</span>:])     <span class="cm"># ng</span>
+<span class="fn">print</span>(<span class="var">text</span>[:])       <span class="cm"># Programming (full copy)</span>
+<span class="fn">print</span>(<span class="var">text</span>[<span class="num">1</span>:<span class="num">5</span>:<span class="num">2</span>])   <span class="cm"># rg  (step of 2)</span>
+<span class="fn">print</span>(<span class="var">text</span>[<span class="num">1</span>::<span class="num">2</span>])    <span class="cm"># rgamn (every other from index 1)</span>
+<span class="fn">print</span>(<span class="var">text</span>[::<span class="num">-1</span>])    <span class="cm"># gnimmargorP (REVERSED!)</span></code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `text = 'Programming'\n\nprint(text[1:3])\nprint(text[:3])\nprint(text[-2:])\nprint(text[:])\nprint(text[1:5:2])\nprint(text[1::2])\nprint(text[::-1])`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">💡</span>
+      <span><code class="inline">text[::-1]</code> is a quick and elegant way to <strong>reverse</strong> any string in Python!</span>
+    </div>
+  </div>
+
+  <!-- Immutability -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon icon-orange">🔒</div>
+      Strings are Immutable
+    </div>
+    <p>Strings <span class="highlight-red">cannot be changed</span> after they are created. Trying to assign a new character to a specific index raises a <code class="inline">TypeError</code>:</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>immutable_error.py</span>
+      </div>
+      <pre><code><span class="var">name</span> = <span class="str">'Python'</span>
+<span class="var">name</span>[<span class="num">0</span>] = <span class="str">'C'</span>   <span class="cm"># ❌ TypeError!</span></code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `name = 'Python'\nname[0] = 'C'`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+
+    <p style="margin-top:14px;">To "modify" a string, you build a <span class="highlight-green">brand new</span> one using slicing and concatenation:</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>workaround.py</span>
+      </div>
+      <pre><code><span class="var">input_str</span> = <span class="str">'Python'</span>
+<span class="fn">print</span>(<span class="str">'Before:'</span>, <span class="var">input_str</span>)
+
+<span class="var">slice1</span> = <span class="var">input_str</span>[<span class="num">1</span>:]       <span class="cm"># 'ython'</span>
+<span class="var">new_string</span> = <span class="str">'C'</span> + <span class="var">slice1</span>   <span class="cm"># 'Cython'</span>
+
+<span class="fn">print</span>(<span class="str">'New String:'</span>, <span class="var">new_string</span>)
+<span class="fn">print</span>(<span class="str">'Original:'</span>, <span class="var">input_str</span>)</code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `input_str = 'Python'\nprint('Before:', input_str)\n\nslice1 = input_str[1:]\nnew_string = 'C' + slice1\n\nprint('New String:', new_string)\nprint('Original:', input_str)`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">ℹ️</span>
+      <span>Python creates a <strong>new string object</strong> in memory. The original string stays unchanged — eventually the old orphan is cleaned up by <strong>garbage collection</strong>.</span>
+    </div>
+  </div>
+
+  <!-- Membership + Traversal -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon icon-teal">🔍</div>
+      Membership &amp; Traversal
+    </div>
+    <p>Use <code class="inline">in</code> and <code class="inline">not in</code> to check if a substring exists (case-sensitive!):</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>membership.py</span>
+      </div>
+      <pre><code><span class="var">text</span> = <span class="str">'Python programming is cool'</span>
+
+<span class="fn">print</span>(<span class="str">'python'</span> <span class="kw">in</span> <span class="var">text</span>)       <span class="cm"># False (case-sensitive!)</span>
+<span class="fn">print</span>(<span class="str">'Python'</span> <span class="kw">in</span> <span class="var">text</span>)       <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="str">'python'</span> <span class="kw">not in</span> <span class="var">text</span>)   <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="str">'cool'</span> <span class="kw">in</span> <span class="var">text</span>)         <span class="cm"># True</span></code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `text = 'Python programming is cool'\n\nprint('python' in text)\nprint('Python' in text)\nprint('python' not in text)\nprint('cool' in text)`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+
+    <p style="margin-top:18px;">Traverse a string with a <code class="inline">for</code> loop — three different ways:</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>traversal.py</span>
+      </div>
+      <pre><code><span class="var">name</span> = <span class="str">'Python'</span>
+
+<span class="cm"># Method 1: Direct (values only)</span>
+<span class="kw">for</span> <span class="var">ch</span> <span class="kw">in</span> <span class="var">name</span>:
+    <span class="fn">print</span>(<span class="var">ch</span>, end=<span class="str">','</span>)
+
+<span class="fn">print</span>()  <span class="cm"># newline</span>
+
+<span class="cm"># Method 2: Index-based with range</span>
+<span class="kw">for</span> <span class="var">idx</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(<span class="var">name</span>)):
+    <span class="fn">print</span>(<span class="var">idx</span>, <span class="str">'-->'</span>, <span class="var">name</span>[<span class="var">idx</span>])
+
+<span class="cm"># Method 3: enumerate (index + value)</span>
+<span class="kw">for</span> <span class="var">idx</span>, <span class="var">value</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="var">name</span>):
+    <span class="fn">print</span>(<span class="var">idx</span>, <span class="var">value</span>)</code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `name = 'Python'\n\n# Method 1: Direct (values only)\nfor ch in name:\n    print(ch, end=',')\n\nprint()  # newline\n\n# Method 2: Index-based with range\nfor idx in range(len(name)):\n    print(idx, '-->', name[idx])\n\n# Method 3: enumerate (index + value)\nfor idx, value in enumerate(name):\n    print(idx, value)`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--             TAB 2: METHODS                 -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-methods" class="tab-content">
+
+  <!-- Testing Methods -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon icon-green">❓</div>
+      String Testing Methods (Querying / Asking)
+    </div>
+    <p>These methods return <code class="inline">True</code> or <code class="inline">False</code> — great for <span class="highlight-green">validating</span> user input!</p>
+
+    <table class="compare-table">
+      <thead><tr><th>Method</th><th>Returns True when…</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">isalnum()</code></td><td>String has only letters or digits</td></tr>
+        <tr><td><code class="inline">isalpha()</code></td><td>String has only alphabetic letters</td></tr>
+        <tr><td><code class="inline">isdigit()</code></td><td>String has only numeric digits</td></tr>
+        <tr><td><code class="inline">islower()</code></td><td>All letters are lowercase</td></tr>
+        <tr><td><code class="inline">isupper()</code></td><td>All letters are uppercase</td></tr>
+        <tr><td><code class="inline">isspace()</code></td><td>String has only whitespace</td></tr>
+      </tbody>
+    </table>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>testing_methods.py</span>
+      </div>
+      <pre><code><span class="var">s1</span> = <span class="str">'123'</span>
+<span class="fn">print</span>(<span class="var">s1</span>.<span class="fn">isdigit</span>())    <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="var">s1</span>.<span class="fn">isalpha</span>())    <span class="cm"># False</span>
+
+<span class="var">s2</span> = <span class="str">'PYTHON'</span>
+<span class="fn">print</span>(<span class="var">s2</span>.<span class="fn">isupper</span>())    <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="var">s2</span>.<span class="fn">islower</span>())    <span class="cm"># False</span>
+
+<span class="var">s3</span> = <span class="str">'Hello123'</span>
+<span class="fn">print</span>(<span class="var">s3</span>.<span class="fn">isalnum</span>())    <span class="cm"># True (letters + digits)</span>
+<span class="fn">print</span>(<span class="var">s3</span>.<span class="fn">isalpha</span>())    <span class="cm"># False (has digits)</span></code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `s1 = '123'\nprint(s1.isdigit())\nprint(s1.isalpha())\n\ns2 = 'PYTHON'\nprint(s2.isupper())\nprint(s2.islower())\n\ns3 = 'Hello123'\nprint(s3.isalnum())\nprint(s3.isalpha())`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+  </div>
+
+  <!-- Modification Methods -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon icon-orange">🔄</div>
+      String Modification Methods
+    </div>
+    <p>These methods return a <span class="highlight">new string</span> — they do <span class="highlight-red">NOT</span> change the original (because strings are immutable!).</p>
+
+    <table class="compare-table">
+      <thead><tr><th>Method</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">lower()</code></td><td>All letters → lowercase</td></tr>
+        <tr><td><code class="inline">upper()</code></td><td>All letters → uppercase</td></tr>
+        <tr><td><code class="inline">strip()</code></td><td>Removes leading &amp; trailing whitespace</td></tr>
+        <tr><td><code class="inline">lstrip()</code></td><td>Removes leading (left) whitespace</td></tr>
+        <tr><td><code class="inline">rstrip()</code></td><td>Removes trailing (right) whitespace</td></tr>
+        <tr><td><code class="inline">title()</code></td><td>First letter of each word → uppercase</td></tr>
+        <tr><td><code class="inline">swapcase()</code></td><td>Swaps lower ↔ upper</td></tr>
+      </tbody>
+    </table>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>modification.py</span>
+      </div>
+      <pre><code><span class="var">text</span> = <span class="str">'Python Programming is COOL'</span>
+
+<span class="fn">print</span>(<span class="var">text</span>.<span class="fn">lower</span>())       <span class="cm"># python programming is cool</span>
+<span class="fn">print</span>(<span class="var">text</span>.<span class="fn">upper</span>())       <span class="cm"># PYTHON PROGRAMMING IS COOL</span>
+<span class="fn">print</span>(<span class="var">text</span>.<span class="fn">swapcase</span>())    <span class="cm"># pYTHON pROGRAMMING IS cool</span>
+<span class="fn">print</span>(<span class="var">text</span>.<span class="fn">title</span>())       <span class="cm"># Python Programming Is Cool</span>
+
+<span class="cm"># Original is unchanged!</span>
+<span class="fn">print</span>(<span class="var">text</span>)</code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `text = 'Python Programming is COOL'\n\nprint(text.lower())\nprint(text.upper())\nprint(text.swapcase())\nprint(text.title())\n\n# Original is unchanged!\nprint(text)`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">⚠️</span>
+      <span>All string methods return <strong>new values</strong>. To keep the result, assign it: <code class="inline">text = text.upper()</code></span>
+    </div>
+  </div>
+
+  <!-- Search, Replace, Count -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon icon-blue">🔎</div>
+      Search, Replace &amp; Count
+    </div>
+
+    <table class="compare-table">
+      <thead><tr><th>Method</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">find(sub)</code></td><td>Index of first occurrence; -1 if not found</td></tr>
+        <tr><td><code class="inline">count(sub)</code></td><td>How many times sub appears</td></tr>
+        <tr><td><code class="inline">replace(old, new)</code></td><td>Replace all occurrences of old with new</td></tr>
+        <tr><td><code class="inline">startswith(sub)</code></td><td>True if string starts with sub</td></tr>
+        <tr><td><code class="inline">endswith(sub)</code></td><td>True if string ends with sub</td></tr>
+      </tbody>
+    </table>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>search_replace.py</span>
+      </div>
+      <pre><code><span class="var">title</span> = <span class="str">'Oh boy! Python programming is cool'</span>
+
+<span class="fn">print</span>(<span class="var">title</span>.<span class="fn">count</span>(<span class="str">'o'</span>))                <span class="cm"># 5</span>
+<span class="fn">print</span>(<span class="var">title</span>.<span class="fn">lower</span>().<span class="fn">count</span>(<span class="str">'o'</span>))        <span class="cm"># 6 (case-insensitive!)</span>
+<span class="fn">print</span>(<span class="var">title</span>.<span class="fn">find</span>(<span class="str">'Python'</span>))            <span class="cm"># 8</span>
+<span class="fn">print</span>(<span class="var">title</span>.<span class="fn">replace</span>(<span class="str">'cool'</span>, <span class="str">'fun'</span>))  <span class="cm"># Oh boy! Python programming is fun</span>
+<span class="fn">print</span>(<span class="var">title</span>.<span class="fn">startswith</span>(<span class="str">'Oh'</span>))        <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="var">title</span>.<span class="fn">endswith</span>(<span class="str">'cool'</span>))         <span class="cm"># True</span></code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `title = 'Oh boy! Python programming is cool'\n\nprint(title.count('o'))\nprint(title.lower().count('o'))\nprint(title.find('Python'))\nprint(title.replace('cool', 'fun'))\nprint(title.startswith('Oh'))\nprint(title.endswith('cool'))`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">💡</span>
+      <span><strong>Method chaining:</strong> <code class="inline">title.lower().count('o')</code> first converts to lowercase, then counts — giving a case-insensitive count!</span>
+    </div>
+  </div>
+
+  <!-- Split / Join -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon icon-pink">✂️</div>
+      Splitting &amp; Joining Strings
+    </div>
+    <p><code class="inline">split()</code> breaks a string into a <span class="highlight-green">list</span>. <code class="inline">join()</code> glues a list back into a <span class="highlight-blue">string</span>.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>split_join.py</span>
+      </div>
+      <pre><code><span class="cm"># Splitting by whitespace (default)</span>
+<span class="var">sentence</span> = <span class="str">'Python programming is cool'</span>
+<span class="var">words</span> = <span class="var">sentence</span>.<span class="fn">split</span>()
+<span class="fn">print</span>(<span class="var">words</span>)
+<span class="fn">print</span>(<span class="str">'Word count:'</span>, <span class="fn">len</span>(<span class="var">words</span>))
+
+<span class="cm"># Splitting by a custom delimiter</span>
+<span class="var">date</span> = <span class="str">'1/22/2023'</span>
+<span class="var">parts</span> = <span class="var">date</span>.<span class="fn">split</span>(<span class="str">'/'</span>)
+<span class="fn">print</span>(<span class="var">parts</span>)
+<span class="fn">print</span>(<span class="str">'Year:'</span>, <span class="var">parts</span>[<span class="num">2</span>])
+
+<span class="cm"># Joining with a hyphen</span>
+<span class="var">result</span> = <span class="str">'-'</span>.<span class="fn">join</span>(<span class="var">words</span>)
+<span class="fn">print</span>(<span class="var">result</span>)</code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `# Splitting by whitespace (default)\nsentence = 'Python programming is cool'\nwords = sentence.split()\nprint(words)\nprint('Word count:', len(words))\n\n# Splitting by a custom delimiter\ndate = '1/22/2023'\nparts = date.split('/')\nprint(parts)\nprint('Year:', parts[2])\n\n# Joining with a hyphen\nresult = '-'.join(words)\nprint(result)`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--           TAB 3: ADVANCED                  -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-advanced" class="tab-content">
+
+  <!-- Built-in Functions -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon icon-teal">📐</div>
+      Built-in Functions on Strings
+    </div>
+    <p>Python's built-in functions like <code class="inline">len()</code>, <code class="inline">max()</code>, and <code class="inline">min()</code> work on strings:</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>builtins.py</span>
+      </div>
+      <pre><code><span class="var">name</span> = <span class="str">'india'</span>
+<span class="fn">print</span>(<span class="str">'Length:'</span>, <span class="fn">len</span>(<span class="var">name</span>))    <span class="cm"># 5</span>
+<span class="fn">print</span>(<span class="str">'Max:'</span>,    <span class="fn">max</span>(<span class="var">name</span>))    <span class="cm"># n (highest alphabetically)</span>
+<span class="fn">print</span>(<span class="str">'Min:'</span>,    <span class="fn">min</span>(<span class="var">name</span>))    <span class="cm"># a (lowest alphabetically)</span>
+
+<span class="fn">print</span>()
+<span class="var">name2</span> = <span class="str">'Indigo'</span>
+<span class="fn">print</span>(<span class="str">'Max:'</span>,    <span class="fn">max</span>(<span class="var">name2</span>))   <span class="cm"># o</span>
+<span class="fn">print</span>(<span class="str">'Min:'</span>,    <span class="fn">min</span>(<span class="var">name2</span>))   <span class="cm"># I (uppercase &lt; lowercase!)</span></code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `name = 'india'\nprint('Length:', len(name))\nprint('Max:', max(name))\nprint('Min:', min(name))\n\nprint()\nname2 = 'Indigo'\nprint('Max:', max(name2))\nprint('Min:', min(name2))`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">ℹ️</span>
+      <span>In ASCII/Unicode, uppercase letters (A–Z) have <strong>lower</strong> values than lowercase (a–z). So <code class="inline">min('Indigo')</code> returns <code class="inline">'I'</code> — not <code class="inline">'d'</code>!</span>
+    </div>
+  </div>
+
+  <!-- F-Strings -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon icon-yellow">✨</div>
+      Formatted Strings (f-strings)
+    </div>
+    <p>F-strings let you embed expressions directly inside a string using <code class="inline">{ }</code> placeholders, prefixed with <code class="inline">f</code>:</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>fstrings.py</span>
+      </div>
+      <pre><code><span class="var">name</span> = <span class="str">'Alex'</span>
+<span class="var">marks</span> = <span class="num">40</span>
+<span class="var">gpa</span> = <span class="num">3.9</span>
+
+<span class="cm"># Old way (messy with commas)</span>
+<span class="fn">print</span>(<span class="str">"Hi"</span>, <span class="var">name</span>, <span class="str">"! You got"</span>, <span class="var">marks</span>, <span class="str">"marks."</span>)
+
+<span class="cm"># f-string (clean and easy!)</span>
+<span class="fn">print</span>(<span class="str">f"Hi </span>{<span class="var">name</span>}<span class="str">! You got </span>{<span class="var">marks</span>}<span class="str"> marks. GPA is </span>{<span class="var">gpa</span>}<span class="str">"</span>)
+
+<span class="cm"># Controlling decimal places</span>
+<span class="kw">import</span> math
+<span class="fn">print</span>(<span class="str">f"Pi ≈ </span>{math.pi:<span class="num">.3f</span>}<span class="str">"</span>)
+<span class="fn">print</span>(<span class="str">f"Pi ≈ </span>{math.pi:<span class="num">.5f</span>}<span class="str">"</span>)</code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `name = 'Alex'\nmarks = 40\ngpa = 3.9\n\n# Old way (messy with commas)\nprint('Hi', name, '! You got', marks, 'marks.')\n\n# f-string (clean and easy!)\nprint(f'Hi {name}! You got {marks} marks. GPA is {gpa}')\n\n# Controlling decimal places\nimport math\nprint(f'Pi = {math.pi:.3f}')\nprint(f'Pi = {math.pi:.5f}')`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+  </div>
+
+  <!-- Repetition Operator -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon icon-purple">✖️</div>
+      Repetition Operator ( * )
+    </div>
+    <p>The <code class="inline">*</code> operator <span class="highlight-purple">repeats</span> a string a given number of times:</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>repetition.py</span>
+      </div>
+      <pre><code><span class="var">star</span> = <span class="str">'* '</span>
+<span class="fn">print</span>(<span class="var">star</span> * <span class="num">30</span>)
+
+<span class="var">dash</span> = <span class="str">'-'</span>
+<span class="fn">print</span>(<span class="var">dash</span> * <span class="num">40</span>)
+
+<span class="fn">print</span>(<span class="str">'Ha'</span> * <span class="num">5</span>)</code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `star = '* '\nprint(star * 30)\n\ndash = '-'\nprint(dash * 40)\n\nprint('Ha' * 5)`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+  </div>
+
+  <!-- What String Methods Return -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon icon-green">📋</div>
+      Discovering All String Methods
+    </div>
+    <p>Python has <span class="highlight-green">dozens</span> of built-in string methods! You can see them all using <code class="inline">dir(str)</code>:</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span>discover_methods.py</span>
+      </div>
+      <pre><code><span class="var">cmds_list</span> = <span class="fn">dir</span>(<span class="bi">str</span>)
+
+<span class="cm"># Show only the public methods (no double underscores)</span>
+<span class="kw">for</span> <span class="var">cmd</span> <span class="kw">in</span> <span class="var">cmds_list</span>:
+    <span class="kw">if</span> <span class="str">'_'</span> <span class="kw">not in</span> <span class="var">cmd</span>:
+        <span class="fn">print</span>(<span class="var">cmd</span>)</code></pre>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runCode(this, `cmds_list = dir(str)\n\n# Show only the public methods (no double underscores)\nfor cmd in cmds_list:\n    if '_' not in cmd:\n        print(cmd)`)">▶ Run</button>
+      </div>
+      <div class="run-output"></div>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">💡</span>
+      <span>Full reference: <strong>w3schools.com/python/python_ref_string.asp</strong> — bookmark this!</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--              TAB 4: QUIZ                   -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="tab-content">
+
+  <div class="card" style="text-align:center; padding: 20px;">
+    <div class="card-title" style="justify-content:center;">
+      <div class="icon icon-orange">📋</div>
+      String Mastery Quiz — 10 Questions
+    </div>
+    <p>Test your knowledge! Select the best answer for each question, then click <strong>Submit Quiz</strong> at the bottom.</p>
+  </div>
+
+  <div id="quiz-container">
+
+    <!-- Q1 -->
+    <div class="quiz-q" data-correct="c">
+      <div class="q-number">Question 1 of 10</div>
+      <div class="q-text">What does <code>list('hello')</code> return?</div>
+      <div class="q-options">
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q1" value="a"><div class="q-radio"></div><span><code>'hello'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q1" value="b"><div class="q-radio"></div><span><code>['hello']</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q1" value="c"><div class="q-radio"></div><span><code>['h', 'e', 'l', 'l', 'o']</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q1" value="d"><div class="q-radio"></div><span><code>['h', 'e', 'lo']</code></span></label>
+      </div>
+      <div class="q-explanation"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="quiz-q" data-correct="b">
+      <div class="q-number">Question 2 of 10</div>
+      <div class="q-text">Given <code>text = 'PYTHON'</code>, what does <code>text[-2]</code> return?</div>
+      <div class="q-options">
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q2" value="a"><div class="q-radio"></div><span><code>'Y'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q2" value="b"><div class="q-radio"></div><span><code>'O'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q2" value="c"><div class="q-radio"></div><span><code>'N'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q2" value="d"><div class="q-radio"></div><span>IndexError</span></label>
+      </div>
+      <div class="q-explanation"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="quiz-q" data-correct="a">
+      <div class="q-number">Question 3 of 10</div>
+      <div class="q-text">What does <code>'Programming'[::-1]</code> return?</div>
+      <div class="q-options">
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q3" value="a"><div class="q-radio"></div><span><code>'gnimmargorP'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q3" value="b"><div class="q-radio"></div><span><code>'Programming'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q3" value="c"><div class="q-radio"></div><span><code>'Pormig'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q3" value="d"><div class="q-radio"></div><span>Error — invalid slice</span></label>
+      </div>
+      <div class="q-explanation"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="quiz-q" data-correct="d">
+      <div class="q-number">Question 4 of 10</div>
+      <div class="q-text">What happens when you run: <code>name = 'Python'</code> then <code>name[0] = 'C'</code>?</div>
+      <div class="q-options">
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q4" value="a"><div class="q-radio"></div><span><code>name</code> becomes <code>'Cython'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q4" value="b"><div class="q-radio"></div><span>IndexError</span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q4" value="c"><div class="q-radio"></div><span>Nothing happens — the command is ignored</span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q4" value="d"><div class="q-radio"></div><span>TypeError — strings are immutable</span></label>
+      </div>
+      <div class="q-explanation"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="quiz-q" data-correct="b">
+      <div class="q-number">Question 5 of 10</div>
+      <div class="q-text">What does <code>'python' in 'Python programming'</code> return?</div>
+      <div class="q-options">
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q5" value="a"><div class="q-radio"></div><span><code>True</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q5" value="b"><div class="q-radio"></div><span><code>False</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q5" value="c"><div class="q-radio"></div><span>Error</span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q5" value="d"><div class="q-radio"></div><span><code>None</code></span></label>
+      </div>
+      <div class="q-explanation"></div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="quiz-q" data-correct="c">
+      <div class="q-number">Question 6 of 10</div>
+      <div class="q-text">What does <code>'123abc'.isdigit()</code> return?</div>
+      <div class="q-options">
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q6" value="a"><div class="q-radio"></div><span><code>True</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q6" value="b"><div class="q-radio"></div><span>Error</span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q6" value="c"><div class="q-radio"></div><span><code>False</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q6" value="d"><div class="q-radio"></div><span><code>3</code></span></label>
+      </div>
+      <div class="q-explanation"></div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="quiz-q" data-correct="a">
+      <div class="q-number">Question 7 of 10</div>
+      <div class="q-text">What does <code>'1/22/2023'.split('/')</code> return?</div>
+      <div class="q-options">
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q7" value="a"><div class="q-radio"></div><span><code>['1', '22', '2023']</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q7" value="b"><div class="q-radio"></div><span><code>[1, 22, 2023]</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q7" value="c"><div class="q-radio"></div><span><code>'1 22 2023'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q7" value="d"><div class="q-radio"></div><span><code>['1/22/2023']</code></span></label>
+      </div>
+      <div class="q-explanation"></div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="quiz-q" data-correct="d">
+      <div class="q-number">Question 8 of 10</div>
+      <div class="q-text">What does <code>'hello world'.title()</code> return?</div>
+      <div class="q-options">
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q8" value="a"><div class="q-radio"></div><span><code>'HELLO WORLD'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q8" value="b"><div class="q-radio"></div><span><code>'hello world'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q8" value="c"><div class="q-radio"></div><span><code>'Hello world'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q8" value="d"><div class="q-radio"></div><span><code>'Hello World'</code></span></label>
+      </div>
+      <div class="q-explanation"></div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="quiz-q" data-correct="b">
+      <div class="q-number">Question 9 of 10</div>
+      <div class="q-text">What does <code>'Ha' * 3</code> return?</div>
+      <div class="q-options">
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q9" value="a"><div class="q-radio"></div><span><code>'Ha Ha Ha'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q9" value="b"><div class="q-radio"></div><span><code>'HaHaHa'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q9" value="c"><div class="q-radio"></div><span><code>'Ha3'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q9" value="d"><div class="q-radio"></div><span>Error — can't multiply strings</span></label>
+      </div>
+      <div class="q-explanation"></div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="quiz-q" data-correct="c">
+      <div class="q-number">Question 10 of 10</div>
+      <div class="q-text">Given <code>text = 'Programming'</code>, what does <code>text[1:5:2]</code> return?</div>
+      <div class="q-options">
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q10" value="a"><div class="q-radio"></div><span><code>'rog'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q10" value="b"><div class="q-radio"></div><span><code>'ro'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q10" value="c"><div class="q-radio"></div><span><code>'rg'</code></span></label>
+        <label class="q-option" onclick="selectOption(this)"><input type="radio" name="q10" value="d"><div class="q-radio"></div><span><code>'rgm'</code></span></label>
+      </div>
+      <div class="q-explanation"></div>
+    </div>
+
+  </div>
+
+  <div class="submit-section">
+    <button class="submit-btn" onclick="submitQuiz()">Submit Quiz</button>
+    <div class="score-card" id="scoreCard">
+      <div class="score-label">Your Score</div>
+      <div class="score-value" id="scoreValue">0 / 10</div>
+      <div class="score-subtitle" id="scoreMsg"></div>
+      <div class="score-reminder">📸 Take a screenshot of this score and submit it to <strong>Google Classroom</strong>.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  Python 101 · Chapter 8: More About Strings · Learn and Help Program · Metropolitan State University
+</div>
+
+</div>
+
+<script>
+// ── TAB SWITCHING ──
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tabId).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── PYTHON CODE RUNNER (simulated) ──
+function runCode(btn, code) {
+  const block = btn.closest('.code-block');
+  const output = block.querySelector('.run-output');
+  output.classList.remove('error-output');
+
+  try {
+    const result = executePython(code);
+    output.textContent = result;
+  } catch (e) {
+    output.textContent = e.message;
+    output.classList.add('error-output');
+  }
+  output.classList.add('visible');
+}
+
+function executePython(code) {
+  let output = [];
+  const vars = {};
+
+  // Simulated Python environment
+  const lines = code.split('\n');
+  let i = 0;
+
+  function getVal(expr) {
+    expr = expr.trim();
+    if (expr === '') return '';
+
+    // f-string
+    if (/^f['"]/.test(expr)) {
+      let inner = expr.slice(2, -1);
+      return inner.replace(/\{([^}]+)\}/g, (_, e) => {
+        if (e.includes(':.')) {
+          const [vname, fmt] = e.split(':');
+          const val = getVal(vname.trim());
+          const decimals = parseInt(fmt.replace('.','').replace('f',''));
+          return parseFloat(val).toFixed(decimals);
+        }
+        return getVal(e.trim());
+      });
+    }
+
+    // String literal
+    if (/^['"]/.test(expr)) return expr.slice(1, -1);
+
+    // Number
+    if (/^-?\d+(\.\d+)?$/.test(expr)) return parseFloat(expr);
+
+    // Boolean
+    if (expr === 'True') return true;
+    if (expr === 'False') return false;
+
+    // math.pi
+    if (expr === 'math.pi') return Math.PI;
+
+    // len()
+    let m;
+    if ((m = expr.match(/^len\((.+)\)$/))) {
+      const v = getVal(m[1]);
+      if (Array.isArray(v)) return v.length;
+      return String(v).length;
+    }
+
+    // max()
+    if ((m = expr.match(/^max\((.+)\)$/))) {
+      const v = getVal(m[1]);
+      if (Array.isArray(v)) return v.reduce((a,b) => String(a) > String(b) ? a : b);
+      return [...String(v)].reduce((a,b) => a > b ? a : b);
+    }
+
+    // min()
+    if ((m = expr.match(/^min\((.+)\)$/))) {
+      const v = getVal(m[1]);
+      if (Array.isArray(v)) return v.reduce((a,b) => String(a) < String(b) ? a : b);
+      return [...String(v)].reduce((a,b) => a < b ? a : b);
+    }
+
+    // type()
+    if ((m = expr.match(/^type\((.+)\)$/))) {
+      const v = getVal(m[1]);
+      if (Array.isArray(v)) return "<class 'list'>";
+      if (typeof v === 'number') return Number.isInteger(v) ? "<class 'int'>" : "<class 'float'>";
+      if (typeof v === 'boolean') return "<class 'bool'>";
+      return "<class 'str'>";
+    }
+
+    // list()
+    if ((m = expr.match(/^list\((.+)\)$/))) {
+      const v = getVal(m[1]);
+      return [...String(v)];
+    }
+
+    // range(len())
+    if ((m = expr.match(/^range\(len\((.+)\)\)$/))) {
+      const v = getVal(m[1]);
+      const l = String(v).length;
+      return Array.from({length: l}, (_, i) => i);
+    }
+
+    // enumerate()
+    if ((m = expr.match(/^enumerate\((.+)\)$/))) {
+      const v = getVal(m[1]);
+      const s = String(v);
+      return [...s].map((c, i) => [i, c]);
+    }
+
+    // dir(str)
+    if (expr === 'dir(str)') {
+      return ['capitalize','casefold','center','count','encode','endswith','expandtabs','find','format','format_map','index','isalnum','isalpha','isascii','isdecimal','isdigit','isidentifier','islower','isnumeric','isprintable','isspace','istitle','isupper','join','ljust','lower','lstrip','maketrans','partition','replace','rfind','rindex','rjust','rpartition','rsplit','rstrip','split','splitlines','startswith','strip','swapcase','title','translate','upper','zfill'];
+    }
+
+    // Method calls with chaining
+    if (expr.includes('.')) {
+      const parts = expr.split('.');
+      let val = getVal(parts[0]);
+
+      for (let p = 1; p < parts.length; p++) {
+        const part = parts[p];
+
+        if ((m = part.match(/^(\w+)\(([^)]*)\)$/))) {
+          const method = m[1];
+          const argStr = m[2].trim();
+          const arg = argStr ? getVal(argStr) : undefined;
+          const s = String(val);
+
+          switch(method) {
+            case 'lower': val = s.toLowerCase(); break;
+            case 'upper': val = s.toUpperCase(); break;
+            case 'strip': val = s.trim(); break;
+            case 'lstrip': val = s.replace(/^\s+/, ''); break;
+            case 'rstrip': val = s.replace(/\s+$/, ''); break;
+            case 'title': val = s.replace(/\b\w/g, c => c.toUpperCase()); break;
+            case 'swapcase': val = [...s].map(c => c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()).join(''); break;
+            case 'capitalize': val = s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); break;
+            case 'count': val = s.split(String(arg)).length - 1; break;
+            case 'find': val = s.indexOf(String(arg)); break;
+            case 'replace': {
+              const args = argStr.split(',').map(a => getVal(a.trim()));
+              val = s.split(String(args[0])).join(String(args[1]));
+              break;
+            }
+            case 'startswith': val = s.startsWith(String(arg)); break;
+            case 'endswith': val = s.endsWith(String(arg)); break;
+            case 'split': val = arg !== undefined ? s.split(String(arg)) : s.split(/\s+/); break;
+            case 'join': {
+              const arr = getVal(argStr);
+              val = Array.isArray(arr) ? arr.join(s) : s;
+              break;
+            }
+            case 'isdigit': val = /^\d+$/.test(s); break;
+            case 'isalpha': val = /^[a-zA-Z]+$/.test(s); break;
+            case 'isalnum': val = /^[a-zA-Z0-9]+$/.test(s); break;
+            case 'isupper': val = s === s.toUpperCase() && /[a-zA-Z]/.test(s); break;
+            case 'islower': val = s === s.toLowerCase() && /[a-zA-Z]/.test(s); break;
+            case 'isspace': val = /^\s+$/.test(s); break;
+            default: val = s;
+          }
+        } else {
+          // property access
+          val = val[part];
+        }
+      }
+      return val;
+    }
+
+    // Subscript access  var[x] or var[x:y] or var[x:y:z]
+    if ((m = expr.match(/^(\w+)\[(.+)\]$/))) {
+      const v = getVal(m[1]);
+      const idx = m[2];
+      const s = typeof v === 'string' ? v : (Array.isArray(v) ? v : String(v));
+
+      // Slice
+      if (idx.includes(':')) {
+        const parts = idx.split(':').map(x => x.trim() === '' ? null : parseInt(x));
+        const len = s.length;
+        let start = parts[0], stop = parts[1], step = parts[2] || (parts.length > 2 ? (parts[2] === null ? 1 : parts[2]) : 1);
+        if (parts.length === 3 && parts[2] === null) step = 1;
+        if (parts.length >= 3 && parts[2] !== null) step = parts[2];
+
+        if (step === -1) {
+          // Reverse
+          let result;
+          if (Array.isArray(s)) result = [...s].reverse();
+          else result = [...s].reverse().join('');
+          return result;
+        }
+
+        if (start === null) start = 0;
+        if (stop === null) stop = len;
+        if (start < 0) start = Math.max(0, len + start);
+        if (stop < 0) stop = Math.max(0, len + stop);
+
+        let result = [];
+        for (let i = start; i < stop; i += step) {
+          if (i < len) result.push(typeof s === 'string' ? s[i] : s[i]);
+        }
+        if (typeof s === 'string') return result.join('');
+        return result;
+      }
+
+      // Single index
+      let index = parseInt(idx);
+      if (index < 0) index = s.length + index;
+      if (index < 0 || index >= s.length) throw new Error("IndexError: string index out of range");
+      return s[index];
+    }
+
+    // String concat with +
+    if (expr.includes('+')) {
+      const parts = splitPlus(expr);
+      return parts.map(p => {
+        const v = getVal(p.trim());
+        return typeof v === 'string' ? v : String(v);
+      }).join('');
+    }
+
+    // Repetition with *
+    if (expr.includes('*') && !expr.includes('**')) {
+      const parts = expr.split('*').map(p => p.trim());
+      const left = getVal(parts[0]);
+      const right = getVal(parts[1]);
+      if (typeof left === 'string') return left.repeat(Number(right));
+      if (typeof right === 'string') return right.repeat(Number(left));
+      return Number(left) * Number(right);
+    }
+
+    // in / not in
+    if (expr.includes(' not in ')) {
+      const parts = expr.split(' not in ');
+      const needle = getVal(parts[0].trim());
+      const haystack = getVal(parts[1].trim());
+      if (Array.isArray(haystack)) return !haystack.includes(needle);
+      return !String(haystack).includes(String(needle));
+    }
+    if (expr.includes(' in ')) {
+      const parts = expr.split(' in ');
+      const needle = getVal(parts[0].trim());
+      const haystack = getVal(parts[1].trim());
+      if (Array.isArray(haystack)) return haystack.includes(needle);
+      return String(haystack).includes(String(needle));
+    }
+
+    // Variable lookup
+    if (vars[expr] !== undefined) return vars[expr];
+
+    return expr;
+  }
+
+  function splitPlus(expr) {
+    const result = [];
+    let depth = 0;
+    let inStr = false;
+    let strChar = '';
+    let current = '';
+
+    for (let i = 0; i < expr.length; i++) {
+      const c = expr[i];
+      if (inStr) {
+        current += c;
+        if (c === strChar) inStr = false;
+      } else if (c === "'" || c === '"') {
+        current += c;
+        inStr = true;
+        strChar = c;
+      } else if (c === '(') {
+        current += c;
+        depth++;
+      } else if (c === ')') {
+        current += c;
+        depth--;
+      } else if (c === '+' && depth === 0) {
+        result.push(current);
+        current = '';
+      } else {
+        current += c;
+      }
+    }
+    result.push(current);
+    return result;
+  }
+
+  function formatVal(v) {
+    if (v === true) return 'True';
+    if (v === false) return 'False';
+    if (v === null || v === undefined) return 'None';
+    if (Array.isArray(v)) {
+      return '[' + v.map(x => {
+        if (typeof x === 'string') return "'" + x + "'";
+        if (Array.isArray(x)) return formatVal(x);
+        return String(x);
+      }).join(', ') + ']';
+    }
+    return String(v);
+  }
+
+  // Process lines
+  while (i < lines.length) {
+    let line = lines[i];
+    let trimmed = line.trim();
+    i++;
+
+    // Skip empty lines and comments
+    if (!trimmed || trimmed.startsWith('#')) continue;
+
+    // Import
+    if (trimmed.startsWith('import ')) continue;
+
+    // Assignment
+    let m;
+    if ((m = trimmed.match(/^(\w+)\s*=\s*(.+)$/))) {
+      const vname = m[1];
+      const vexpr = m[2].trim();
+
+      // Item assignment (should fail for strings)
+      if ((m = trimmed.match(/^(\w+)\[(.+)\]\s*=\s*(.+)$/))) {
+        const vn = m[1];
+        const v = vars[vn];
+        if (typeof v === 'string') {
+          throw new Error("TypeError: 'str' object does not support item assignment");
+        }
+        const idx = parseInt(getVal(m[2]));
+        const val = getVal(m[3]);
+        if (Array.isArray(v)) {
+          const actualIdx = idx < 0 ? v.length + idx : idx;
+          v[actualIdx] = val;
+        }
+        continue;
+      }
+
+      vars[vname] = getVal(vexpr);
+      continue;
+    }
+
+    // For loop
+    if (trimmed.startsWith('for ')) {
+      const forMatch = trimmed.match(/^for\s+(.+?)\s+in\s+(.+):$/);
+      if (forMatch) {
+        const loopVars = forMatch[1].split(',').map(v => v.trim());
+        const iterExpr = forMatch[2].trim();
+        const iterable = getVal(iterExpr);
+
+        // Collect loop body
+        const bodyLines = [];
+        while (i < lines.length) {
+          const nextLine = lines[i];
+          if (nextLine.trim() === '' || /^\s{4}|^\s{2}|\t/.test(nextLine)) {
+            if (nextLine.trim() !== '') bodyLines.push(nextLine.trim());
+            i++;
+          } else {
+            break;
+          }
+        }
+
+        // Execute loop
+        const items = Array.isArray(iterable) ? iterable : [...String(iterable)];
+        for (const item of items) {
+          if (loopVars.length === 2 && Array.isArray(item)) {
+            vars[loopVars[0]] = item[0];
+            vars[loopVars[1]] = item[1];
+          } else if (loopVars.length === 1) {
+            vars[loopVars[0]] = item;
+          }
+
+          for (const bl of bodyLines) {
+            if (bl.startsWith('print(')) {
+              const printContent = bl.slice(6, -1);
+              handlePrint(printContent);
+            } else if ((m = bl.match(/^(\w+)\s*=\s*(.+)$/))) {
+              vars[m[1]] = getVal(m[2]);
+            } else if (bl.startsWith('if ') && bl.endsWith(':')) {
+              // Simple inline if
+            }
+          }
+        }
+        continue;
+      }
+    }
+
+    // If block (simple)
+    if (trimmed.startsWith('if ') && trimmed.endsWith(':')) {
+      // Skip body for now
+      while (i < lines.length && (lines[i].trim() === '' || /^\s/.test(lines[i]))) {
+        i++;
+      }
+      continue;
+    }
+
+    // Print
+    if (trimmed.startsWith('print(')) {
+      const content = trimmed.slice(6, -1);
+      handlePrint(content);
+      continue;
+    }
+
+    // Augmented assignment
+    if ((m = trimmed.match(/^(\w+)\s*\+=\s*(.+)$/))) {
+      const v = vars[m[1]];
+      const add = getVal(m[2]);
+      if (typeof v === 'string') vars[m[1]] = v + String(add);
+      else vars[m[1]] = Number(v) + Number(add);
+      continue;
+    }
+  }
+
+  function handlePrint(content) {
+    let end = '\n';
+    let parts = [];
+
+    // Check for end= parameter
+    const endMatch = content.match(/,\s*end\s*=\s*(['"][^'"]*['"])\s*$/);
+    if (endMatch) {
+      end = endMatch[1].slice(1, -1);
+      content = content.slice(0, content.lastIndexOf(',', content.indexOf('end=') - 1)).trim();
+      if (!content) content = content; // handle edge case
+    }
+
+    // Split by comma (respecting strings and parens)
+    parts = splitPrintArgs(content);
+
+    const formatted = parts.map(p => {
+      const v = getVal(p.trim());
+      return formatVal(v);
+    }).join(' ');
+
+    if (output.length > 0 && !output[output.length - 1].endsWith('\n')) {
+      output[output.length - 1] += formatted + end;
+    } else {
+      output.push(formatted + end);
+    }
+  }
+
+  function splitPrintArgs(s) {
+    const result = [];
+    let depth = 0;
+    let inStr = false;
+    let strChar = '';
+    let current = '';
+
+    for (let i = 0; i < s.length; i++) {
+      const c = s[i];
+      if (inStr) {
+        current += c;
+        if (c === strChar && s[i-1] !== '\\') inStr = false;
+      } else if (c === "'" || c === '"') {
+        current += c;
+        inStr = true;
+        strChar = c;
+      } else if (c === '(' || c === '[') {
+        current += c;
+        depth++;
+      } else if (c === ')' || c === ']') {
+        current += c;
+        depth--;
+      } else if (c === ',' && depth === 0) {
+        result.push(current);
+        current = '';
+      } else {
+        current += c;
+      }
+    }
+    if (current.trim()) result.push(current);
+    return result;
+  }
+
+  return output.join('').replace(/\n$/, '');
+}
+
+// ── QUIZ LOGIC ──
+function selectOption(label) {
+  const q = label.closest('.quiz-q');
+  if (q.classList.contains('correct') || q.classList.contains('incorrect')) return;
+  q.querySelectorAll('.q-option').forEach(o => o.classList.remove('selected'));
+  label.classList.add('selected');
+  label.querySelector('input').checked = true;
+}
+
+const explanations = {
+  q1: { correct: "list() converts each character into a separate list element — including every letter.", wrong: "list() breaks a string into individual characters, not words or groups." },
+  q2: { correct: "Index -2 counts two positions from the end: P-Y-T-H-O-N → O is at -2.", wrong: "Negative indexing starts from -1 (last character). -2 is the second to last: 'O'." },
+  q3: { correct: "[::-1] reverses the entire string — a classic Python trick!", wrong: "The slice [::-1] reverses the string by stepping backwards through every character." },
+  q4: { correct: "Strings are immutable — you cannot change individual characters. Python raises a TypeError.", wrong: "Strings are immutable in Python. You can't assign to a specific index — it causes a TypeError." },
+  q5: { correct: "The 'in' operator is case-sensitive. 'python' ≠ 'Python' (lowercase p vs uppercase P).", wrong: "Membership checks are case-sensitive! 'python' with a lowercase p is not found in 'Python programming'." },
+  q6: { correct: "isdigit() returns False because the string contains letters ('abc') in addition to digits.", wrong: "isdigit() only returns True if ALL characters are digits. '123abc' has letters, so it's False." },
+  q7: { correct: "split('/') breaks the string at each '/' delimiter, returning a list of strings.", wrong: "split('/') divides at each '/' and returns a list of string pieces: ['1', '22', '2023']." },
+  q8: { correct: "title() capitalizes the first letter of every word — 'Hello World'.", wrong: "title() capitalizes the first letter of each word, not just the first word or all letters." },
+  q9: { correct: "The * operator repeats the string exactly — no spaces added between copies.", wrong: "'Ha' * 3 repeats the string three times with no separator: 'HaHaHa'." },
+  q10: { correct: "Starting at index 1 ('r'), stepping by 2: index 1→'r', index 3→'g'. Stop before 5.", wrong: "text[1:5:2] starts at 1, stops before 5, step 2: indices 1 ('r') and 3 ('g') → 'rg'." }
+};
+
+function submitQuiz() {
+  const questions = document.querySelectorAll('.quiz-q');
+  let score = 0;
+  let allAnswered = true;
+
+  questions.forEach((q, idx) => {
+    const qName = 'q' + (idx + 1);
+    const selected = q.querySelector('input:checked');
+    const correct = q.dataset.correct;
+    const expl = q.querySelector('.q-explanation');
+
+    if (!selected) {
+      allAnswered = false;
+      return;
+    }
+
+    q.querySelectorAll('.q-option').forEach(o => {
+      o.style.pointerEvents = 'none';
+    });
+
+    if (selected.value === correct) {
+      score++;
+      q.classList.add('correct');
+      selected.closest('.q-option').classList.add('correct-answer');
+      expl.className = 'q-explanation show correct-expl';
+      expl.innerHTML = '✅ ' + explanations[qName].correct;
+    } else {
+      q.classList.add('incorrect');
+      selected.closest('.q-option').classList.add('wrong-answer');
+      // Show correct answer
+      q.querySelectorAll('.q-option').forEach(o => {
+        if (o.querySelector('input').value === correct) {
+          o.classList.add('correct-answer');
+        }
+      });
+      expl.className = 'q-explanation show incorrect-expl';
+      expl.innerHTML = '❌ ' + explanations[qName].wrong;
+    }
+  });
+
+  if (!allAnswered) {
+    alert('Please answer all 10 questions before submitting!');
+    return;
+  }
+
+  // Show score
+  const card = document.getElementById('scoreCard');
+  document.getElementById('scoreValue').textContent = score + ' / 10';
+
+  let msg = '';
+  if (score === 10) msg = '🌟 Perfect Score! You are a String Master!';
+  else if (score >= 8) msg = '🎉 Great job! You really know your strings!';
+  else if (score >= 6) msg = '👍 Good work! Review the concepts you missed.';
+  else if (score >= 4) msg = '📚 Keep practicing — re-read the Basics and Methods tabs!';
+  else msg = '💪 Don\'t give up! Go through the playbook again and retry.';
+
+  document.getElementById('scoreMsg').textContent = msg;
+  card.classList.add('visible');
+
+  document.querySelector('.submit-btn').disabled = true;
+  document.querySelector('.submit-btn').textContent = 'Quiz Submitted ✓';
+
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+</script>
+</body>
+</html>

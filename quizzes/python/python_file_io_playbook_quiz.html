@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python File I/O - Interactive Playbook & Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f0f0f0;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            background: #e0e0e0;
+            border: none;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #d0d0d0;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .concept-card {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .concept-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .code-block .keyword {
+            color: #fc8181;
+        }
+
+        .code-block .string {
+            color: #fbd38d;
+        }
+
+        .code-block .comment {
+            color: #a0aec0;
+        }
+
+        .interactive-demo {
+            background: #fff5f5;
+            border: 2px solid #fc8181;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .demo-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+
+        .demo-button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .demo-output {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            min-height: 60px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+        }
+
+        .quiz-question {
+            display: none;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question.active {
+            display: block;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .quiz-options {
+            list-style: none;
+        }
+
+        .quiz-options li {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .quiz-options li:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .quiz-options li.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .quiz-options li.correct {
+            background: #48bb78;
+            color: white;
+            border-color: #48bb78;
+        }
+
+        .quiz-options li.incorrect {
+            background: #f56565;
+            color: white;
+            border-color: #f56565;
+        }
+
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .nav-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .nav-button:hover {
+            background: #5568d3;
+        }
+
+        .nav-button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .score-display {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .score-display h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .score-display p {
+            font-size: 1.5em;
+            margin: 10px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            margin: 10px;
+            font-size: 1.2em;
+        }
+
+        .tip-box {
+            background: #e6fffa;
+            border-left: 5px solid #38b2ac;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .tip-box strong {
+            color: #38b2ac;
+        }
+
+        .highlight {
+            background: #fef5e7;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Python File I/O Playbook</h1>
+            <p>Master reading files in Python like a pro!</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showSection('learn')">📖 Learn</button>
+            <button class="tab" onclick="showSection('practice')">🎮 Interactive Demo</button>
+            <button class="tab" onclick="showSection('quiz')">🎯 Quiz (10 Points)</button>
+        </div>
+
+        <div class="content">
+            <!-- LEARN SECTION -->
+            <div id="learn" class="section active">
+                <h2 style="color: #667eea; margin-bottom: 20px;">File I/O Concepts</h2>
+
+                <!-- read() -->
+                <div class="concept-card">
+                    <h3>1️⃣ read() - Read Everything at Once</h3>
+                    <p><strong>What it does:</strong> Reads the ENTIRE file content as one big string.</p>
+                    <div class="code-block"><span class="keyword">with</span> <span class="keyword">open</span>(<span class="string">'myfile.txt'</span>) <span class="keyword">as</span> file:
+    content = file.<span class="keyword">read</span>()
+    <span class="keyword">print</span>(content)  <span class="comment"># Prints everything!</span>
+</div>
+                    <div class="tip-box">
+                        <strong>💡 When to use:</strong> When you want ALL the content at once. Like reading an entire book in one go!
+                    </div>
+                </div>
+
+                <!-- read(n) -->
+                <div class="concept-card">
+                    <h3>2️⃣ read(n) - Read N Characters</h3>
+                    <p><strong>What it does:</strong> Reads only a specific number of characters from the file.</p>
+                    <div class="code-block"><span class="keyword">with</span> <span class="keyword">open</span>(<span class="string">'myfile.txt'</span>) <span class="keyword">as</span> file:
+    first_10 = file.<span class="keyword">read</span>(10)  <span class="comment"># Read 10 characters</span>
+    next_5 = file.<span class="keyword">read</span>(5)    <span class="comment"># Read 5 more</span>
+</div>
+                    <div class="tip-box">
+                        <strong>💡 When to use:</strong> When you want to read data in chunks. Like eating pizza slice by slice!
+                    </div>
+                </div>
+
+                <!-- readline() -->
+                <div class="concept-card">
+                    <h3>3️⃣ readline() - Read One Line at a Time</h3>
+                    <p><strong>What it does:</strong> Reads ONE line from the file (up to the newline character).</p>
+                    <div class="code-block"><span class="keyword">with</span> <span class="keyword">open</span>(<span class="string">'myfile.txt'</span>) <span class="keyword">as</span> file:
+    line1 = file.<span class="keyword">readline</span>()  <span class="comment"># First line</span>
+    line2 = file.<span class="keyword">readline</span>()  <span class="comment"># Second line</span>
+</div>
+                    <div class="tip-box">
+                        <strong>💡 When to use:</strong> When you want to process one line at a time. Like reading a poem verse by verse!
+                    </div>
+                </div>
+
+                <!-- readlines() -->
+                <div class="concept-card">
+                    <h3>4️⃣ readlines() - Read All Lines as a List</h3>
+                    <p><strong>What it does:</strong> Reads ALL lines and returns them as a list of strings.</p>
+                    <div class="code-block"><span class="keyword">with</span> <span class="keyword">open</span>(<span class="string">'myfile.txt'</span>) <span class="keyword">as</span> file:
+    all_lines = file.<span class="keyword">readlines</span>()
+    <span class="comment"># Returns: ['line1\n', 'line2\n', 'line3\n']</span>
+</div>
+                    <div class="tip-box">
+                        <strong>💡 When to use:</strong> When you want all lines in a list to loop through. Like getting a playlist of all songs!
+                    </div>
+                </div>
+
+                <!-- with statement -->
+                <div class="concept-card">
+                    <h3>5️⃣ with Statement - The Safe Way to Handle Files</h3>
+                    <p><strong>What it does:</strong> Automatically closes the file when done (even if errors occur).</p>
+                    <div class="code-block"><span class="comment"># ❌ Old way (not recommended)</span>
+file = <span class="keyword">open</span>(<span class="string">'myfile.txt'</span>)
+content = file.<span class="keyword">read</span>()
+file.<span class="keyword">close</span>()  <span class="comment"># Must remember to close!</span>
+
+<span class="comment"># ✅ Better way (recommended)</span>
+<span class="keyword">with</span> <span class="keyword">open</span>(<span class="string">'myfile.txt'</span>) <span class="keyword">as</span> file:
+    content = file.<span class="keyword">read</span>()
+<span class="comment"># File automatically closes here!</span>
+</div>
+                    <div class="tip-box">
+                        <strong>💡 Why it's important:</strong> The <span class="highlight">with</span> statement is like a responsible assistant that cleans up after itself automatically. Always use it!
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE DEMO SECTION -->
+            <div id="practice" class="section">
+                <h2 style="color: #667eea; margin-bottom: 20px;">🎮 Interactive Demonstrations</h2>
+                
+                <div class="interactive-demo">
+                    <h3>📄 Sample File Content:</h3>
+                    <div class="demo-output" style="background: #f0f0f0;">Python is awesome!
+File I/O is fun!
+Keep learning!
+You're doing great!</div>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3>Demo 1: read() - Read Everything</h3>
+                    <button class="demo-button" onclick="demoRead()">Run read()</button>
+                    <div class="demo-output" id="demo-read-output">Click the button to see the result...</div>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3>Demo 2: read(n) - Read N Characters</h3>
+                    <button class="demo-button" onclick="demoReadN(10)">Read 10 chars</button>
+                    <button class="demo-button" onclick="demoReadN(20)">Read 20 chars</button>
+                    <button class="demo-button" onclick="demoReadN(5)">Read 5 chars</button>
+                    <div class="demo-output" id="demo-readn-output">Click a button to see the result...</div>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3>Demo 3: readline() - Read One Line</h3>
+                    <button class="demo-button" onclick="demoReadline()">Read Next Line</button>
+                    <button class="demo-button" onclick="resetReadline()">Reset</button>
+                    <div class="demo-output" id="demo-readline-output">Click to read line by line...</div>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3>Demo 4: readlines() - Read All Lines as List</h3>
+                    <button class="demo-button" onclick="demoReadlines()">Run readlines()</button>
+                    <div class="demo-output" id="demo-readlines-output">Click the button to see the result...</div>
+                </div>
+            </div>
+
+            <!-- QUIZ SECTION -->
+            <div id="quiz" class="section">
+                <h2 style="color: #667eea; margin-bottom: 20px;">🎯 Quiz Time! (10 Questions)</h2>
+                <p style="margin-bottom: 20px;"><strong>Instructions:</strong> Answer all 10 questions. Click your answer choice, then click "Submit Answer". Your final score will be displayed at the end. Take a screenshot of your score to submit to Google Classroom!</p>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <p id="progress-text" style="margin-bottom: 20px;">Question 1 of 10</p>
+
+                <!-- Quiz questions will be inserted here by JavaScript -->
+                <div id="quiz-container"></div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-button" id="prev-btn" onclick="previousQuestion()" disabled>⬅️ Previous</button>
+                    <button class="nav-button" id="submit-btn" onclick="submitAnswer()">Submit Answer</button>
+                    <button class="nav-button" id="next-btn" onclick="nextQuestion()" disabled>Next ➡️</button>
+                </div>
+
+                <div id="final-score" style="display: none;">
+                    <div class="score-display">
+                        <h2>🎉 Quiz Complete!</h2>
+                        <p class="emoji">🏆</p>
+                        <p><strong>Your Score:</strong></p>
+                        <h2 id="score-number">0/10</h2>
+                        <p id="score-percentage">0%</p>
+                        <div class="badge" id="performance-badge">Great Job!</div>
+                        <p style="margin-top: 30px; font-size: 1.1em;">📸 Take a screenshot of this score and submit it to Google Classroom!</p>
+                        <button class="demo-button" style="margin-top: 20px;" onclick="restartQuiz()">🔄 Retake Quiz</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample file content for demos
+        const sampleContent = `Python is awesome!
+File I/O is fun!
+Keep learning!
+You're doing great!`;
+        
+        let readlineIndex = 0;
+        const lines = sampleContent.split('\n');
+
+        // Section navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Demo functions
+        function demoRead() {
+            const output = document.getElementById('demo-read-output');
+            output.textContent = `Result of read():\n\n"${sampleContent}"\n\nℹ️ Notice: read() returned the ENTIRE file as one string!`;
+        }
+
+        function demoReadN(n) {
+            const output = document.getElementById('demo-readn-output');
+            const chunk = sampleContent.substring(0, n);
+            output.textContent = `Result of read(${n}):\n\n"${chunk}"\n\nℹ️ Notice: Only ${n} characters were read!`;
+        }
+
+        function demoReadline() {
+            const output = document.getElementById('demo-readline-output');
+            if (readlineIndex < lines.length) {
+                const line = lines[readlineIndex];
+                output.textContent = `Line ${readlineIndex + 1}: "${line}"\n\nℹ️ readline() returned one line. Click again for the next line!`;
+                readlineIndex++;
+            } else {
+                output.textContent = `End of file reached!\n\nℹ️ All lines have been read. Click Reset to start over.`;
+            }
+        }
+
+        function resetReadline() {
+            readlineIndex = 0;
+            document.getElementById('demo-readline-output').textContent = 'Click to read line by line...';
+        }
+
+        function demoReadlines() {
+            const output = document.getElementById('demo-readlines-output');
+            const linesList = lines.map((line, i) => `  [${i}] "${line}"`).join('\n');
+            output.textContent = `Result of readlines():\n\n[\n${linesList}\n]\n\nℹ️ Notice: readlines() returned a LIST of all lines!`;
+        }
+
+        // Quiz data
+        const quizQuestions = [
+            {
+                question: "Which method reads the ENTIRE file content as one string?",
+                options: ["read()", "readline()", "readlines()", "read(n)"],
+                correct: 0
+            },
+            {
+                question: "What does read(10) do?",
+                options: [
+                    "Reads 10 lines from the file",
+                    "Reads 10 characters from the file",
+                    "Reads 10 words from the file",
+                    "Reads 10 bytes from the file"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which method reads ONE line at a time from a file?",
+                options: ["read()", "readline()", "readlines()", "readall()"],
+                correct: 1
+            },
+            {
+                question: "What data type does readlines() return?",
+                options: ["A string", "A list of strings", "A dictionary", "An integer"],
+                correct: 1
+            },
+            {
+                question: "What is the main benefit of using the 'with' statement?",
+                options: [
+                    "It makes code run faster",
+                    "It automatically closes the file",
+                    "It prevents errors completely",
+                    "It reads files faster"
+                ],
+                correct: 1
+            },
+            {
+                question: "If you call readline() twice, what happens?",
+                options: [
+                    "It reads the same line twice",
+                    "It reads the first two characters",
+                    "It reads the first line, then the second line",
+                    "It causes an error"
+                ],
+                correct: 2
+            },
+            {
+                question: "Which is the RECOMMENDED way to open a file in Python?",
+                options: [
+                    "file = open('file.txt')",
+                    "with open('file.txt') as file:",
+                    "file.open('file.txt')",
+                    "open file ('file.txt')"
+                ],
+                correct: 1
+            },
+            {
+                question: "After using read() to read a file, what happens if you call read() again?",
+                options: [
+                    "It reads the file again from the beginning",
+                    "It returns an empty string (nothing left to read)",
+                    "It causes an error",
+                    "It reads the file backwards"
+                ],
+                correct: 1
+            },
+            {
+                question: "If a file has 3 lines, how many times should you call readline() to read all lines?",
+                options: ["1 time", "2 times", "3 times", "4 times"],
+                correct: 2
+            },
+            {
+                question: "What's the difference between read() and readlines()?",
+                options: [
+                    "read() returns a string, readlines() returns a list",
+                    "They do exactly the same thing",
+                    "read() is faster than readlines()",
+                    "readlines() only reads one line"
+                ],
+                correct: 0
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answers = new Array(quizQuestions.length).fill(null);
+        let submitted = new Array(quizQuestions.length).fill(false);
+
+        function initializeQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            
+            quizQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'quiz-question' + (index === 0 ? ' active' : '');
+                questionDiv.id = `question-${index}`;
+                
+                let optionsHTML = '<ul class="quiz-options">';
+                q.options.forEach((option, optIndex) => {
+                    optionsHTML += `<li onclick="selectOption(${index}, ${optIndex})">${option}</li>`;
+                });
+                optionsHTML += '</ul>';
+                
+                questionDiv.innerHTML = `
+                    <h3>Question ${index + 1}: ${q.question}</h3>
+                    ${optionsHTML}
+                `;
+                
+                container.appendChild(questionDiv);
+            });
+            
+            updateUI();
+        }
+
+        function selectOption(questionIndex, optionIndex) {
+            if (submitted[questionIndex]) return;
+            
+            answers[questionIndex] = optionIndex;
+            
+            const options = document.querySelectorAll(`#question-${questionIndex} .quiz-options li`);
+            options.forEach((opt, idx) => {
+                opt.classList.remove('selected');
+                if (idx === optionIndex) {
+                    opt.classList.add('selected');
+                }
+            });
+            
+            document.getElementById('submit-btn').disabled = false;
+        }
+
+        function submitAnswer() {
+            if (answers[currentQuestion] === null) {
+                alert('Please select an answer first!');
+                return;
+            }
+            
+            submitted[currentQuestion] = true;
+            
+            const options = document.querySelectorAll(`#question-${currentQuestion} .quiz-options li`);
+            const correctIndex = quizQuestions[currentQuestion].correct;
+            const selectedIndex = answers[currentQuestion];
+            
+            options.forEach((opt, idx) => {
+                opt.style.pointerEvents = 'none';
+                if (idx === correctIndex) {
+                    opt.classList.add('correct');
+                    opt.classList.remove('selected');
+                }
+                if (idx === selectedIndex && idx !== correctIndex) {
+                    opt.classList.add('incorrect');
+                    opt.classList.remove('selected');
+                }
+            });
+            
+            if (selectedIndex === correctIndex) {
+                score++;
+            }
+            
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizQuestions.length - 1) {
+                document.getElementById(`question-${currentQuestion}`).classList.remove('active');
+                currentQuestion++;
+                document.getElementById(`question-${currentQuestion}`).classList.add('active');
+                updateUI();
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                document.getElementById(`question-${currentQuestion}`).classList.remove('active');
+                currentQuestion--;
+                document.getElementById(`question-${currentQuestion}`).classList.add('active');
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `Question ${currentQuestion + 1} of ${quizQuestions.length}`;
+            
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            
+            if (submitted[currentQuestion]) {
+                document.getElementById('submit-btn').disabled = true;
+                document.getElementById('next-btn').disabled = false;
+            } else {
+                document.getElementById('submit-btn').disabled = answers[currentQuestion] === null;
+                document.getElementById('next-btn').disabled = true;
+            }
+            
+            if (currentQuestion === quizQuestions.length - 1 && submitted[currentQuestion]) {
+                document.getElementById('next-btn').textContent = '🏁 See Results';
+            } else {
+                document.getElementById('next-btn').textContent = 'Next ➡️';
+            }
+        }
+
+        function showFinalScore() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.querySelector('.quiz-navigation').style.display = 'none';
+            document.querySelector('.progress-bar').style.display = 'none';
+            document.getElementById('progress-text').style.display = 'none';
+            
+            const finalScoreDiv = document.getElementById('final-score');
+            const percentage = (score / quizQuestions.length) * 100;
+            
+            document.getElementById('score-number').textContent = `${score}/${quizQuestions.length}`;
+            document.getElementById('score-percentage').textContent = `${percentage.toFixed(0)}%`;
+            
+            const badge = document.getElementById('performance-badge');
+            if (percentage === 100) {
+                badge.textContent = '🌟 Perfect Score! Amazing! 🌟';
+            } else if (percentage >= 80) {
+                badge.textContent = '🎉 Excellent Work! 🎉';
+            } else if (percentage >= 70) {
+                badge.textContent = '👍 Good Job! 👍';
+            } else if (percentage >= 60) {
+                badge.textContent = '📚 Keep Practicing! 📚';
+            } else {
+                badge.textContent = '💪 Try Again - You Can Do It! 💪';
+            }
+            
+            finalScoreDiv.style.display = 'block';
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            answers = new Array(quizQuestions.length).fill(null);
+            submitted = new Array(quizQuestions.length).fill(false);
+            
+            document.getElementById('quiz-container').style.display = 'block';
+            document.querySelector('.quiz-navigation').style.display = 'flex';
+            document.querySelector('.progress-bar').style.display = 'block';
+            document.getElementById('progress-text').style.display = 'block';
+            document.getElementById('final-score').style.display = 'none';
+            
+            initializeQuiz();
+        }
+
+        // Initialize quiz on page load
+        initializeQuiz();
+    </script>
+</body>
+</html>

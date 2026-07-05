@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Lists: Unpacking & Slicing Playbook | Learn and Help</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --success: #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: var(--text-light);
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+
+        .header .logo {
+            font-size: 1em;
+            color: var(--primary);
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border: none;
+            border-radius: 15px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+
+        .tab span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab:hover::before {
+            opacity: 0.1;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .tab.active::before {
+            opacity: 1;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subsection {
+            margin-bottom: 40px;
+        }
+
+        .subsection h3 {
+            font-size: 1.5em;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            padding-left: 15px;
+            border-left: 5px solid var(--accent);
+        }
+
+        .explanation {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary);
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        .code-example {
+            margin-bottom: 30px;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #f1f5f9;
+            padding: 25px;
+            border-radius: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+            overflow-x: auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            white-space: pre;
+        }
+
+        .code-block code {
+            font-family: 'JetBrains Mono', monospace;
+            white-space: pre;
+        }
+
+        .run-button {
+            margin-top: 15px;
+            background: linear-gradient(135deg, var(--secondary), #059669);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .run-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-button:active {
+            transform: translateY(0);
+        }
+
+        .output {
+            margin-top: 15px;
+            background: #0f172a;
+            color: #10b981;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            min-height: 60px;
+            white-space: pre-wrap;
+            border: 2px solid var(--secondary);
+        }
+
+        .output:empty::before {
+            content: 'Output will appear here...';
+            color: #64748b;
+        }
+
+        .tip {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid var(--accent);
+        }
+
+        .tip-title {
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        /* Quiz Styles */
+        .quiz-question {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .quiz-question:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .quiz-code {
+            background: #1e293b;
+            color: #f1f5f9;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 18px 25px;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .option:hover {
+            background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .option.correct {
+            background: linear-gradient(135deg, var(--success), #16a34a);
+            color: white;
+            border-color: var(--success);
+            animation: correctPulse 0.5s ease;
+        }
+
+        .option.incorrect {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+            border-color: var(--danger);
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .check-answer-btn {
+            margin-top: 20px;
+            background: linear-gradient(135deg, var(--accent), #ea580c);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 12px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .check-answer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .check-answer-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-quiz-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 15px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.4em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .submit-quiz-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.5);
+        }
+
+        .submit-quiz-btn:disabled {
+            background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .quiz-results {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.2em;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+            border: 2px solid var(--success);
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+            border: 2px solid var(--danger);
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .score-display h2 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .score-number {
+            font-size: 4em;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.3em;
+            color: var(--text-light);
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .visual-example {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 3px solid var(--secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1em;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .content-card {
+                padding: 25px;
+            }
+
+            .section-title {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐍 Python Lists Playbook</h1>
+            <div class="subtitle">Unpacking & Slicing Made Fun!</div>
+            <div class="logo">Learn and Help - Python 101</div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('unpacking')">
+                <span>📦 Unpacking</span>
+            </button>
+            <button class="tab" onclick="switchTab('slicing')">
+                <span>✂️ Slicing</span>
+            </button>
+            <button class="tab" onclick="switchTab('quiz')">
+                <span>🎯 Quiz</span>
+            </button>
+        </div>
+
+        <!-- Unpacking Tab -->
+        <div id="unpacking" class="tab-content active">
+            <div class="content-card">
+                <h2 class="section-title">
+                    <span class="emoji">📦</span>
+                    List Unpacking
+                </h2>
+
+                <div class="subsection">
+                    <h3>What is Unpacking?</h3>
+                    <div class="explanation">
+                        Unpacking is a cool Python trick that lets you assign multiple variables at once from a list! Instead of writing multiple lines, you can do it all in one clean line. 🎉
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-block" id="unpack-code-1">
+<code># The old, boring way 😴
+colors = ['red', 'blue', 'green']
+a = colors[0]
+b = colors[1]
+c = colors[2]
+print(f"a = {a}, b = {b}, c = {c}")
+
+# The cool unpacking way! 🚀
+colors = ['red', 'blue', 'green']
+a, b, c = colors
+print(f"a = {a}, b = {b}, c = {c}")</code>
+                        </div>
+                        <button class="run-button" onclick="runCode('unpack-code-1', 'output-1')">▶️ Run Code</button>
+                        <div class="output" id="output-1"></div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Rule #1: Counts Must Match! ⚖️</h3>
+                    <div class="explanation">
+                        The number of variables on the left MUST equal the number of items in the list on the right. If they don't match, Python will give you an error!
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-block" id="unpack-code-2">
+<code># ✅ This works!
+colors = ['red', 'blue', 'green']
+r, g, b = colors
+print(f"✅ Success! {r}, {g}, {b}")
+
+# ❌ This will cause an error (uncomment to try)
+# colors = ['red', 'blue', 'green']
+# x, y = colors  # Error! 3 items but only 2 variables</code>
+                        </div>
+                        <button class="run-button" onclick="runCode('unpack-code-2', 'output-2')">▶️ Run Code</button>
+                        <div class="output" id="output-2"></div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Using * for Leftovers 🌟</h3>
+                    <div class="explanation">
+                        Don't care about some items? Use the asterisk (*) to pack all the leftovers into a new list!
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-block" id="unpack-code-3">
+<code># Get first two items, pack rest into 'others'
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+first, second, *others = numbers
+print(f"First: {first}")
+print(f"Second: {second}")
+print(f"Others: {others}")
+
+# You can put * anywhere!
+*start, last = numbers
+print(f"\nStart: {start}")
+print(f"Last: {last}")
+
+# Get first, last, and everything in between
+first, *middle, last = numbers
+print(f"\nFirst: {first}, Middle: {middle}, Last: {last}")</code>
+                        </div>
+                        <button class="run-button" onclick="runCode('unpack-code-3', 'output-3')">▶️ Run Code</button>
+                        <div class="output" id="output-3"></div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Unpacking in Print 🖨️</h3>
+                    <div class="explanation">
+                        You can also use the asterisk (*) when printing to unpack all items!
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-block" id="unpack-code-4">
+<code>fruits = ['🍎', '🍌', '🍊', '🍇', '🍓']
+
+# Normal print - shows the list with brackets
+print("Normal:", fruits)
+
+# Unpacked print - shows items separated by spaces
+print("Unpacked:", *fruits)
+
+# You can add a separator!
+print("With separator:", *fruits, sep=' | ')</code>
+                        </div>
+                        <button class="run-button" onclick="runCode('unpack-code-4', 'output-4')">▶️ Run Code</button>
+                        <div class="output" id="output-4"></div>
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <div class="tip-title">💡 Pro Tip</div>
+                    Use unpacking to swap variables in one line!<br>
+                    <span class="highlight">a, b = b, a</span> swaps the values of a and b without needing a temporary variable! 🔄
+                </div>
+            </div>
+        </div>
+
+        <!-- Slicing Tab -->
+        <div id="slicing" class="tab-content">
+            <div class="content-card">
+                <h2 class="section-title">
+                    <span class="emoji">✂️</span>
+                    List Slicing
+                </h2>
+
+                <div class="subsection">
+                    <h3>What is Slicing?</h3>
+                    <div class="explanation">
+                        Slicing lets you extract a portion of a list, just like cutting a piece of cake! 🍰<br>
+                        Syntax: <span class="highlight">list[start:stop:step]</span>
+                    </div>
+
+                    <div class="visual-example">
+Index:    0    1    2    3    4    5    6    7
+       [  10,  20,  30,  40,  50,  60,  70,  80 ]
+         -8   -7   -6   -5   -4   -3   -2   -1
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-block" id="slice-code-1">
+<code>numbers = [10, 20, 30, 40, 50, 60, 70, 80]
+
+# Get items from index 2 to 5 (not including 5)
+print("numbers[2:5] =", numbers[2:5])
+
+# Get first 4 items
+print("numbers[:4] =", numbers[:4])
+
+# Get from index 3 to end
+print("numbers[3:] =", numbers[3:])
+
+# Get entire list (makes a copy!)
+print("numbers[:] =", numbers[:])</code>
+                        </div>
+                        <button class="run-button" onclick="runCode('slice-code-1', 'output-5')">▶️ Run Code</button>
+                        <div class="output" id="output-5"></div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Negative Indexing 🔄</h3>
+                    <div class="explanation">
+                        Use negative numbers to count from the end! -1 is the last item, -2 is second to last, etc.
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-block" id="slice-code-2">
+<code>letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+
+# Get last item
+print("Last item [-1]:", letters[-1])
+
+# Get last 3 items
+print("Last 3 items [-3:]:", letters[-3:])
+
+# Get all except last 2
+print("Except last 2 [:-2]:", letters[:-2])
+
+# From 2nd item to 2nd to last
+print("Middle section [1:-1]:", letters[1:-1])</code>
+                        </div>
+                        <button class="run-button" onclick="runCode('slice-code-2', 'output-6')">▶️ Run Code</button>
+                        <div class="output" id="output-6"></div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Using Step 👟</h3>
+                    <div class="explanation">
+                        The step parameter lets you skip items or even reverse the list!
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-block" id="slice-code-3">
+<code>numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+# Get every other item
+print("Every other [::2]:", numbers[::2])
+
+# Get every third item
+print("Every third [::3]:", numbers[::3])
+
+# REVERSE the list! 🔄
+print("Reversed [::-1]:", numbers[::-1])
+
+# Get every other item in reverse
+print("Every other reversed [::-2]:", numbers[::-2])</code>
+                        </div>
+                        <button class="run-button" onclick="runCode('slice-code-3', 'output-7')">▶️ Run Code</button>
+                        <div class="output" id="output-7"></div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>String Slicing 📝</h3>
+                    <div class="explanation">
+                        Guess what? Strings can be sliced too! They work exactly like lists.
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-block" id="slice-code-4">
+<code>word = "PYTHON"
+
+# Get first 3 letters
+print("First 3:", word[:3])
+
+# Get last 3 letters
+print("Last 3:", word[-3:])
+
+# Reverse the word
+print("Reversed:", word[::-1])
+
+# Get every other letter
+print("Every other:", word[::2])
+
+# Make it lowercase and reverse
+print("Fancy:", word.lower()[::-1])</code>
+                        </div>
+                        <button class="run-button" onclick="runCode('slice-code-4', 'output-8')">▶️ Run Code</button>
+                        <div class="output" id="output-8"></div>
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <div class="tip-title">🎯 Remember</div>
+                    The <span class="highlight">stop</span> index is "up to but NOT including"<br>
+                    Just like the range() function! <span class="highlight">list[2:5]</span> gets indices 2, 3, and 4 (not 5!)
+                </div>
+
+                <div class="subsection">
+                    <h3>🔥 Three Most Common Slicing Use Cases</h3>
+                    <div class="explanation">
+                        These are the slicing patterns you'll use ALL THE TIME in Python! Master these three and you're golden! ⭐
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-block" id="slice-code-common">
+<code>numbers = [10, 20, 30, 40, 50, 60, 70, 80, 90]
+print("Original list:", numbers)
+print()
+
+# ✂️ USE CASE 1: Remove the LAST element
+without_last = numbers[:-1]
+print("1️⃣ Remove last element [:-1]:", without_last)
+print("   Original had", len(numbers), "items, now has", len(without_last))
+print()
+
+# ✂️ USE CASE 2: Remove the FIRST element  
+without_first = numbers[1:]
+print("2️⃣ Remove first element [1:]:", without_first)
+print("   First element was", numbers[0], "→ now starts with", without_first[0])
+print()
+
+# 🔄 USE CASE 3: REVERSE the list
+reversed_list = numbers[::-1]
+print("3️⃣ Reverse the list [::-1]:", reversed_list)
+print("   Last became first:", numbers[-1], "→", reversed_list[0])
+print()
+
+# 🎯 BONUS: Combining them!
+# Remove first AND last, then reverse
+middle_reversed = numbers[1:-1][::-1]
+print("🎁 Bonus - Remove first & last, then reverse:")
+print("   Step 1 [1:-1]:", numbers[1:-1])
+print("   Step 2 [::-1]:", middle_reversed)</code>
+                        </div>
+                        <button class="run-button" onclick="runCode('slice-code-common', 'output-common')">▶️ Run Code</button>
+                        <div class="output" id="output-common"></div>
+                    </div>
+
+                    <div class="tip">
+                        <div class="tip-title">💡 Why These Matter</div>
+                        <strong>Remove Last [:-1]</strong> → Great for removing newline characters, dropping trailing items<br>
+                        <strong>Remove First [1:]</strong> → Useful for skipping headers in data, getting "rest" of items<br>
+                        <strong>Reverse [::-1]</strong> → Quick way to reverse without modifying original, works on strings too!
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-block" id="slice-code-practical">
+<code># 🌟 REAL-WORLD EXAMPLES
+
+# Example 1: Cleaning user input (remove newline)
+user_input = "Hello World\n"
+cleaned = user_input[:-1]  # Remove last character (\n)
+print("Cleaned input:", repr(cleaned))
+print()
+
+# Example 2: Skip header row in data
+data = ["Name,Age,City", "Alice,25,NYC", "Bob,30,LA", "Carol,28,SF"]
+header = data[0]
+rows = data[1:]  # Skip first element (header)
+print("Header:", header)
+print("Data rows:", rows)
+print()
+
+# Example 3: Reverse a string (palindrome check!)
+word = "racecar"
+reversed_word = word[::-1]
+print(f"'{word}' reversed is '{reversed_word}'")
+print(f"Is it a palindrome? {word == reversed_word}")
+print()
+
+# Example 4: Get file extension
+filename = "photo.jpg"
+extension = filename.split('.')[-1]  # Get last part after split
+print(f"File: {filename} → Extension: {extension}")</code>
+                        </div>
+                        <button class="run-button" onclick="runCode('slice-code-practical', 'output-practical')">▶️ Run Code</button>
+                        <div class="output" id="output-practical"></div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Challenge: Try These! 🚀</h3>
+                    <div class="code-example">
+                        <div class="code-block" id="slice-code-5">
+<code># Can you predict what these will output?
+data = [10, 20, 30, 40, 50, 60, 70, 80, 90]
+
+# Try to guess before running!
+print("1:", data[2:7:2])   # ?
+print("2:", data[-5:-1])   # ?
+print("3:", data[::3])      # ?
+print("4:", data[::-2])     # ?
+
+# Remove first and last item
+print("5:", data[1:-1])     # ?
+
+# Get middle item (for odd-length lists)
+middle = len(data) // 2
+print("6: Middle item:", data[middle])</code>
+                        </div>
+                        <button class="run-button" onclick="runCode('slice-code-5', 'output-9')">▶️ Run Code</button>
+                        <div class="output" id="output-9"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Tab -->
+        <div id="quiz" class="tab-content">
+            <div class="content-card">
+                <h2 class="section-title">
+                    <span class="emoji">🎯</span>
+                    Quiz Time!
+                </h2>
+
+                <div class="explanation" style="margin-bottom: 30px;">
+                    Answer all 10 questions below, then click "Submit Quiz" to see your score! 
+                    Take a screenshot of your results to submit to Google Classroom. 📸
+                </div>
+
+                <!-- Question 1 -->
+                <div class="quiz-question">
+                    <div class="question-number">Question 1</div>
+                    <div class="question-text">What will this code output?</div>
+                    <div class="quiz-code">colors = ['red', 'blue', 'green']
+a, b, c = colors
+print(b)</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(1, 0)">A) 'red'</div>
+                        <div class="option" onclick="selectOption(1, 1)">B) 'blue'</div>
+                        <div class="option" onclick="selectOption(1, 2)">C) 'green'</div>
+                        <div class="option" onclick="selectOption(1, 3)">D) Error</div>
+                    </div>
+                    <div class="feedback" id="feedback-1"></div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="quiz-question">
+                    <div class="question-number">Question 2</div>
+                    <div class="question-text">What happens with this unpacking?</div>
+                    <div class="quiz-code">nums = [1, 2, 3, 4, 5]
+first, *middle, last = nums
+print(len(middle))</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(2, 0)">A) 2</div>
+                        <div class="option" onclick="selectOption(2, 1)">B) 3</div>
+                        <div class="option" onclick="selectOption(2, 2)">C) 4</div>
+                        <div class="option" onclick="selectOption(2, 3)">D) 5</div>
+                    </div>
+                    <div class="feedback" id="feedback-2"></div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="quiz-question">
+                    <div class="question-number">Question 3</div>
+                    <div class="question-text">What does this slice return?</div>
+                    <div class="quiz-code">numbers = [10, 20, 30, 40, 50]
+result = numbers[1:4]
+print(result)</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(3, 0)">A) [10, 20, 30]</div>
+                        <div class="option" onclick="selectOption(3, 1)">B) [20, 30, 40]</div>
+                        <div class="option" onclick="selectOption(3, 2)">C) [20, 30, 40, 50]</div>
+                        <div class="option" onclick="selectOption(3, 3)">D) [10, 20, 30, 40]</div>
+                    </div>
+                    <div class="feedback" id="feedback-3"></div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="quiz-question">
+                    <div class="question-number">Question 4</div>
+                    <div class="question-text">How do you reverse a list using slicing?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(4, 0)">A) list[-1]</div>
+                        <div class="option" onclick="selectOption(4, 1)">B) list[::-1]</div>
+                        <div class="option" onclick="selectOption(4, 2)">C) list[::1]</div>
+                        <div class="option" onclick="selectOption(4, 3)">D) list.reverse()</div>
+                    </div>
+                    <div class="feedback" id="feedback-4"></div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="quiz-question">
+                    <div class="question-number">Question 5</div>
+                    <div class="question-text">What is the output?</div>
+                    <div class="quiz-code">letters = ['A', 'B', 'C', 'D', 'E']
+print(letters[-2])</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(5, 0)">A) 'C'</div>
+                        <div class="option" onclick="selectOption(5, 1)">B) 'D'</div>
+                        <div class="option" onclick="selectOption(5, 2)">C) 'E'</div>
+                        <div class="option" onclick="selectOption(5, 3)">D) Error</div>
+                    </div>
+                    <div class="feedback" id="feedback-5"></div>
+                </div>
+
+                <!-- Question 6 -->
+                <div class="quiz-question">
+                    <div class="question-number">Question 6</div>
+                    <div class="question-text">What does this return?</div>
+                    <div class="quiz-code">data = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+result = data[::2]
+print(result)</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(6, 0)">A) [0, 2, 4, 6, 8]</div>
+                        <div class="option" onclick="selectOption(6, 1)">B) [1, 3, 5, 7, 9]</div>
+                        <div class="option" onclick="selectOption(6, 2)">C) [0, 1, 2, 3, 4]</div>
+                        <div class="option" onclick="selectOption(6, 3)">D) [5, 6, 7, 8, 9]</div>
+                    </div>
+                    <div class="feedback" id="feedback-6"></div>
+                </div>
+
+                <!-- Question 7 -->
+                <div class="quiz-question">
+                    <div class="question-number">Question 7</div>
+                    <div class="question-text">Which unpacking will cause an error?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(7, 0)">A) a, b, c = [1, 2, 3]</div>
+                        <div class="option" onclick="selectOption(7, 1)">B) a, *b = [1, 2, 3]</div>
+                        <div class="option" onclick="selectOption(7, 2)">C) a, b = [1, 2, 3]</div>
+                        <div class="option" onclick="selectOption(7, 3)">D) *a, b = [1, 2, 3]</div>
+                    </div>
+                    <div class="feedback" id="feedback-7"></div>
+                </div>
+
+                <!-- Question 8 -->
+                <div class="quiz-question">
+                    <div class="question-number">Question 8</div>
+                    <div class="question-text">What is the output?</div>
+                    <div class="quiz-code">word = "PYTHON"
+print(word[1:4])</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(8, 0)">A) "PYT"</div>
+                        <div class="option" onclick="selectOption(8, 1)">B) "YTH"</div>
+                        <div class="option" onclick="selectOption(8, 2)">C) "YTHO"</div>
+                        <div class="option" onclick="selectOption(8, 3)">D) "THO"</div>
+                    </div>
+                    <div class="feedback" id="feedback-8"></div>
+                </div>
+
+                <!-- Question 9 -->
+                <div class="quiz-question">
+                    <div class="question-number">Question 9</div>
+                    <div class="question-text">How do you get the last 3 items of a list?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(9, 0)">A) list[-3:]</div>
+                        <div class="option" onclick="selectOption(9, 1)">B) list[:3]</div>
+                        <div class="option" onclick="selectOption(9, 2)">C) list[:-3]</div>
+                        <div class="option" onclick="selectOption(9, 3)">D) list[3:]</div>
+                    </div>
+                    <div class="feedback" id="feedback-9"></div>
+                </div>
+
+                <!-- Question 10 -->
+                <div class="quiz-question">
+                    <div class="question-number">Question 10</div>
+                    <div class="question-text">What does this output?</div>
+                    <div class="quiz-code">fruits = ['🍎', '🍌', '🍊']
+print(*fruits, sep=' & ')</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(10, 0)">A) ['🍎', '🍌', '🍊']</div>
+                        <div class="option" onclick="selectOption(10, 1)">B) 🍎 🍌 🍊</div>
+                        <div class="option" onclick="selectOption(10, 2)">C) 🍎 & 🍌 & 🍊</div>
+                        <div class="option" onclick="selectOption(10, 3)">D) Error</div>
+                    </div>
+                    <div class="feedback" id="feedback-10"></div>
+                </div>
+
+                <!-- Submit Button -->
+                <div style="text-align: center; margin: 40px 0;">
+                    <button class="submit-quiz-btn" id="submitQuizBtn" onclick="submitQuiz()" disabled>
+                        📝 Submit Quiz
+                    </button>
+                    <div style="margin-top: 15px; color: var(--text-light); font-size: 0.95em;" id="quiz-status">
+                        Please answer all 10 questions before submitting
+                    </div>
+                </div>
+
+                <!-- Results Display (hidden initially) -->
+                <div class="quiz-results" id="quizResults" style="display: none;">
+                    <div class="score-display">
+                        <h2>🎉 Quiz Complete! 🎉</h2>
+                        <div class="score-number" id="finalScore">0 / 10</div>
+                        <div style="font-size: 1.2em; margin-top: 10px;">
+                            Great job! Take a screenshot and submit to Google Classroom 📸
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <div class="tip-title">🌟 Great Job!</div>
+                    Whether you aced it or learned something new, you're on your way to becoming a Python pro! Keep practicing! 🚀
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pyodide = null;
+        let pyodideLoading = false;
+        let selectedAnswers = {};
+        const correctAnswers = {
+            1: 1,  // B) 'blue'
+            2: 1,  // B) 3
+            3: 1,  // B) [20, 30, 40]
+            4: 1,  // B) list[::-1]
+            5: 1,  // B) 'D'
+            6: 0,  // A) [0, 2, 4, 6, 8]
+            7: 2,  // C) a, b = [1, 2, 3]
+            8: 1,  // B) "YTH"
+            9: 0,  // A) list[-3:]
+            10: 2  // C) 🍎 & 🍌 & 🍊
+        };
+
+        // Initialize Pyodide
+        async function initPyodide() {
+            if (pyodide) return pyodide;
+            if (pyodideLoading) {
+                // Wait for current loading to finish
+                while (pyodideLoading) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                return pyodide;
+            }
+            
+            try {
+                pyodideLoading = true;
+                console.log("Loading Pyodide...");
+                pyodide = await loadPyodide({
+                    indexURL: "https://cdn.jsdelivr.net/pyodide/v0.24.1/full/"
+                });
+                console.log("Pyodide loaded successfully!");
+                pyodideLoading = false;
+                return pyodide;
+            } catch (error) {
+                console.error("Error loading Pyodide:", error);
+                pyodideLoading = false;
+                throw error;
+            }
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            const allTabs = document.querySelectorAll('.tab-content');
+            allTabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active from all tab buttons
+            const allButtons = document.querySelectorAll('.tab');
+            allButtons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active to clicked button
+            event.target.closest('.tab').classList.add('active');
+        }
+
+        // Run Python code
+        async function runCode(codeId, outputId) {
+            const codeBlock = document.getElementById(codeId);
+            const outputDiv = document.getElementById(outputId);
+            const code = codeBlock.textContent;
+
+            outputDiv.textContent = 'Running...';
+            outputDiv.style.color = '#10b981';
+
+            try {
+                // Make sure Pyodide is loaded
+                if (!pyodide) {
+                    outputDiv.textContent = 'Loading Python engine for the first time (this may take a few seconds)...';
+                    await initPyodide();
+                }
+
+                // Capture output
+                await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+                `);
+
+                // Run the actual code
+                await pyodide.runPythonAsync(code);
+
+                // Get the output
+                const output = await pyodide.runPythonAsync("sys.stdout.getvalue()");
+                outputDiv.textContent = output || '(No output)';
+                outputDiv.style.color = '#10b981';
+            } catch (error) {
+                outputDiv.textContent = `Error: ${error.message}`;
+                outputDiv.style.color = '#ef4444';
+            }
+        }
+
+        // Quiz functions
+        function selectOption(questionNum, optionIndex) {
+            // Remove selected from all options in this question
+            const question = document.querySelectorAll('.quiz-question')[questionNum - 1];
+            const options = question.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+
+            // Add selected to clicked option
+            options[optionIndex].classList.add('selected');
+
+            // Store selection
+            selectedAnswers[questionNum] = optionIndex;
+
+            // Check if all questions are answered
+            updateSubmitButton();
+        }
+
+        function updateSubmitButton() {
+            const submitBtn = document.getElementById('submitQuizBtn');
+            const statusText = document.getElementById('quiz-status');
+            const answeredCount = Object.keys(selectedAnswers).length;
+
+            if (answeredCount === 10) {
+                submitBtn.disabled = false;
+                statusText.textContent = `All questions answered! Click Submit to see your score 🎉`;
+                statusText.style.color = 'var(--success)';
+            } else {
+                submitBtn.disabled = true;
+                statusText.textContent = `${answeredCount} / 10 questions answered`;
+                statusText.style.color = 'var(--text-light)';
+            }
+        }
+
+        function submitQuiz() {
+            let score = 0;
+
+            // Check each answer and show feedback
+            for (let questionNum = 1; questionNum <= 10; questionNum++) {
+                const question = document.querySelectorAll('.quiz-question')[questionNum - 1];
+                const options = question.querySelectorAll('.option');
+                const feedback = document.getElementById(`feedback-${questionNum}`);
+                const selectedAnswer = selectedAnswers[questionNum];
+                const correctAnswer = correctAnswers[questionNum];
+
+                // Clear previous classes
+                options.forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                });
+
+                if (selectedAnswer === correctAnswer) {
+                    // Correct answer
+                    options[selectedAnswer].classList.add('correct');
+                    feedback.className = 'feedback correct show';
+                    feedback.innerHTML = '✅ Correct!';
+                    score++;
+                } else {
+                    // Incorrect answer
+                    options[selectedAnswer].classList.add('incorrect');
+                    options[correctAnswer].classList.add('correct');
+                    feedback.className = 'feedback incorrect show';
+                    feedback.innerHTML = `❌ Incorrect. The correct answer is highlighted in green.`;
+                }
+            }
+
+            // Show results
+            const resultsDiv = document.getElementById('quizResults');
+            const finalScoreDiv = document.getElementById('finalScore');
+            finalScoreDiv.textContent = `${score} / 10`;
+            resultsDiv.style.display = 'block';
+
+            // Scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Disable submit button
+            document.getElementById('submitQuizBtn').disabled = true;
+            document.getElementById('quiz-status').textContent = 'Quiz submitted! Scroll down to see your results 📊';
+        }
+    </script>
+</body>
+</html>

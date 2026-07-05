@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 11: Function Arguments - Interactive Playbook</title>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .concept-card {
+            background: #f8f9ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+
+        .concept-card:hover {
+            transform: translateX(5px);
+        }
+
+        .concept-card h3 {
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        .concept-card p {
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .concept-card ul {
+            margin-left: 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .highlight-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .highlight-box strong {
+            color: #856404;
+        }
+
+        .code-example {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .interactive-code {
+            background: #1e1e1e;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow: hidden;
+            border: 2px solid #667eea;
+        }
+
+        .code-header {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-header h4 {
+            margin: 0;
+            font-size: 0.9em;
+        }
+
+        .run-btn {
+            background: #50fa7b;
+            color: #1e1e1e;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .run-btn:hover {
+            background: #00d084;
+            transform: scale(1.05);
+        }
+
+        .code-editor {
+            background: #1e1e1e;
+            color: #f8f8f2;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+            border: none;
+            width: 100%;
+            min-height: 150px;
+            resize: vertical;
+            outline: none;
+        }
+
+        .code-output {
+            background: #0d0d0d;
+            color: #00ff00;
+            padding: 15px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            border-top: 1px solid #667eea;
+            min-height: 50px;
+            display: none;
+        }
+
+        .code-output.show {
+            display: block;
+        }
+
+        .output-label {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .static-code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+            white-space: pre;
+        }
+
+        .keyword {
+            color: #ff79c6;
+        }
+
+        .function {
+            color: #50fa7b;
+        }
+
+        .string {
+            color: #f1fa8c;
+        }
+
+        .comment {
+            color: #6272a4;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover {
+            background: #f8f9ff;
+        }
+
+        .quiz-container {
+            background: #f0f4ff;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .quiz-header h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            background: #e0e0e0;
+            height: 10px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .question-card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-number {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .question-text code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        .options {
+            list-style: none;
+        }
+
+        .option {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #cfe2ff;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #d1e7dd;
+            border-color: #198754;
+        }
+
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .explanation {
+            background: #fff3cd;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 30px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .score-display {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .score-display.show {
+            display: block;
+        }
+
+        .score-display h3 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .score-number {
+            font-size: 4em;
+            font-weight: bold;
+            color: #764ba2;
+            margin: 20px 0;
+        }
+
+        .score-display p {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .reset-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .reset-btn:hover {
+            background: #5a6268;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Week 11: Function Arguments</h1>
+            <p>Master Positional, Keyword, and Optional Arguments in Python</p>
+        </div>
+
+        <div class="content">
+            <!-- Introduction Section -->
+            <div class="section">
+                <h2>📚 Introduction to Function Arguments</h2>
+                <div class="concept-card">
+                    <h3>What are Function Arguments?</h3>
+                    <p>Function arguments are values passed to a function when it's called. They provide data that the function needs to perform its task. Python offers multiple ways to pass arguments, each with its own advantages!</p>
+                    <div class="highlight-box">
+                        <strong>Key Terms:</strong>
+                        <ul>
+                            <li><strong>Parameter:</strong> Variable in the function definition (blueprint)</li>
+                            <li><strong>Argument:</strong> Actual value passed when calling the function (data)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="static-code"><span class="comment"># Example of parameters vs arguments</span>
+<span class="keyword">def</span> <span class="function">greet</span>(name, age):  <span class="comment"># 'name' and 'age' are parameters</span>
+    <span class="keyword">print</span>(<span class="string">f"Hello {name}, you are {age} years old!"</span>)
+
+<span class="function">greet</span>(<span class="string">"Alice"</span>, 15)  <span class="comment"># "Alice" and 15 are arguments</span></div>
+            </div>
+
+            <!-- Positional Arguments Section -->
+            <div class="section">
+                <h2>🎯 Positional Arguments</h2>
+                <div class="concept-card">
+                    <h3>Understanding Positional Arguments</h3>
+                    <p>Positional arguments are matched to parameters based on their position (order) in the function call. The first argument goes to the first parameter, the second to the second, and so on.</p>
+                    <ul>
+                        <li>Order matters! Changing the order changes the meaning.</li>
+                        <li>Most common and straightforward way to pass arguments.</li>
+                        <li>Number of arguments must match the number of parameters.</li>
+                    </ul>
+                </div>
+
+                <div class="static-code"><span class="comment"># Positional arguments example</span>
+<span class="keyword">def</span> <span class="function">calculate_rectangle_area</span>(length, width):
+    <span class="keyword">return</span> length * width
+
+<span class="comment"># Correct order: length=5, width=3</span>
+area1 = <span class="function">calculate_rectangle_area</span>(5, 3)
+<span class="keyword">print</span>(area1)  <span class="comment"># Output: 15</span>
+
+<span class="comment"># Different order gives different result!</span>
+area2 = <span class="function">calculate_rectangle_area</span>(3, 5)
+<span class="keyword">print</span>(area2)  <span class="comment"># Output: 15 (same here, but concept matters!)</span></div>
+
+                <div class="interactive-code">
+                    <div class="code-header">
+                        <h4>🚀 Try It: Positional Arguments</h4>
+                        <button class="run-btn" onclick="runCode(1)">Run Code</button>
+                    </div>
+                    <textarea class="code-editor" id="code1"># Create a function that introduces a person
+def introduce_person(name, age, city):
+    print(f"{name} is {age} years old and lives in {city}.")
+
+# Try calling with different orders
+introduce_person("Sarah", 16, "Chicago")
+introduce_person("Chicago", "Sarah", 16)  # Wrong order!</textarea>
+                    <div class="code-output" id="output1">
+                        <div class="output-label">Output:</div>
+                        <div id="result1"></div>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>⚠️ Common Mistakes with Positional Arguments</h3>
+                    <ul>
+                        <li><strong>Wrong number of arguments:</strong> Too few or too many arguments cause errors</li>
+                        <li><strong>Wrong order:</strong> Arguments in the wrong order lead to unexpected results</li>
+                        <li><strong>Type confusion:</strong> Passing wrong types can cause runtime errors</li>
+                    </ul>
+                </div>
+
+                <div class="interactive-code">
+                    <div class="code-header">
+                        <h4>🚀 Practice: Fix the Errors</h4>
+                        <button class="run-btn" onclick="runCode(2)">Run Code</button>
+                    </div>
+                    <textarea class="code-editor" id="code2"># This function calculates the power
+def calculate_power(base, exponent):
+    return base ** exponent
+
+# Fix this call - it should calculate 2^3
+result = calculate_power(3, 2)  # Currently calculates 3^2
+print(f"Result: {result}")
+
+# Now fix it to get 2^3 = 8
+result_fixed = calculate_power(2, 3)
+print(f"Fixed result: {result_fixed}")</textarea>
+                    <div class="code-output" id="output2">
+                        <div class="output-label">Output:</div>
+                        <div id="result2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Keyword Arguments Section -->
+            <div class="section">
+                <h2>🔑 Keyword Arguments</h2>
+                <div class="concept-card">
+                    <h3>Understanding Keyword Arguments</h3>
+                    <p>Keyword arguments are passed with parameter names explicitly specified. This makes the code more readable and allows you to pass arguments in any order!</p>
+                    <ul>
+                        <li>Use the syntax: <code>parameter_name=value</code></li>
+                        <li>Order doesn't matter when using keyword arguments</li>
+                        <li>Makes code more readable and self-documenting</li>
+                        <li>Helps prevent errors from wrong argument order</li>
+                    </ul>
+                </div>
+
+                <div class="static-code"><span class="comment"># Keyword arguments example</span>
+<span class="keyword">def</span> <span class="function">book_flight</span>(passenger, destination, date, seat_class):
+    <span class="keyword">return</span> <span class="string">f"{passenger} booked {seat_class} to {destination} on {date}"</span>
+
+<span class="comment"># Using keyword arguments - order doesn't matter!</span>
+booking1 = <span class="function">book_flight</span>(
+    passenger=<span class="string">"John"</span>,
+    destination=<span class="string">"Paris"</span>,
+    date=<span class="string">"2025-12-15"</span>,
+    seat_class=<span class="string">"Business"</span>
+)
+
+<span class="comment"># Same result with different order</span>
+booking2 = <span class="function">book_flight</span>(
+    date=<span class="string">"2025-12-15"</span>,
+    seat_class=<span class="string">"Business"</span>,
+    destination=<span class="string">"Paris"</span>,
+    passenger=<span class="string">"John"</span>
+)</div>
+
+                <div class="interactive-code">
+                    <div class="code-header">
+                        <h4>🚀 Try It: Keyword Arguments</h4>
+                        <button class="run-btn" onclick="runCode(3)">Run Code</button>
+                    </div>
+                    <textarea class="code-editor" id="code3"># Create a function for student registration
+def register_student(name, grade, subject, teacher):
+    print(f"{name} (Grade {grade}) registered for {subject} with {teacher}")
+
+# Using keyword arguments - very clear!
+register_student(
+    name="Emma",
+    grade=10,
+    subject="Biology",
+    teacher="Ms. Johnson"
+)
+
+# Try different order - it still works!
+register_student(
+    teacher="Mr. Smith",
+    subject="Math",
+    grade=9,
+    name="Liam"
+)</textarea>
+                    <div class="code-output" id="output3">
+                        <div class="output-label">Output:</div>
+                        <div id="result3"></div>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>🔄 Mixing Positional and Keyword Arguments</h3>
+                    <p>You can use both positional and keyword arguments in the same function call, but positional arguments MUST come before keyword arguments!</p>
+                    <div class="highlight-box">
+                        <strong>Rule:</strong> Positional arguments first, then keyword arguments.
+                    </div>
+                </div>
+
+                <div class="static-code"><span class="comment"># Mixing positional and keyword arguments</span>
+<span class="keyword">def</span> <span class="function">create_profile</span>(username, email, age, city):
+    <span class="keyword">print</span>(<span class="string">f"User: {username}, Email: {email}, Age: {age}, City: {city}"</span>)
+
+<span class="comment"># ✅ Correct: Positional first, then keyword</span>
+<span class="function">create_profile</span>(<span class="string">"alex123"</span>, <span class="string">"alex@email.com"</span>, age=17, city=<span class="string">"Boston"</span>)
+
+<span class="comment"># ❌ Wrong: Keyword before positional causes error!</span>
+<span class="comment"># create_profile(username="alex123", "alex@email.com", 17, "Boston")</span></div>
+
+                <div class="interactive-code">
+                    <div class="code-header">
+                        <h4>🚀 Practice: Mixing Arguments</h4>
+                        <button class="run-btn" onclick="runCode(4)">Run Code</button>
+                    </div>
+                    <textarea class="code-editor" id="code4"># Function for ordering pizza
+def order_pizza(size, topping1, topping2, delivery, tip):
+    order = f"{size} pizza with {topping1} and {topping2}"
+    order += f"\nDelivery: {delivery}, Tip: ${tip}"
+    print(order)
+
+# Mix positional and keyword - positional first!
+order_pizza("Large", "pepperoni", "mushrooms", delivery=True, tip=5)
+
+# Try another combination
+order_pizza("Medium", "olives", topping2="cheese", delivery=False, tip=0)</textarea>
+                    <div class="code-output" id="output4">
+                        <div class="output-label">Output:</div>
+                        <div id="result4"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Optional Arguments Section -->
+            <div class="section">
+                <h2>⭐ Optional Arguments (Default Parameters)</h2>
+                <div class="concept-card">
+                    <h3>Understanding Optional Arguments</h3>
+                    <p>Optional arguments have default values assigned in the function definition. If you don't provide a value when calling the function, the default value is used automatically!</p>
+                    <ul>
+                        <li>Define with syntax: <code>parameter=default_value</code></li>
+                        <li>Make functions more flexible and easier to use</li>
+                        <li>Optional parameters must come after required parameters</li>
+                        <li>Can be overridden by passing a new value</li>
+                    </ul>
+                </div>
+
+                <div class="static-code"><span class="comment"># Optional arguments example</span>
+<span class="keyword">def</span> <span class="function">send_message</span>(recipient, message, priority=<span class="string">"normal"</span>, urgent=<span class="keyword">False</span>):
+    <span class="keyword">print</span>(<span class="string">f"To: {recipient}"</span>)
+    <span class="keyword">print</span>(<span class="string">f"Message: {message}"</span>)
+    <span class="keyword">print</span>(<span class="string">f"Priority: {priority}, Urgent: {urgent}"</span>)
+
+<span class="comment"># Call with only required arguments - defaults are used</span>
+<span class="function">send_message</span>(<span class="string">"Alice"</span>, <span class="string">"Hello!"</span>)
+
+<span class="comment"># Override one default</span>
+<span class="function">send_message</span>(<span class="string">"Bob"</span>, <span class="string">"Meeting at 3pm"</span>, priority=<span class="string">"high"</span>)
+
+<span class="comment"># Override both defaults</span>
+<span class="function">send_message</span>(<span class="string">"Carol"</span>, <span class="string">"Emergency!"</span>, priority=<span class="string">"critical"</span>, urgent=<span class="keyword">True</span>)</div>
+
+                <div class="interactive-code">
+                    <div class="code-header">
+                        <h4>🚀 Try It: Optional Arguments</h4>
+                        <button class="run-btn" onclick="runCode(5)">Run Code</button>
+                    </div>
+                    <textarea class="code-editor" id="code5"># Function to calculate grade with optional curve
+def calculate_grade(score, total=100, curve=0):
+    percentage = ((score + curve) / total) * 100
+    
+    if percentage >= 90:
+        letter = "A"
+    elif percentage >= 80:
+        letter = "B"
+    elif percentage >= 70:
+        letter = "C"
+    elif percentage >= 60:
+        letter = "D"
+    else:
+        letter = "F"
+    
+    print(f"Score: {score}/{total} + {curve} curve = {percentage:.1f}% ({letter})")
+    return letter
+
+# Try different scenarios
+calculate_grade(85)  # Uses defaults
+calculate_grade(85, curve=5)  # Override curve
+calculate_grade(75, total=90, curve=3)  # Override both</textarea>
+                    <div class="code-output" id="output5">
+                        <div class="output-label">Output:</div>
+                        <div id="result5"></div>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>📋 Default Values Best Practices</h3>
+                    <ul>
+                        <li><strong>Use immutable defaults:</strong> Prefer numbers, strings, None, True/False</li>
+                        <li><strong>Document defaults:</strong> Make it clear what default behavior is</li>
+                        <li><strong>Sensible defaults:</strong> Choose defaults that work for most cases</li>
+                        <li><strong>Avoid mutable defaults:</strong> Don't use lists or dictionaries as defaults (advanced topic!)</li>
+                    </ul>
+                </div>
+
+                <div class="interactive-code">
+                    <div class="code-header">
+                        <h4>🚀 Practice: Create a Flexible Function</h4>
+                        <button class="run-btn" onclick="runCode(6)">Run Code</button>
+                    </div>
+                    <textarea class="code-editor" id="code6"># Create a function for customizing greetings
+def create_greeting(name, greeting="Hello", punctuation="!", enthusiasm=1):
+    # Repeat punctuation based on enthusiasm level
+    punct = punctuation * enthusiasm
+    message = f"{greeting} {name}{punct}"
+    print(message)
+    return message
+
+# Test with different levels of customization
+create_greeting("Alice")  # All defaults
+create_greeting("Bob", greeting="Hi")  # Custom greeting
+create_greeting("Charlie", punctuation="!!!", enthusiasm=2)  # Custom punctuation
+create_greeting("Diana", "Hey", "!", 3)  # All custom (positional)</textarea>
+                    <div class="code-output" id="output6">
+                        <div class="output-label">Output:</div>
+                        <div id="result6"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Section -->
+            <div class="section">
+                <h2>📊 Argument Types Comparison</h2>
+                <div class="concept-card">
+                    <h3>Quick Reference Guide</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Argument Type</th>
+                                <th>Syntax</th>
+                                <th>Order Matters?</th>
+                                <th>When to Use</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Positional</strong></td>
+                                <td><code>func(val1, val2)</code></td>
+                                <td>✅ Yes</td>
+                                <td>Simple functions, few parameters, order is obvious</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Keyword</strong></td>
+                                <td><code>func(param1=val1, param2=val2)</code></td>
+                                <td>❌ No</td>
+                                <td>Many parameters, improve readability, avoid mistakes</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Optional (Default)</strong></td>
+                                <td><code>def func(param=default_val)</code></td>
+                                <td>❌ No (comes last)</td>
+                                <td>Flexible functions, common default behavior</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Real World Example -->
+            <div class="section">
+                <h2>🌍 Real-World Example: Student Management System</h2>
+                <div class="concept-card">
+                    <h3>Putting It All Together</h3>
+                    <p>Let's create a comprehensive example that uses all three types of arguments!</p>
+                </div>
+
+                <div class="interactive-code">
+                    <div class="code-header">
+                        <h4>🚀 Complete Example: Student Management</h4>
+                        <button class="run-btn" onclick="runCode(7)">Run Code</button>
+                    </div>
+                    <textarea class="code-editor" id="code7"># Comprehensive function using all argument types
+def add_student(student_id, name, grade, 
+                email="not_provided@school.edu", 
+                phone="000-000-0000",
+                active=True):
+    """
+    Add a student to the system.
+    
+    Required: student_id, name, grade
+    Optional: email, phone, active (have defaults)
+    """
+    student = {
+        'id': student_id,
+        'name': name,
+        'grade': grade,
+        'email': email,
+        'phone': phone,
+        'active': active
+    }
+    
+    print(f"Student Added: {name}")
+    print(f"  ID: {student_id}, Grade: {grade}")
+    print(f"  Email: {email}")
+    print(f"  Phone: {phone}")
+    print(f"  Active: {active}")
+    print("-" * 40)
+    
+    return student
+
+# Example 1: Minimal info (positional + defaults)
+add_student(1001, "Alice Johnson", 10)
+
+# Example 2: Override email (positional + keyword)
+add_student(1002, "Bob Smith", 11, email="bob.smith@school.edu")
+
+# Example 3: All keyword arguments
+add_student(
+    student_id=1003,
+    name="Charlie Brown",
+    grade=9,
+    email="charlie@school.edu",
+    phone="555-1234",
+    active=True
+)
+
+# Example 4: Mixed approach
+add_student(1004, "Diana Prince", 12, 
+            phone="555-5678", 
+            email="diana@school.edu")</textarea>
+                    <div class="code-output" id="output7">
+                        <div class="output-label">Output:</div>
+                        <div id="result7"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Section -->
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <h2>🎓 Knowledge Check Quiz</h2>
+                    <p>Test your understanding of function arguments!</p>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+
+                <div class="questions-container">
+                    <!-- Question 1 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 1</span>
+                        <p class="question-text">What is the main characteristic of positional arguments?</p>
+                        <ul class="options" data-question="1" data-correct="b">
+                            <li class="option" data-answer="a">They can be passed in any order</li>
+                            <li class="option" data-answer="b">They must be passed in the same order as defined in the function</li>
+                            <li class="option" data-answer="c">They always have default values</li>
+                            <li class="option" data-answer="d">They are optional</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> Positional arguments are matched to parameters based on their position (order) in the function call. The first argument goes to the first parameter, second to second, etc.
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 2</span>
+                        <p class="question-text">Given <code>def calculate(x, y, z):</code>, which call is correct using keyword arguments?</p>
+                        <ul class="options" data-question="2" data-correct="c">
+                            <li class="option" data-answer="a"><code>calculate(5, y=10, 15)</code></li>
+                            <li class="option" data-answer="b"><code>calculate(x=5, 10, z=15)</code></li>
+                            <li class="option" data-answer="c"><code>calculate(z=15, x=5, y=10)</code></li>
+                            <li class="option" data-answer="d"><code>calculate(5=x, 10=y, 15=z)</code></li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> When using keyword arguments, you can pass them in any order. The syntax is <code>parameter=value</code>. Options a and b mix positional and keyword incorrectly (positional must come first), and d has the syntax backwards.
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 3</span>
+                        <p class="question-text">What happens if you don't provide a value for an optional parameter?</p>
+                        <ul class="options" data-question="3" data-correct="b">
+                            <li class="option" data-answer="a">The function raises an error</li>
+                            <li class="option" data-answer="b">The default value is used</li>
+                            <li class="option" data-answer="c">The parameter is set to None</li>
+                            <li class="option" data-answer="d">The function cannot execute</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> Optional parameters have default values defined in the function. If you don't provide a value when calling the function, the default value is automatically used.
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 4</span>
+                        <p class="question-text">Which function definition is correct for optional parameters?</p>
+                        <ul class="options" data-question="4" data-correct="c">
+                            <li class="option" data-answer="a"><code>def func(x=5, y, z=10):</code></li>
+                            <li class="option" data-answer="b"><code>def func(x=5, y=10, z):</code></li>
+                            <li class="option" data-answer="c"><code>def func(x, y=5, z=10):</code></li>
+                            <li class="option" data-answer="d"><code>def func(x, y, z=10, w):</code></li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> Required parameters (without defaults) must come before optional parameters (with defaults). Only option c follows this rule correctly.
+                        </div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 5</span>
+                        <p class="question-text">What is the output?<br><code>def greet(name, msg="Hello"):<br>&nbsp;&nbsp;&nbsp;&nbsp;print(f"{msg} {name}")<br>greet("Alice")</code></p>
+                        <ul class="options" data-question="5" data-correct="a">
+                            <li class="option" data-answer="a">Hello Alice</li>
+                            <li class="option" data-answer="b">Alice Hello</li>
+                            <li class="option" data-answer="c">Error: missing argument</li>
+                            <li class="option" data-answer="d">msg Alice</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> The function is called with only the required argument "Alice". The optional parameter <code>msg</code> uses its default value "Hello", resulting in "Hello Alice".
+                        </div>
+                    </div>
+
+                    <!-- Question 6 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 6</span>
+                        <p class="question-text">Which statement about mixing positional and keyword arguments is TRUE?</p>
+                        <ul class="options" data-question="6" data-correct="d">
+                            <li class="option" data-answer="a">Keyword arguments must come before positional arguments</li>
+                            <li class="option" data-answer="b">You cannot mix positional and keyword arguments</li>
+                            <li class="option" data-answer="c">They can be in any order</li>
+                            <li class="option" data-answer="d">Positional arguments must come before keyword arguments</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> When mixing both types, positional arguments MUST come first, followed by keyword arguments. This is a Python syntax rule.
+                        </div>
+                    </div>
+
+                    <!-- Question 7 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 7</span>
+                        <p class="question-text">What is the output?<br><code>def power(base, exp=2):<br>&nbsp;&nbsp;&nbsp;&nbsp;return base ** exp<br>result = power(3)</code></p>
+                        <ul class="options" data-question="7" data-correct="c">
+                            <li class="option" data-answer="a">3</li>
+                            <li class="option" data-answer="b">6</li>
+                            <li class="option" data-answer="c">9</li>
+                            <li class="option" data-answer="d">Error</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> <code>power(3)</code> provides base=3 and uses the default exp=2. So it calculates 3² = 9.
+                        </div>
+                    </div>
+
+                    <!-- Question 8 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 8</span>
+                        <p class="question-text">Which function call will cause an error?<br><code>def register(username, email, age=18):</code></p>
+                        <ul class="options" data-question="8" data-correct="c">
+                            <li class="option" data-answer="a"><code>register("john", "j@mail.com")</code></li>
+                            <li class="option" data-answer="b"><code>register("john", "j@mail.com", 25)</code></li>
+                            <li class="option" data-answer="c"><code>register("john", age=25)</code></li>
+                            <li class="option" data-answer="d"><code>register(username="john", email="j@mail.com")</code></li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> Option c is missing the required <code>email</code> parameter. Even though <code>age</code> is optional, <code>username</code> and <code>email</code> are required and must be provided.
+                        </div>
+                    </div>
+
+                    <!-- Question 9 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 9</span>
+                        <p class="question-text">What is the primary advantage of keyword arguments?</p>
+                        <ul class="options" data-question="9" data-correct="b">
+                            <li class="option" data-answer="a">They execute faster than positional arguments</li>
+                            <li class="option" data-answer="b">They make code more readable and prevent order-related errors</li>
+                            <li class="option" data-answer="c">They are required for all functions</li>
+                            <li class="option" data-answer="d">They automatically validate input types</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> Keyword arguments improve code readability by explicitly showing which value goes to which parameter, and they prevent mistakes from incorrect argument order since order doesn't matter.
+                        </div>
+                    </div>
+
+                    <!-- Question 10 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 10</span>
+                        <p class="question-text">What is the output?<br><code>def describe(item, color="red", size="medium"):<br>&nbsp;&nbsp;&nbsp;&nbsp;print(f"{size} {color} {item}")<br>describe("apple", size="large")</code></p>
+                        <ul class="options" data-question="10" data-correct="a">
+                            <li class="option" data-answer="a">large red apple</li>
+                            <li class="option" data-answer="b">medium red apple</li>
+                            <li class="option" data-answer="c">large medium apple</li>
+                            <li class="option" data-answer="d">Error occurs</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> The function is called with positional argument "apple" for <code>item</code>, default value "red" for <code>color</code>, and keyword argument "large" for <code>size</code>, resulting in "large red apple".
+                        </div>
+                    </div>
+
+                    <!-- Question 11 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 11</span>
+                        <p class="question-text">How many arguments are required to call this function?<br><code>def calculate(a, b, c=5, d=10):</code></p>
+                        <ul class="options" data-question="11" data-correct="b">
+                            <li class="option" data-answer="a">0</li>
+                            <li class="option" data-answer="b">2</li>
+                            <li class="option" data-answer="c">3</li>
+                            <li class="option" data-answer="d">4</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> Only <code>a</code> and <code>b</code> are required parameters (no default values). Parameters <code>c</code> and <code>d</code> have default values, making them optional.
+                        </div>
+                    </div>
+
+                    <!-- Question 12 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 12</span>
+                        <p class="question-text">Which is the correct way to override only the last optional parameter?<br><code>def func(x, y, a=1, b=2, c=3):</code></p>
+                        <ul class="options" data-question="12" data-correct="d">
+                            <li class="option" data-answer="a"><code>func(5, 10, 15)</code></li>
+                            <li class="option" data-answer="b"><code>func(5, 10, c)</code></li>
+                            <li class="option" data-answer="c"><code>func(5, 10, 3=15)</code></li>
+                            <li class="option" data-answer="d"><code>func(5, 10, c=15)</code></li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> To override only <code>c</code> while keeping default values for <code>a</code> and <code>b</code>, you must use keyword argument syntax: <code>c=15</code>.
+                        </div>
+                    </div>
+                </div>
+
+                <button class="submit-btn" id="submitBtn">Submit Quiz</button>
+
+                <div class="score-display" id="scoreDisplay">
+                    <h3>Quiz Complete! 🎉</h3>
+                    <div class="score-number" id="scoreNumber">0/12</div>
+                    <p id="scoreMessage"></p>
+                    <button class="reset-btn" id="resetBtn">Try Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz Logic
+        const options = document.querySelectorAll('.option');
+        const submitBtn = document.getElementById('submitBtn');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const scoreNumber = document.getElementById('scoreNumber');
+        const scoreMessage = document.getElementById('scoreMessage');
+        const resetBtn = document.getElementById('resetBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        let selectedAnswers = {};
+        let totalQuestions = 12;
+
+        // Handle option selection
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                if (submitBtn.disabled) return; // Don't allow changes after submission
+
+                const questionNum = this.parentElement.dataset.question;
+                const answer = this.dataset.answer;
+
+                // Remove selection from other options in this question
+                this.parentElement.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+
+                // Mark this option as selected
+                this.classList.add('selected');
+                selectedAnswers[questionNum] = answer;
+
+                // Update progress bar
+                updateProgress();
+            });
+        });
+
+        function updateProgress() {
+            const answered = Object.keys(selectedAnswers).length;
+            const percentage = (answered / totalQuestions) * 100;
+            progressBar.style.width = percentage + '%';
+        }
+
+        // Submit quiz
+        submitBtn.addEventListener('click', function() {
+            if (Object.keys(selectedAnswers).length < totalQuestions) {
+                alert('Please answer all questions before submitting!');
+                return;
+            }
+
+            let score = 0;
+            
+            // Check each question
+            document.querySelectorAll('.options').forEach(optionsList => {
+                const questionNum = optionsList.dataset.question;
+                const correctAnswer = optionsList.dataset.correct;
+                const selectedAnswer = selectedAnswers[questionNum];
+                const explanation = optionsList.nextElementSibling;
+
+                // Show explanation
+                explanation.classList.add('show');
+
+                // Mark correct/incorrect
+                optionsList.querySelectorAll('.option').forEach(option => {
+                    const answer = option.dataset.answer;
+                    
+                    if (answer === correctAnswer) {
+                        option.classList.add('correct');
+                    }
+                    
+                    if (answer === selectedAnswer && answer !== correctAnswer) {
+                        option.classList.add('incorrect');
+                    }
+                });
+
+                // Count score
+                if (selectedAnswer === correctAnswer) {
+                    score++;
+                }
+            });
+
+            // Display score
+            scoreNumber.textContent = `${score}/${totalQuestions}`;
+            
+            let message = '';
+            let percentage = (score / totalQuestions) * 100;
+            
+            if (percentage === 100) {
+                message = "Perfect score! You're a master of function arguments! 🌟";
+            } else if (percentage >= 80) {
+                message = "Excellent work! You have a strong grasp of function arguments! 👍";
+            } else if (percentage >= 60) {
+                message = "Good job! Review the concepts and try again for mastery. 📚";
+            } else {
+                message = "Keep practicing! Review the materials and take the quiz again. 💪";
+            }
+            
+            scoreMessage.textContent = message;
+            scoreDisplay.classList.add('show');
+            
+            submitBtn.disabled = true;
+            
+            // Scroll to score
+            scoreDisplay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        // Reset quiz
+        resetBtn.addEventListener('click', function() {
+            // Reset selections
+            selectedAnswers = {};
+            
+            // Remove all classes
+            options.forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            // Hide explanations
+            document.querySelectorAll('.explanation').forEach(exp => {
+                exp.classList.remove('show');
+            });
+            
+            // Hide score display
+            scoreDisplay.classList.remove('show');
+            
+            // Enable submit button
+            submitBtn.disabled = false;
+            
+            // Reset progress bar
+            progressBar.style.width = '0%';
+            
+            // Scroll to top of quiz
+            document.querySelector('.quiz-container').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // PyScript Code Execution
+        let codeCounter = 0;
+        
+        function runCode(codeNum) {
+            const editor = document.getElementById(`code${codeNum}`);
+            const output = document.getElementById(`output${codeNum}`);
+            const result = document.getElementById(`result${codeNum}`);
+            
+            // Show output section
+            output.classList.add('show');
+            
+            // Clear previous output
+            result.textContent = '';
+            
+            // Create unique script element
+            codeCounter++;
+            const scriptId = `py-script-${codeNum}-${codeCounter}`;
+            
+            // Remove any existing script for this code block
+            const existingScripts = document.querySelectorAll(`[data-code="${codeNum}"]`);
+            existingScripts.forEach(script => script.remove());
+            
+            // Create new script element
+            const script = document.createElement('script');
+            script.type = 'py';
+            script.id = scriptId;
+            script.setAttribute('data-code', codeNum);
+            
+            // Wrap user code to capture output
+            const wrappedCode = `
+import sys
+from io import StringIO
+
+# Capture stdout
+old_stdout = sys.stdout
+sys.stdout = StringIO()
+
+try:
+${editor.value.split('\n').map(line => '    ' + line).join('\n')}
+except Exception as e:
+    print(f"Error: {e}")
+finally:
+    # Get the output
+    output = sys.stdout.getvalue()
+    sys.stdout = old_stdout
+    
+    # Display in the result div
+    from js import document
+    result_div = document.getElementById('result${codeNum}')
+    if output:
+        result_div.innerText = output
+    else:
+        result_div.innerText = "(No output)"
+`;
+            
+            script.textContent = wrappedCode;
+            document.body.appendChild(script);
+            
+            // Scroll to output
+            setTimeout(() => {
+                output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+    </script>
+</body>
+</html>

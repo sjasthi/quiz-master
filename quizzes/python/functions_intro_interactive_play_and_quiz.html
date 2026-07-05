@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 10: Python Functions - Interactive Playbook</title>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .concept-card {
+            background: #f8f9ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+
+        .concept-card:hover {
+            transform: translateX(5px);
+        }
+
+        .concept-card h3 {
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        .code-example {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .interactive-code {
+            background: #1e1e1e;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow: hidden;
+            border: 2px solid #667eea;
+        }
+
+        .code-header {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-header h4 {
+            margin: 0;
+            font-size: 0.9em;
+        }
+
+        .run-btn {
+            background: #50fa7b;
+            color: #1e1e1e;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .run-btn:hover {
+            background: #00d084;
+            transform: scale(1.05);
+        }
+
+        .code-editor {
+            background: #1e1e1e;
+            color: #f8f8f2;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+            border: none;
+            width: 100%;
+            min-height: 150px;
+            resize: vertical;
+            outline: none;
+        }
+
+        .code-output {
+            background: #0d0d0d;
+            color: #00ff00;
+            padding: 15px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            border-top: 1px solid #667eea;
+            min-height: 50px;
+            display: none;
+        }
+
+        .code-output.show {
+            display: block;
+        }
+
+        .output-label {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .static-code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+            white-space: pre;
+        }
+
+        .keyword {
+            color: #ff79c6;
+        }
+
+        .function {
+            color: #50fa7b;
+        }
+
+        .string {
+            color: #f1fa8c;
+        }
+
+        .comment {
+            color: #6272a4;
+        }
+
+        .quiz-container {
+            background: #f0f4ff;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .quiz-header h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .question-card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-number {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .options {
+            list-style: none;
+        }
+
+        .option {
+            background: #f8f9ff;
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #e8edff;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #764ba2;
+        }
+
+        .option.correct {
+            background: #50fa7b;
+            color: #2d2d2d;
+            border-color: #00d084;
+        }
+
+        .option.incorrect {
+            background: #ff5555;
+            color: white;
+            border-color: #cc0000;
+        }
+
+        .explanation {
+            background: #fff4e6;
+            border-left: 4px solid #ffa500;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation strong {
+            color: #cc7000;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            transition: transform 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .score-display.show {
+            display: block;
+        }
+
+        .score-display h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .score-number {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .reset-btn {
+            background: white;
+            color: #667eea;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐍 Week 10: Python Functions</h1>
+            <p>Interactive Playbook & Quiz</p>
+        </div>
+
+        <div class="content">
+            <!-- Introduction Section -->
+            <div class="section">
+                <h2>📚 What You'll Learn</h2>
+                <p>Functions are one of the most important concepts in programming! They help you organize your code, make it reusable, and easier to understand. Let's explore the fundamentals of Python functions.</p>
+            </div>
+
+            <!-- Key Concepts -->
+            <div class="section">
+                <h2>🎯 Key Concepts</h2>
+
+                <div class="concept-card">
+                    <h3>1. What is a Function?</h3>
+                    <p>A function is a reusable block of code that performs a specific task. Think of it like a recipe: you write it once, and you can use it as many times as you need!</p>
+                    <div class="interactive-code">
+                        <div class="code-header">
+                            <h4>💻 Try it yourself - Click "Run Code"</h4>
+                            <button class="run-btn" onclick="runCode(1)">▶ Run Code</button>
+                        </div>
+                        <textarea class="code-editor" id="code1">def greet():
+    print("Hello, Python learner!")
+
+# Call the function
+greet()</textarea>
+                        <div class="code-output" id="output1">
+                            <div class="output-label">Output:</div>
+                            <div id="result1"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>2. Defining Functions (Function Signature)</h3>
+                    <p>The function signature tells Python the function's name and what information it needs (parameters).</p>
+                    <div class="static-code">def function_name(parameter1, parameter2):
+    # Function body goes here
+    pass</div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>3. Calling Functions</h3>
+                    <p>To use a function, you "call" it by writing its name followed by parentheses.</p>
+                    <div class="interactive-code">
+                        <div class="code-header">
+                            <h4>💻 Try it yourself - Modify and run</h4>
+                            <button class="run-btn" onclick="runCode(2)">▶ Run Code</button>
+                        </div>
+                        <textarea class="code-editor" id="code2"># Define the function
+def say_hello():
+    print("Hello!")
+
+# Call the function
+say_hello()
+
+# Call it again!
+say_hello()</textarea>
+                        <div class="code-output" id="output2">
+                            <div class="output-label">Output:</div>
+                            <div id="result2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>4. Void-Returning Functions</h3>
+                    <p>These functions perform an action but don't return a value. They implicitly return <code>None</code>.</p>
+                    <div class="interactive-code">
+                        <div class="code-header">
+                            <h4>💻 Try changing the name</h4>
+                            <button class="run-btn" onclick="runCode(3)">▶ Run Code</button>
+                        </div>
+                        <textarea class="code-editor" id="code3">def print_welcome(name):
+    print(f"Welcome, {name}!")
+    # No return statement
+
+print_welcome("Alice")
+print_welcome("Bob")
+
+# What does this function return?
+result = print_welcome("Charlie")
+print(f"Return value: {result}")</textarea>
+                        <div class="code-output" id="output3">
+                            <div class="output-label">Output:</div>
+                            <div id="result3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>5. Value-Returning Functions</h3>
+                    <p>These functions calculate something and return a result using the <code>return</code> keyword.</p>
+                    <div class="interactive-code">
+                        <div class="code-header">
+                            <h4>💻 Try different numbers</h4>
+                            <button class="run-btn" onclick="runCode(4)">▶ Run Code</button>
+                        </div>
+                        <textarea class="code-editor" id="code4">def add_numbers(a, b):
+    result = a + b
+    return result
+
+# Capture the return value
+answer = add_numbers(5, 3)
+print(f"5 + 3 = {answer}")
+
+# Use it directly
+print(f"10 + 20 = {add_numbers(10, 20)}")
+
+# Try your own numbers!
+my_sum = add_numbers(100, 200)
+print(f"100 + 200 = {my_sum}")</textarea>
+                        <div class="code-output" id="output4">
+                            <div class="output-label">Output:</div>
+                            <div id="result4"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>6. Built-in vs User-Defined Functions</h3>
+                    <p><strong>Built-in:</strong> Functions that come with Python (like <code>print()</code>, <code>len()</code>, <code>sum()</code>)</p>
+                    <p><strong>User-Defined:</strong> Functions you create yourself for specific tasks</p>
+                    <div class="interactive-code">
+                        <div class="code-header">
+                            <h4>💻 Compare built-in and user-defined functions</h4>
+                            <button class="run-btn" onclick="runCode(5)">▶ Run Code</button>
+                        </div>
+                        <textarea class="code-editor" id="code5"># Built-in functions (come with Python)
+numbers = [1, 2, 3, 4, 5]
+print(f"Length of list: {len(numbers)}")
+print(f"Sum of numbers: {sum(numbers)}")
+
+# User-defined function (you create it!)
+def double(number):
+    return number * 2
+
+# Using our custom function
+print(f"Double of 5: {double(5)}")
+print(f"Double of 10: {double(10)}")
+
+# Combining both types
+total = sum(numbers)
+doubled_total = double(total)
+print(f"Total doubled: {doubled_total}")</textarea>
+                        <div class="code-output" id="output5">
+                            <div class="output-label">Output:</div>
+                            <div id="result5"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>7. Pass-By-Value</h3>
+                    <p>When you pass arguments to a function, Python creates a copy for the function to use. The original variable outside the function isn't changed.</p>
+                    <div class="interactive-code">
+                        <div class="code-header">
+                            <h4>💻 Watch how the original variable stays the same</h4>
+                            <button class="run-btn" onclick="runCode(6)">▶ Run Code</button>
+                        </div>
+                        <textarea class="code-editor" id="code6">def modify(x):
+    x = x + 10
+    print(f"Inside function: {x}")
+
+number = 5
+print(f"Before function call: {number}")
+
+modify(number)  # Pass a copy of 'number'
+
+print(f"After function call: {number}")
+print("Notice: The original number didn't change!")</textarea>
+                        <div class="code-output" id="output6">
+                            <div class="output-label">Output:</div>
+                            <div id="result6"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Section -->
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <h2>🎓 Test Your Knowledge</h2>
+                    <p>Answer all 10 questions to see how well you understand Python functions!</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar"></div>
+                    </div>
+                </div>
+
+                <div id="quizQuestions">
+                    <!-- Question 1 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 1</span>
+                        <p class="question-text">What keyword is used to define a function in Python?</p>
+                        <ul class="options" data-question="1" data-correct="b">
+                            <li class="option" data-answer="a">function</li>
+                            <li class="option" data-answer="b">def</li>
+                            <li class="option" data-answer="c">define</li>
+                            <li class="option" data-answer="d">func</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> The <code>def</code> keyword is used to define functions in Python. It stands for "define" and must be followed by the function name and parentheses.
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 2</span>
+                        <p class="question-text">What is a function that doesn't return a value called?</p>
+                        <ul class="options" data-question="2" data-correct="c">
+                            <li class="option" data-answer="a">Empty function</li>
+                            <li class="option" data-answer="b">Null function</li>
+                            <li class="option" data-answer="c">Void-returning function</li>
+                            <li class="option" data-answer="d">None function</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> A void-returning function performs actions but doesn't return a value. It implicitly returns <code>None</code> in Python.
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 3</span>
+                        <p class="question-text">Which of the following is a built-in Python function?</p>
+                        <ul class="options" data-question="3" data-correct="a">
+                            <li class="option" data-answer="a">print()</li>
+                            <li class="option" data-answer="b">calculate_grade()</li>
+                            <li class="option" data-answer="c">my_function()</li>
+                            <li class="option" data-answer="d">custom_sort()</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> <code>print()</code> is a built-in Python function that comes with the language. The others are examples of user-defined function names.
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 4</span>
+                        <p class="question-text">What does this function return?<br><code>def mystery(): return 42</code></p>
+                        <ul class="options" data-question="4" data-correct="d">
+                            <li class="option" data-answer="a">Nothing</li>
+                            <li class="option" data-answer="b">None</li>
+                            <li class="option" data-answer="c">The string "42"</li>
+                            <li class="option" data-answer="d">The number 42</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> This function returns the integer value 42. It's a value-returning function with an explicit return statement.
+                        </div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 5</span>
+                        <p class="question-text">How do you call a function named <code>calculate_sum</code> with arguments 5 and 10?</p>
+                        <ul class="options" data-question="5" data-correct="b">
+                            <li class="option" data-answer="a">call calculate_sum(5, 10)</li>
+                            <li class="option" data-answer="b">calculate_sum(5, 10)</li>
+                            <li class="option" data-answer="c">calculate_sum[5, 10]</li>
+                            <li class="option" data-answer="d">run calculate_sum(5, 10)</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> To call a function in Python, you simply write the function name followed by parentheses with arguments inside. No special keyword is needed.
+                        </div>
+                    </div>
+
+                    <!-- Question 6 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 6</span>
+                        <p class="question-text">What is the function signature?</p>
+                        <ul class="options" data-question="6" data-correct="c">
+                            <li class="option" data-answer="a">The function's return value</li>
+                            <li class="option" data-answer="b">The function's body</li>
+                            <li class="option" data-answer="c">The function's name and parameters</li>
+                            <li class="option" data-answer="d">The function's documentation</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> The function signature (or definition) includes the function name and its parameter list. It's the first line that defines the function.
+                        </div>
+                    </div>
+
+                    <!-- Question 7 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 7</span>
+                        <p class="question-text">What does "pass-by-value" mean?</p>
+                        <ul class="options" data-question="7" data-correct="b">
+                            <li class="option" data-answer="a">Functions can't modify any variables</li>
+                            <li class="option" data-answer="b">Functions receive a copy of the argument values</li>
+                            <li class="option" data-answer="c">Functions can only work with numbers</li>
+                            <li class="option" data-answer="d">Functions must return a value</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> Pass-by-value means that when you pass arguments to a function, the function works with copies of those values, not the original variables.
+                        </div>
+                    </div>
+
+                    <!-- Question 8 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 8</span>
+                        <p class="question-text">Which statement is TRUE about the <code>return</code> keyword?</p>
+                        <ul class="options" data-question="8" data-correct="d">
+                            <li class="option" data-answer="a">Every function must have a return statement</li>
+                            <li class="option" data-answer="b">A function can only return once</li>
+                            <li class="option" data-answer="c">Return can only return numbers</li>
+                            <li class="option" data-answer="d">Return exits the function and sends a value back</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> The <code>return</code> statement exits the function immediately and sends a value back to where the function was called. Functions can have multiple return statements (though only one executes per call).
+                        </div>
+                    </div>
+
+                    <!-- Question 9 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 9</span>
+                        <p class="question-text">What is the output?<br><code>def test(): print("Hello")<br>result = test()</code></p>
+                        <ul class="options" data-question="9" data-correct="a">
+                            <li class="option" data-answer="a">Prints "Hello" and result is None</li>
+                            <li class="option" data-answer="b">Prints "Hello" and result is "Hello"</li>
+                            <li class="option" data-answer="c">Nothing is printed</li>
+                            <li class="option" data-answer="d">Error occurs</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> The function prints "Hello" when called, but since there's no return statement, it returns <code>None</code> by default. So <code>result</code> will be <code>None</code>.
+                        </div>
+                    </div>
+
+                    <!-- Question 10 -->
+                    <div class="question-card">
+                        <span class="question-number">Question 10</span>
+                        <p class="question-text">What is a parameter?</p>
+                        <ul class="options" data-question="10" data-correct="c">
+                            <li class="option" data-answer="a">The value returned by a function</li>
+                            <li class="option" data-answer="b">The function name</li>
+                            <li class="option" data-answer="c">A variable in the function definition that receives values</li>
+                            <li class="option" data-answer="d">The function body</li>
+                        </ul>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> A parameter is a variable listed in the function definition (signature) that receives values when the function is called. Parameters are also called formal arguments.
+                        </div>
+                    </div>
+                </div>
+
+                <button class="submit-btn" id="submitBtn">Submit Quiz</button>
+
+                <div class="score-display" id="scoreDisplay">
+                    <h3>Quiz Complete! 🎉</h3>
+                    <div class="score-number" id="scoreNumber">0/10</div>
+                    <p id="scoreMessage"></p>
+                    <button class="reset-btn" id="resetBtn">Try Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz Logic
+        const options = document.querySelectorAll('.option');
+        const submitBtn = document.getElementById('submitBtn');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const scoreNumber = document.getElementById('scoreNumber');
+        const scoreMessage = document.getElementById('scoreMessage');
+        const resetBtn = document.getElementById('resetBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        let selectedAnswers = {};
+        let totalQuestions = 10;
+
+        // Handle option selection
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                if (submitBtn.disabled) return; // Don't allow changes after submission
+
+                const questionNum = this.parentElement.dataset.question;
+                const answer = this.dataset.answer;
+
+                // Remove selection from other options in this question
+                this.parentElement.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+
+                // Mark this option as selected
+                this.classList.add('selected');
+                selectedAnswers[questionNum] = answer;
+
+                // Update progress bar
+                updateProgress();
+            });
+        });
+
+        function updateProgress() {
+            const answered = Object.keys(selectedAnswers).length;
+            const percentage = (answered / totalQuestions) * 100;
+            progressBar.style.width = percentage + '%';
+        }
+
+        // Submit quiz
+        submitBtn.addEventListener('click', function() {
+            if (Object.keys(selectedAnswers).length < totalQuestions) {
+                alert('Please answer all questions before submitting!');
+                return;
+            }
+
+            let score = 0;
+            
+            // Check each question
+            document.querySelectorAll('.options').forEach(optionsList => {
+                const questionNum = optionsList.dataset.question;
+                const correctAnswer = optionsList.dataset.correct;
+                const selectedAnswer = selectedAnswers[questionNum];
+                const explanation = optionsList.nextElementSibling;
+
+                // Show explanation
+                explanation.classList.add('show');
+
+                // Mark correct/incorrect
+                optionsList.querySelectorAll('.option').forEach(option => {
+                    const answer = option.dataset.answer;
+                    
+                    if (answer === correctAnswer) {
+                        option.classList.add('correct');
+                    }
+                    
+                    if (answer === selectedAnswer && answer !== correctAnswer) {
+                        option.classList.add('incorrect');
+                    }
+                });
+
+                // Count score
+                if (selectedAnswer === correctAnswer) {
+                    score++;
+                }
+            });
+
+            // Display score
+            scoreNumber.textContent = `${score}/${totalQuestions}`;
+            
+            let message = '';
+            let percentage = (score / totalQuestions) * 100;
+            
+            if (percentage === 100) {
+                message = "Perfect score! You're a Python functions expert! 🌟";
+            } else if (percentage >= 80) {
+                message = "Great job! You have a strong understanding of functions! 👍";
+            } else if (percentage >= 60) {
+                message = "Good effort! Review the concepts and try again. 📚";
+            } else {
+                message = "Keep practicing! Review the materials and take the quiz again. 💪";
+            }
+            
+            scoreMessage.textContent = message;
+            scoreDisplay.classList.add('show');
+            
+            submitBtn.disabled = true;
+            
+            // Scroll to score
+            scoreDisplay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        // Reset quiz
+        resetBtn.addEventListener('click', function() {
+            // Reset selections
+            selectedAnswers = {};
+            
+            // Remove all classes
+            options.forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            // Hide explanations
+            document.querySelectorAll('.explanation').forEach(exp => {
+                exp.classList.remove('show');
+            });
+            
+            // Hide score display
+            scoreDisplay.classList.remove('show');
+            
+            // Enable submit button
+            submitBtn.disabled = false;
+            
+            // Reset progress bar
+            progressBar.style.width = '0%';
+            
+            // Scroll to top of quiz
+            document.querySelector('.quiz-container').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // PyScript Code Execution
+        let codeCounter = 0;
+        
+        function runCode(codeNum) {
+            const editor = document.getElementById(`code${codeNum}`);
+            const output = document.getElementById(`output${codeNum}`);
+            const result = document.getElementById(`result${codeNum}`);
+            
+            // Show output section
+            output.classList.add('show');
+            
+            // Clear previous output
+            result.textContent = '';
+            
+            // Create unique script element
+            codeCounter++;
+            const scriptId = `py-script-${codeNum}-${codeCounter}`;
+            
+            // Remove any existing script for this code block
+            const existingScripts = document.querySelectorAll(`[data-code="${codeNum}"]`);
+            existingScripts.forEach(script => script.remove());
+            
+            // Create new script element
+            const script = document.createElement('script');
+            script.type = 'py';
+            script.id = scriptId;
+            script.setAttribute('data-code', codeNum);
+            
+            // Wrap user code to capture output
+            const wrappedCode = `
+import sys
+from io import StringIO
+
+# Capture stdout
+old_stdout = sys.stdout
+sys.stdout = StringIO()
+
+try:
+${editor.value.split('\n').map(line => '    ' + line).join('\n')}
+except Exception as e:
+    print(f"Error: {e}")
+finally:
+    # Get the output
+    output = sys.stdout.getvalue()
+    sys.stdout = old_stdout
+    
+    # Display in the result div
+    from js import document
+    result_div = document.getElementById('result${codeNum}')
+    if output:
+        result_div.innerText = output
+    else:
+        result_div.innerText = "(No output)"
+`;
+            
+            script.textContent = wrappedCode;
+            document.body.appendChild(script);
+            
+            // Scroll to output
+            setTimeout(() => {
+                output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+    </script>
+</body>
+</html>

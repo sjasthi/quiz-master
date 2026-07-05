@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Data Types Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .quiz-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .quiz-header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #48bb78;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .start-screen, .question-screen, .result-screen {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .start-screen {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .start-screen h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .start-screen p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .data-types-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .type-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .type-badge h4 {
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .type-badge .example {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .question-number {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            color: #4a5568;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .code-display {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 25px;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 2rem;
+            margin: 20px 0;
+            border-left: 5px solid #48bb78;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .answers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .answer-button {
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .answer-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .answer-button.option-a {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .answer-button.option-b {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+
+        .answer-button.option-c {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        .answer-button.option-d {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #4a5568;
+        }
+
+        .answer-button.correct {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%) !important;
+            color: white !important;
+            animation: correctPulse 0.6s ease;
+        }
+
+        .answer-button.incorrect {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%) !important;
+            color: white !important;
+            animation: incorrectShake 0.6s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .feedback {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+            color: #2d5016;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+            color: #742a2a;
+            display: block;
+        }
+
+        .next-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .next-button:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .start-button, .restart-button {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 30px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .start-button:hover, .restart-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(72, 187, 120, 0.3);
+        }
+
+        .result-screen {
+            background: linear-gradient(135deg, #ffeef8 0%, #f0e6ff 100%);
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .score-message {
+            font-size: 1.5rem;
+            color: #4a5568;
+            margin-bottom: 20px;
+        }
+
+        .performance-badge {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .performance-excellent {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .performance-good {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+        }
+
+        .performance-okay {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+            color: white;
+        }
+
+        .performance-poor {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            color: white;
+        }
+
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            color: #4a5568;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .quiz-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-header h1 {
+                font-size: 2rem;
+            }
+            
+            .answers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .code-display {
+                font-size: 1.5rem;
+                padding: 20px;
+            }
+            
+            .data-types-preview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>🐍 Python Data Types Quiz</h1>
+            <p class="subtitle">Test your knowledge of bool, int, float, and string!</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <div class="timer" id="timer" style="display: none;">⏰ 15s</div>
+        </div>
+
+        <!-- Start Screen -->
+        <div class="screen active start-screen" id="startScreen">
+            <h2>🎯 Ready to Test Your Python Skills?</h2>
+            <p>This quiz will test your understanding of Python's four basic data types. You'll see values and need to identify their types, or see types and pick the correct values!</p>
+            
+            <div class="data-types-preview">
+                <div class="type-badge">
+                    <h4>🔢 int</h4>
+                    <div class="example">42, -5, 0</div>
+                </div>
+                <div class="type-badge">
+                    <h4>📊 float</h4>
+                    <div class="example">3.14, -2.5</div>
+                </div>
+                <div class="type-badge">
+                    <h4>✅ bool</h4>
+                    <div class="example">True, False</div>
+                </div>
+                <div class="type-badge">
+                    <h4>📝 str</h4>
+                    <div class="example">"Hello", 'Python'</div>
+                </div>
+            </div>
+            
+            <p>📝 <strong>10 questions</strong> • ⏱️ <strong>15 seconds each</strong> • 🎯 <strong>Beat your high score!</strong></p>
+            
+            <button class="start-button" onclick="startQuiz()">🚀 Start Quiz</button>
+        </div>
+
+        <!-- Question Screen -->
+        <div class="screen question-screen" id="questionScreen">
+            <div class="question-number" id="questionNumber">Question 1 of 10</div>
+            <div class="question-text" id="questionText">What data type is this value?</div>
+            <div class="code-display" id="codeDisplay">42</div>
+            
+            <div class="answers-grid" id="answersGrid">
+                <button class="answer-button option-a" onclick="selectAnswer(0)">int</button>
+                <button class="answer-button option-b" onclick="selectAnswer(1)">float</button>
+                <button class="answer-button option-c" onclick="selectAnswer(2)">bool</button>
+                <button class="answer-button option-d" onclick="selectAnswer(3)">str</button>
+            </div>
+            
+            <div class="feedback" id="feedback">
+                <strong>Correct!</strong> 42 is an integer (whole number).
+            </div>
+            
+            <button class="next-button" id="nextButton" onclick="nextQuestion()">Next Question →</button>
+        </div>
+
+        <!-- Result Screen -->
+        <div class="screen result-screen" id="resultScreen">
+            <h2>🎉 Quiz Complete!</h2>
+            <div class="score-display" id="scoreDisplay">8/10</div>
+            <div class="score-message" id="scoreMessage">Excellent work!</div>
+            <div class="performance-badge excellent" id="performanceBadge">🏆 Data Types Master</div>
+            
+            <div class="quiz-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="correctAnswers">8</div>
+                    <div class="stat-label">Correct Answers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="accuracy">80%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalTime">2:15</div>
+                    <div class="stat-label">Total Time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="avgTime">13s</div>
+                    <div class="stat-label">Avg per Question</div>
+                </div>
+            </div>
+            
+            <button class="restart-button" onclick="restartQuiz()">🔄 Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                type: "identify_type",
+                question: "What data type is this value?",
+                value: "42",
+                options: ["int", "float", "bool", "str"],
+                correct: 0,
+                explanation: "42 is an integer - a whole number without decimal points."
+            },
+            {
+                type: "identify_type",
+                question: "What data type is this value?",
+                value: "3.14159",
+                options: ["int", "float", "bool", "str"],
+                correct: 1,
+                explanation: "3.14159 is a float - a number with decimal points."
+            },
+            {
+                type: "identify_type",
+                question: "What data type is this value?",
+                value: "True",
+                options: ["int", "float", "bool", "str"],
+                correct: 2,
+                explanation: "True is a boolean - one of two logical values (True or False)."
+            },
+            {
+                type: "identify_type",
+                question: "What data type is this value?",
+                value: '"Hello World"',
+                options: ["int", "float", "bool", "str"],
+                correct: 3,
+                explanation: '"Hello World" is a string - text enclosed in quotes.'
+            },
+            {
+                type: "identify_value",
+                question: "Which value is a float?",
+                value: "",
+                options: ["100", "2.5", "False", '"3.14"'],
+                correct: 1,
+                explanation: "2.5 is a float because it has a decimal point. Note that \"3.14\" in quotes is a string!"
+            },
+            {
+                type: "identify_type",
+                question: "What data type is this value?",
+                value: "-0",
+                options: ["int", "float", "bool", "str"],
+                correct: 0,
+                explanation: "-0 is an integer - it's still a whole number even though it's negative zero."
+            },
+            {
+                type: "identify_value",
+                question: "Which value is a boolean?",
+                value: "",
+                options: ['"True"', "1", "False", "0.0"],
+                correct: 2,
+                explanation: "False is a boolean. Note that \"True\" in quotes is a string, not a boolean!"
+            },
+            {
+                type: "identify_type",
+                question: "What data type is this value?",
+                value: "'Python'",
+                options: ["int", "float", "bool", "str"],
+                correct: 3,
+                explanation: "'Python' is a string - text can be enclosed in either single or double quotes."
+            },
+            {
+                type: "identify_value",
+                question: "Which value is an integer?",
+                value: "",
+                options: ["3.0", "-42", "True", '"100"'],
+                correct: 1,
+                explanation: "-42 is an integer. Note that 3.0 is a float, True is boolean, and \"100\" is a string."
+            },
+            {
+                type: "identify_type",
+                question: "What data type is this value?",
+                value: "0.0",
+                options: ["int", "float", "bool", "str"],
+                correct: 1,
+                explanation: "0.0 is a float because it has a decimal point, even though the value is zero."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let startTime;
+        let questionStartTime;
+        let timeRemaining = 15;
+        let timer;
+        let totalTime = 0;
+
+        function startQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            totalTime = 0;
+            startTime = Date.now();
+            showScreen('questionScreen');
+            showQuestion();
+        }
+
+        function showScreen(screenName) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenName).classList.add('active');
+        }
+
+        function showQuestion() {
+            if (currentQuestion >= questions.length) {
+                showResults();
+                return;
+            }
+
+            const question = questions[currentQuestion];
+            
+            // Update progress
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            // Update question number
+            document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            
+            // Update question text
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Update code display
+            if (question.type === "identify_type") {
+                document.getElementById('codeDisplay').textContent = question.value;
+            } else {
+                document.getElementById('codeDisplay').textContent = "Choose the correct value:";
+            }
+            
+            // Update answers
+            const answersGrid = document.getElementById('answersGrid');
+            answersGrid.innerHTML = '';
+            const buttonClasses = ['option-a', 'option-b', 'option-c', 'option-d'];
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = `answer-button ${buttonClasses[index]}`;
+                button.textContent = option;
+                button.onclick = () => selectAnswer(index);
+                answersGrid.appendChild(button);
+            });
+            
+            // Reset feedback and next button
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('nextButton').style.display = 'none';
+            
+            // Start timer
+            startTimer();
+            questionStartTime = Date.now();
+        }
+
+        function startTimer() {
+            timeRemaining = 15;
+            document.getElementById('timer').style.display = 'block';
+            updateTimerDisplay();
+            
+            timer = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timer);
+                    selectAnswer(-1); // Time's up
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = `⏰ ${timeRemaining}s`;
+            
+            if (timeRemaining <= 5) {
+                timerElement.style.background = 'rgba(229, 62, 62, 0.9)';
+                timerElement.style.color = 'white';
+            } else {
+                timerElement.style.background = 'rgba(255,255,255,0.9)';
+                timerElement.style.color = '#4a5568';
+            }
+        }
+
+        function selectAnswer(selectedIndex) {
+            clearInterval(timer);
+            document.getElementById('timer').style.display = 'none';
+            
+            // Calculate time for this question
+            const questionTime = (Date.now() - questionStartTime) / 1000;
+            totalTime += questionTime;
+            
+            const question = questions[currentQuestion];
+            const buttons = document.querySelectorAll('.answer-button');
+            const feedback = document.getElementById('feedback');
+            
+            // Disable all buttons
+            buttons.forEach(button => {
+                button.style.pointerEvents = 'none';
+            });
+            
+            if (selectedIndex === question.correct) {
+                // Correct answer
+                score++;
+                buttons[selectedIndex].classList.add('correct');
+                feedback.className = 'feedback correct';
+                feedback.innerHTML = `<strong>Correct! 🎉</strong><br>${question.explanation}`;
+            } else {
+                // Wrong answer (or time's up)
+                if (selectedIndex >= 0) {
+                    buttons[selectedIndex].classList.add('incorrect');
+                }
+                buttons[question.correct].classList.add('correct');
+                feedback.className = 'feedback incorrect';
+                
+                if (selectedIndex === -1) {
+                    feedback.innerHTML = `<strong>Time's up! ⏰</strong><br>The correct answer was: <strong>${question.options[question.correct]}</strong><br>${question.explanation}`;
+                } else {
+                    feedback.innerHTML = `<strong>Not quite! 🤔</strong><br>The correct answer was: <strong>${question.options[question.correct]}</strong><br>${question.explanation}`;
+                }
+            }
+            
+            feedback.style.display = 'block';
+            document.getElementById('nextButton').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            showQuestion();
+        }
+
+        function showResults() {
+            showScreen('resultScreen');
+            
+            // Update progress to 100%
+            document.getElementById('progressBar').style.width = '100%';
+            
+            // Calculate stats
+            const accuracy = Math.round((score / questions.length) * 100);
+            const avgTime = Math.round(totalTime / questions.length);
+            const totalMinutes = Math.floor(totalTime / 60);
+            const totalSeconds = Math.round(totalTime % 60);
+            
+            // Update display
+            document.getElementById('scoreDisplay').textContent = `${score}/${questions.length}`;
+            document.getElementById('correctAnswers').textContent = score;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+            document.getElementById('totalTime').textContent = `${totalMinutes}:${totalSeconds.toString().padStart(2, '0')}`;
+            document.getElementById('avgTime').textContent = avgTime + 's';
+            
+            // Performance message and badge
+            let message, badgeText, badgeClass;
+            
+            if (score >= 9) {
+                message = "Outstanding! You're a Python data types expert! 🏆";
+                badgeText = "🏆 Data Types Master";
+                badgeClass = "performance-excellent";
+            } else if (score >= 7) {
+                message = "Great job! You have a solid understanding! 🎯";
+                badgeText = "🎯 Python Pro";
+                badgeClass = "performance-good";
+            } else if (score >= 5) {
+                message = "Good effort! Keep practicing to improve! 📚";
+                badgeText = "📚 Getting There";
+                badgeClass = "performance-okay";
+            } else {
+                message = "Don't worry! Review the basics and try again! 💪";
+                badgeText = "💪 Keep Learning";
+                badgeClass = "performance-poor";
+            }
+            
+            document.getElementById('scoreMessage').textContent = message;
+            const badge = document.getElementById('performanceBadge');
+            badge.textContent = badgeText;
+            badge.className = `performance-badge ${badgeClass}`;
+        }
+
+        function restartQuiz() {
+            showScreen('startScreen');
+            document.getElementById('progressBar').style.width = '0%';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showScreen('startScreen');
+        });
+    </script>
+</body>
+</html>

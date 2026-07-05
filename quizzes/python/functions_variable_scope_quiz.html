@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Variable Scope Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6C5CE7;
+            --secondary: #00B894;
+            --accent: #FDCB6E;
+            --danger: #FF7675;
+            --dark: #2D3436;
+            --light: #DFE6E9;
+            --white: #FFFFFF;
+            --code-bg: #2D2D2D;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--white);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 4px solid var(--primary);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            color: var(--dark);
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--light);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.2em;
+            color: var(--dark);
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .question-card {
+            background: #F8F9FA;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-left: 6px solid var(--primary);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            background: var(--primary);
+            color: var(--white);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .rule-tag {
+            background: var(--accent);
+            color: var(--dark);
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.15em;
+            color: var(--dark);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            color: #A9B7C6;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.95em;
+            margin: 15px 0;
+            overflow-x: auto;
+            border: 2px solid #444;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .code-block .keyword {
+            color: #CC7832;
+        }
+
+        .code-block .function {
+            color: #FFC66D;
+        }
+
+        .code-block .string {
+            color: #6A8759;
+        }
+
+        .code-block .number {
+            color: #6897BB;
+        }
+
+        .code-block .comment {
+            color: #808080;
+            font-style: italic;
+        }
+
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option {
+            background: var(--white);
+            border: 3px solid var(--light);
+            border-radius: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+            color: var(--dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(108, 92, 231, 0.1);
+        }
+
+        .option.correct {
+            border-color: var(--secondary);
+            background: rgba(0, 184, 148, 0.15);
+            animation: bounce 0.5s ease;
+        }
+
+        .option.incorrect {
+            border-color: var(--danger);
+            background: rgba(255, 118, 117, 0.15);
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .option::before {
+            content: '';
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--light);
+            border-radius: 50%;
+            margin-right: 12px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .option.selected::before {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .option.correct::before {
+            content: '✓';
+            border-color: var(--secondary);
+            background: var(--secondary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .option.incorrect::before {
+            content: '✗';
+            border-color: var(--danger);
+            background: var(--danger);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 0.95em;
+            line-height: 1.6;
+            display: none;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 200px;
+            }
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: rgba(0, 184, 148, 0.15);
+            border-left: 4px solid var(--secondary);
+            color: #00695C;
+        }
+
+        .feedback.incorrect {
+            background: rgba(255, 118, 117, 0.15);
+            border-left: 4px solid var(--danger);
+            color: #C62828;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #5F4FD1;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: var(--light);
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            text-align: center;
+            padding: 40px;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .results h2 {
+            font-size: 2.5em;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .final-score {
+            font-size: 3em;
+            font-weight: 800;
+            color: var(--secondary);
+            margin: 20px 0;
+        }
+
+        .emoji {
+            font-size: 4em;
+            margin: 20px 0;
+        }
+
+        .restart-btn {
+            margin-top: 30px;
+            background: var(--secondary);
+            color: var(--white);
+            padding: 16px 48px;
+            font-size: 1.1em;
+        }
+
+        .restart-btn:hover {
+            background: #00A075;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.4);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .welcome-card {
+            background: #F8F9FA;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .rules-container {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .rule-item {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 6px solid var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .rule-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+        }
+
+        .rule-number {
+            background: var(--primary);
+            color: var(--white);
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9em;
+            flex-shrink: 0;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .rule-content {
+            color: var(--dark);
+            line-height: 1.6;
+            font-size: 1em;
+        }
+
+        .rule-content strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .rule-content code {
+            background: var(--code-bg);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        .start-quiz-btn {
+            width: 100%;
+            padding: 18px 32px;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐍 Variable Scope Quiz</h1>
+            <p class="subtitle">Test Your Python Knowledge!</p>
+        </header>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="score-display">
+            <span>Score: <strong id="scoreText">0/12</strong></span>
+        </div>
+
+        <div id="welcomeContainer">
+            <div class="welcome-card">
+                <h2 style="color: var(--primary); font-size: 2em; margin-bottom: 20px;">📚 Variable Scope Rules</h2>
+                <p style="color: var(--dark); font-size: 1.1em; margin-bottom: 30px;">Review these rules before taking the quiz!</p>
+                
+                <div class="rules-container">
+                    <div class="rule-item">
+                        <div class="rule-number">Rule 1</div>
+                        <div class="rule-content">
+                            <strong>LOCAL Variables:</strong> Variables defined within a function have local scope and are only accessible within that specific function.
+                        </div>
+                    </div>
+
+                    <div class="rule-item">
+                        <div class="rule-number">Rule 2</div>
+                        <div class="rule-content">
+                            <strong>GLOBAL Variables:</strong> Variables defined outside of any function have global scope and can be accessed from anywhere within the script.
+                        </div>
+                    </div>
+
+                    <div class="rule-item">
+                        <div class="rule-number">Rule 3</div>
+                        <div class="rule-content">
+                            <strong>SHADOWING Variables:</strong> When a variable with the same name as global scope is redefined within a function, it becomes a local variable (it shadows the global variable). In such case, the local variable takes precedence within the function. Modifying a local variable does not affect the corresponding global variable with the same name.
+                        </div>
+                    </div>
+
+                    <div class="rule-item">
+                        <div class="rule-number">Rule 4</div>
+                        <div class="rule-content">
+                            <strong>Modify the GLOBAL - The 'global' Keyword:</strong> To modify a global variable from within a function, you can use the <code>global</code> keyword.
+                        </div>
+                    </div>
+
+                    <div class="rule-item">
+                        <div class="rule-number">Rule 5</div>
+                        <div class="rule-content">
+                            <strong>Immutable Objects - Copy:</strong> If immutable objects (e.g., integers, floats, booleans, strings) are passed as an argument, only their values (= a copy of the value) are passed to the function. So, any changes made to these variables within the function do not affect the original global object.
+                        </div>
+                    </div>
+
+                    <div class="rule-item">
+                        <div class="rule-number">Rule 6</div>
+                        <div class="rule-content">
+                            <strong>Mutable Objects - Address:</strong> If mutable objects (e.g., lists, dictionaries) are passed as an argument, their address location (= a copy of the address location) is passed to the function. So, any changes made within the function will affect the original global object.
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary start-quiz-btn" onclick="startQuiz()">Start Quiz</button>
+            </div>
+        </div>
+
+        <div id="quizContainer" class="hidden"></div>
+
+        <div id="resultsContainer" class="hidden"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                rule: "Rule 1",
+                question: "What will this code print?",
+                code: `<span class="keyword">def</span> <span class="function">greet</span>():
+    message = <span class="string">"Hello!"</span>
+    <span class="keyword">print</span>(message)
+
+<span class="function">greet</span>()
+<span class="keyword">print</span>(message)`,
+                options: [
+                    "Hello! followed by Hello!",
+                    "Hello! followed by an error",
+                    "Just Hello!",
+                    "Just an error"
+                ],
+                correct: 1,
+                explanation: "The variable 'message' is a LOCAL variable defined inside the function greet(). It only exists within that function. When we try to print(message) outside the function, Python can't find it and throws a NameError."
+            },
+            {
+                id: 2,
+                rule: "Rule 1",
+                question: "Which statement is TRUE about local variables?",
+                code: null,
+                options: [
+                    "Local variables can be accessed from anywhere in the program",
+                    "Local variables exist only within the function where they're defined",
+                    "Local variables are automatically global",
+                    "Local variables must have the same name as global variables"
+                ],
+                correct: 1,
+                explanation: "Local variables have LOCAL SCOPE - they only exist within the function where they're created. Once the function finishes running, the local variable disappears!"
+            },
+            {
+                id: 3,
+                rule: "Rule 2",
+                question: "What will this code print?",
+                code: `name = <span class="string">"Python"</span>
+
+<span class="keyword">def</span> <span class="function">show_name</span>():
+    <span class="keyword">print</span>(name)
+
+<span class="function">show_name</span>()`,
+                options: [
+                    "Error - name is not defined",
+                    "Python",
+                    "None",
+                    "Empty string"
+                ],
+                correct: 1,
+                explanation: "The variable 'name' is a GLOBAL variable (defined outside any function). Global variables can be READ from anywhere in the program, including inside functions!"
+            },
+            {
+                id: 4,
+                rule: "Rule 2",
+                question: "True or False: A global variable defined at the start of your program can be read (but not necessarily modified) inside any function.",
+                code: null,
+                options: [
+                    "True",
+                    "False"
+                ],
+                correct: 0,
+                explanation: "TRUE! Global variables can be READ from anywhere in your program, including inside functions. However, to MODIFY a global variable inside a function, you need to use the 'global' keyword."
+            },
+            {
+                id: 5,
+                rule: "Rule 3",
+                question: "What will this code print?",
+                code: `x = <span class="number">10</span>
+
+<span class="keyword">def</span> <span class="function">test</span>():
+    x = <span class="number">20</span>
+    <span class="keyword">print</span>(x)
+
+<span class="function">test</span>()
+<span class="keyword">print</span>(x)`,
+                options: [
+                    "20 followed by 20",
+                    "20 followed by 10",
+                    "10 followed by 20",
+                    "10 followed by 10"
+                ],
+                correct: 1,
+                explanation: "Inside the function, we create a LOCAL variable x = 20 that SHADOWS the global x. The local x only exists inside the function and prints 20. Outside the function, the global x still has its original value of 10. This is called VARIABLE SHADOWING!"
+            },
+            {
+                id: 6,
+                rule: "Rule 3",
+                question: "If you define a variable with the same name inside a function as a global variable, what happens?",
+                code: null,
+                options: [
+                    "You get an error",
+                    "The global variable is deleted",
+                    "A new local variable is created that shadows the global one",
+                    "Both variables share the same value"
+                ],
+                correct: 2,
+                explanation: "When you define a variable inside a function with the same name as a global variable, you create a NEW LOCAL variable that shadows (hides) the global one. The local variable takes precedence inside the function, but the global variable remains unchanged outside!"
+            },
+            {
+                id: 7,
+                rule: "Rule 3",
+                question: "What will this code print?",
+                code: `color = <span class="string">"red"</span>
+
+<span class="keyword">def</span> <span class="function">paint</span>():
+    color = <span class="string">"blue"</span>
+    <span class="keyword">print</span>(<span class="string">"Inside:"</span>, color)
+
+<span class="function">paint</span>()
+<span class="keyword">print</span>(<span class="string">"Outside:"</span>, color)`,
+                options: [
+                    "Inside: red, Outside: red",
+                    "Inside: blue, Outside: blue",
+                    "Inside: blue, Outside: red",
+                    "Inside: red, Outside: blue"
+                ],
+                correct: 2,
+                explanation: "The function creates a LOCAL variable 'color' that shadows the global one. Inside the function, 'color' is 'blue'. Outside the function, the global 'color' remains 'red'. Modifying a local variable does NOT affect the global variable!"
+            },
+            {
+                id: 8,
+                rule: "Rule 4",
+                question: "What will this code print?",
+                code: `counter = <span class="number">0</span>
+
+<span class="keyword">def</span> <span class="function">increment</span>():
+    <span class="keyword">global</span> counter
+    counter = counter + <span class="number">1</span>
+
+<span class="function">increment</span>()
+<span class="function">increment</span>()
+<span class="keyword">print</span>(counter)`,
+                options: [
+                    "0",
+                    "1",
+                    "2",
+                    "Error"
+                ],
+                correct: 2,
+                explanation: "The 'global' keyword tells Python we want to modify the GLOBAL variable 'counter', not create a local one. Each call to increment() adds 1 to the global counter. After two calls: 0 → 1 → 2!"
+            },
+            {
+                id: 9,
+                rule: "Rule 4",
+                question: "What keyword must you use inside a function to modify a global variable?",
+                code: null,
+                options: [
+                    "modify",
+                    "global",
+                    "change",
+                    "extern"
+                ],
+                correct: 1,
+                explanation: "The 'global' keyword tells Python that you want to modify the global variable, not create a new local variable with the same name. Without it, Python creates a local variable instead!"
+            },
+            {
+                id: 10,
+                rule: "Rule 4",
+                question: "What happens if you try to modify a global variable inside a function WITHOUT using the global keyword?",
+                code: `score = <span class="number">100</span>
+
+<span class="keyword">def</span> <span class="function">update_score</span>():
+    score = score + <span class="number">10</span>
+
+<span class="function">update_score</span>()`,
+                options: [
+                    "The global variable is successfully modified",
+                    "Python creates a new local variable",
+                    "You get an UnboundLocalError",
+                    "The code runs but does nothing"
+                ],
+                correct: 2,
+                explanation: "When Python sees 'score = score + 10', it treats 'score' as a LOCAL variable. But you're trying to use 'score' (on the right side) before assigning it (on the left side)! This causes an UnboundLocalError. Use 'global score' to fix this!"
+            },
+            {
+                id: 11,
+                rule: "Rule 5",
+                question: "What will this code print?",
+                code: `num = <span class="number">5</span>
+
+<span class="keyword">def</span> <span class="function">double</span>(n):
+    n = n * <span class="number">2</span>
+    <span class="keyword">print</span>(<span class="string">"Inside:"</span>, n)
+
+<span class="function">double</span>(num)
+<span class="keyword">print</span>(<span class="string">"Outside:"</span>, num)`,
+                options: [
+                    "Inside: 10, Outside: 10",
+                    "Inside: 10, Outside: 5",
+                    "Inside: 5, Outside: 5",
+                    "Inside: 5, Outside: 10"
+                ],
+                correct: 1,
+                explanation: "When we pass an immutable object (integer) to a function, only a COPY of the VALUE is passed. The parameter 'n' is a local variable. Changing 'n' inside the function does NOT affect the original 'num' outside. The original 'num' stays 5!"
+            },
+            {
+                id: 12,
+                rule: "Rule 6",
+                question: "What will this code print?",
+                code: `my_list = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]
+
+<span class="keyword">def</span> <span class="function">add_item</span>(lst):
+    lst.append(<span class="number">4</span>)
+    <span class="keyword">print</span>(<span class="string">"Inside:"</span>, lst)
+
+<span class="function">add_item</span>(my_list)
+<span class="keyword">print</span>(<span class="string">"Outside:"</span>, my_list)`,
+                options: [
+                    "Inside: [1, 2, 3, 4], Outside: [1, 2, 3]",
+                    "Inside: [1, 2, 3, 4], Outside: [1, 2, 3, 4]",
+                    "Inside: [1, 2, 3], Outside: [1, 2, 3]",
+                    "Inside: [1, 2, 3], Outside: [1, 2, 3, 4]"
+                ],
+                correct: 1,
+                explanation: "When we pass a mutable object (like a list) to a function, we pass a reference (address) to that object. When we modify the list inside the function using .append(), we're modifying the SAME list that exists outside! Changes inside affect the original object."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+        let quizStarted = false;
+
+        function startQuiz() {
+            quizStarted = true;
+            document.getElementById('welcomeContainer').classList.add('hidden');
+            document.querySelector('.progress-bar').style.display = 'block';
+            document.querySelector('.score-display').style.display = 'block';
+            document.getElementById('quizContainer').classList.remove('hidden');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const question = questions[currentQuestion];
+            const container = document.getElementById('quizContainer');
+            
+            let codeHTML = '';
+            if (question.code) {
+                codeHTML = `<div class="code-block">${question.code}</div>`;
+            }
+
+            const optionsHTML = question.options.map((option, index) => 
+                `<div class="option" onclick="selectAnswer(${index})" data-index="${index}">
+                    ${option}
+                </div>`
+            ).join('');
+
+            container.innerHTML = `
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number">Question ${currentQuestion + 1} of ${questions.length}</span>
+                        <span class="rule-tag">${question.rule}</span>
+                    </div>
+                    <div class="question-text">${question.question}</div>
+                    ${codeHTML}
+                    <div class="options" id="options">
+                        ${optionsHTML}
+                    </div>
+                    <div class="feedback" id="feedback"></div>
+                    <div class="button-group">
+                        <button class="btn-primary" onclick="nextQuestion()" id="nextBtn" disabled>
+                            ${currentQuestion === questions.length - 1 ? 'See Results' : 'Next Question'}
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            updateProgress();
+            answered = false;
+        }
+
+        function selectAnswer(index) {
+            if (answered) return;
+            
+            answered = true;
+            const question = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            const feedback = document.getElementById('feedback');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+            
+            if (index === question.correct) {
+                options[index].classList.add('correct');
+                feedback.className = 'feedback correct show';
+                feedback.innerHTML = `<strong>✓ Correct!</strong> ${question.explanation}`;
+                score++;
+                updateScore();
+            } else {
+                options[index].classList.add('incorrect');
+                options[question.correct].classList.add('correct');
+                feedback.className = 'feedback incorrect show';
+                feedback.innerHTML = `<strong>✗ Not quite.</strong> ${question.explanation}`;
+            }
+            
+            nextBtn.disabled = false;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function updateScore() {
+            document.getElementById('scoreText').textContent = `${score}/${questions.length}`;
+        }
+
+        function showResults() {
+            const percentage = Math.round((score / questions.length) * 100);
+            let emoji, message, color;
+            
+            if (percentage >= 90) {
+                emoji = '🎉';
+                message = 'Outstanding!';
+                color = '#00B894';
+            } else if (percentage >= 75) {
+                emoji = '🌟';
+                message = 'Great Job!';
+                color = '#0984E3';
+            } else if (percentage >= 60) {
+                emoji = '👍';
+                message = 'Good Effort!';
+                color = '#FDCB6E';
+            } else {
+                emoji = '📚';
+                message = 'Keep Learning!';
+                color = '#FF7675';
+            }
+
+            document.getElementById('quizContainer').classList.add('hidden');
+            const resultsContainer = document.getElementById('resultsContainer');
+            resultsContainer.classList.remove('hidden');
+            
+            resultsContainer.innerHTML = `
+                <div class="results">
+                    <div class="emoji">${emoji}</div>
+                    <h2>${message}</h2>
+                    <div class="final-score" style="color: ${color}">${score}/${questions.length}</div>
+                    <p style="font-size: 1.2em; color: #2D3436; margin: 20px 0;">
+                        You scored <strong>${percentage}%</strong> on the Variable Scope Quiz!
+                    </p>
+                    <button class="restart-btn" onclick="restartQuiz()">Take Quiz Again</button>
+                </div>
+            `;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            answered = false;
+            quizStarted = false;
+            updateScore();
+            document.getElementById('resultsContainer').classList.add('hidden');
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.querySelector('.progress-bar').style.display = 'none';
+            document.querySelector('.score-display').style.display = 'none';
+            document.getElementById('welcomeContainer').classList.remove('hidden');
+        }
+
+        // Quiz will start when user clicks "Start Quiz" button
+    </script>
+</body>
+</html>

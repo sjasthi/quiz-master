@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Sets — Interactive Playbook &amp; Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-main: #0f172a;
+  --bg-card: #1e293b;
+  --bg-card-alt: #253349;
+  --bg-code: #0d1520;
+  --accent-orange: #f97316;
+  --accent-yellow: #fbbf24;
+  --accent-green: #34d399;
+  --accent-blue: #38bdf8;
+  --accent-purple: #a78bfa;
+  --accent-pink: #f472b6;
+  --accent-red: #f87171;
+  --accent-teal: #2dd4bf;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: #334155;
+  --success: #22c55e;
+  --error: #ef4444;
+  --glow-orange: rgba(249, 115, 22, 0.15);
+  --glow-green: rgba(52, 211, 153, 0.15);
+  --glow-blue: rgba(56, 189, 248, 0.15);
+  --glow-teal: rgba(45, 212, 191, 0.15);
+  --glow-purple: rgba(167, 139, 250, 0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(45,212,191,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(167,139,250,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(56,189,248,0.06) 0%, transparent 50%);
+  z-index: -1;
+  animation: bgShift 20s ease-in-out infinite alternate;
+}
+
+@keyframes bgShift {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(-3%, -3%) rotate(3deg); }
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 24px 20px 60px; }
+
+/* ── HEADER ── */
+.header { text-align: center; padding: 40px 20px 30px; position: relative; }
+
+.header-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue));
+  color: var(--bg-main);
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 6px 18px;
+  border-radius: 50px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.header h1 {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow), var(--accent-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+.header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ── TABS ── */
+.tab-nav {
+  display: flex;
+  gap: 6px;
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 6px;
+  margin-bottom: 30px;
+  border: 1px solid var(--border);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-card-alt);
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+  color: var(--bg-main);
+  box-shadow: 0 4px 20px var(--glow-orange);
+}
+
+.tab-icon { font-size: 1.2rem; }
+.tab-content { display: none; animation: fadeIn 0.4s ease; }
+.tab-content.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── CONCEPT CARDS ── */
+.concept-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.concept-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+.concept-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 16px 16px 0 0;
+}
+
+.concept-card.orange::before { background: linear-gradient(90deg, var(--accent-orange), var(--accent-yellow)); }
+.concept-card.green::before  { background: linear-gradient(90deg, var(--accent-green), var(--accent-teal)); }
+.concept-card.blue::before   { background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); }
+.concept-card.purple::before { background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink)); }
+.concept-card.teal::before   { background: linear-gradient(90deg, var(--accent-teal), var(--accent-green)); }
+.concept-card.pink::before   { background: linear-gradient(90deg, var(--accent-pink), var(--accent-red)); }
+
+.concept-card h2 {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.concept-card h3 {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--accent-yellow);
+  margin: 18px 0 10px;
+}
+
+.concept-card p, .concept-card li {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.concept-card ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 10px 0;
+}
+
+.concept-card ul li {
+  padding: 4px 0 4px 24px;
+  position: relative;
+}
+
+.concept-card ul li::before {
+  content: '▸';
+  position: absolute;
+  left: 6px;
+  color: var(--accent-teal);
+  font-weight: bold;
+}
+
+/* ── CODE BLOCKS ── */
+.code-block {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin: 14px 0;
+  overflow: hidden;
+}
+
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--border);
+}
+
+.code-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.code-dots span {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+.code-dots span:nth-child(1) { background: var(--accent-red); }
+.code-dots span:nth-child(2) { background: var(--accent-yellow); }
+.code-dots span:nth-child(3) { background: var(--accent-green); }
+
+.code-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.code-block pre {
+  padding: 16px 20px;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.code-block code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  white-space: pre;
+  display: block;
+}
+
+.run-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  margin-top: 10px;
+  background: linear-gradient(135deg, var(--accent-green), var(--accent-teal));
+  color: var(--bg-main);
+  border: none;
+  border-radius: 8px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.run-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px var(--glow-green);
+}
+
+.output-block {
+  background: rgba(34,197,94,0.08);
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-top: 10px;
+  display: none;
+}
+
+.output-block.visible { display: block; animation: fadeIn 0.3s ease; }
+
+.output-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--accent-green);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.output-block pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--accent-green);
+  line-height: 1.6;
+  white-space: pre;
+  margin: 0;
+}
+
+.error-text { color: var(--accent-red) !important; }
+
+/* ── COMPARISON TABLE ── */
+.compare-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 16px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.compare-table th {
+  background: rgba(249,115,22,0.15);
+  padding: 12px 16px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: center;
+  color: var(--accent-orange);
+}
+
+.compare-table th:first-child { text-align: left; }
+
+.compare-table td {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.compare-table td:first-child {
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.compare-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+.check { color: var(--accent-green); font-size: 1.2rem; }
+.cross { color: var(--accent-red); font-size: 1.2rem; }
+
+/* ── CALLOUT ── */
+.callout {
+  background: rgba(251,191,36,0.08);
+  border-left: 4px solid var(--accent-yellow);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 18px;
+  margin: 14px 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.callout strong { color: var(--accent-yellow); }
+
+.callout.tip {
+  background: rgba(52,211,153,0.08);
+  border-left-color: var(--accent-green);
+}
+
+.callout.tip strong { color: var(--accent-green); }
+
+.callout.warning {
+  background: rgba(248,113,113,0.08);
+  border-left-color: var(--accent-red);
+}
+
+.callout.warning strong { color: var(--accent-red); }
+
+.inline-code {
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(56,189,248,0.12);
+  color: var(--accent-blue);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+}
+
+/* ── QUIZ ── */
+.quiz-intro {
+  text-align: center;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.quiz-intro h2 {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.quiz-intro p { color: var(--text-secondary); font-size: 1.05rem; }
+
+.quiz-progress-bar {
+  background: var(--bg-card);
+  border-radius: 20px;
+  height: 10px;
+  margin-bottom: 28px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.quiz-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-orange), var(--accent-yellow));
+  border-radius: 20px;
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+.question-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.question-num {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent-teal);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+
+.question-text {
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.question-code {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+
+.question-code pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  white-space: pre;
+  margin: 0;
+}
+
+.options { display: flex; flex-direction: column; gap: 10px; }
+
+.option-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--bg-card-alt);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.option-btn:hover {
+  border-color: var(--accent-blue);
+  background: rgba(56,189,248,0.08);
+}
+
+.option-btn.selected {
+  border-color: var(--accent-blue);
+  background: rgba(56,189,248,0.12);
+}
+
+.option-btn.correct {
+  border-color: var(--success) !important;
+  background: rgba(34,197,94,0.12) !important;
+}
+
+.option-btn.incorrect {
+  border-color: var(--error) !important;
+  background: rgba(239,68,68,0.12) !important;
+}
+
+.option-btn.disabled { pointer-events: none; }
+
+.option-letter {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.option-btn.selected .option-letter {
+  background: var(--accent-blue);
+  color: var(--bg-main);
+}
+
+.option-btn.correct .option-letter {
+  background: var(--success);
+  color: #fff;
+}
+
+.option-btn.incorrect .option-letter {
+  background: var(--error);
+  color: #fff;
+}
+
+.option-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.explanation {
+  display: none;
+  margin-top: 14px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  animation: fadeIn 0.3s ease;
+}
+
+.explanation.correct-exp {
+  display: block;
+  background: rgba(34,197,94,0.08);
+  border: 1px solid rgba(34,197,94,0.25);
+  color: var(--accent-green);
+}
+
+.explanation.incorrect-exp {
+  display: block;
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.25);
+  color: var(--accent-red);
+}
+
+/* ── SUBMIT & RESULTS ── */
+.submit-section { text-align: center; margin: 30px 0; }
+
+.submit-btn {
+  padding: 16px 48px;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+  color: var(--bg-main);
+  border: none;
+  border-radius: 14px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px var(--glow-orange);
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--glow-orange);
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.results-card {
+  display: none;
+  background: var(--bg-card);
+  border: 2px solid var(--accent-orange);
+  border-radius: 20px;
+  padding: 40px 30px;
+  text-align: center;
+  margin: 30px 0;
+  animation: fadeIn 0.5s ease;
+  box-shadow: 0 8px 40px var(--glow-orange);
+}
+
+.results-card.visible { display: block; }
+
+.results-emoji { font-size: 3.5rem; margin-bottom: 12px; }
+
+.results-card h2 {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+}
+
+.score-display {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 10px 0;
+}
+
+.score-label {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-bottom: 18px;
+}
+
+.classroom-note {
+  background: rgba(56,189,248,0.08);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-top: 20px;
+  color: var(--accent-blue);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.classroom-note strong { color: var(--accent-yellow); }
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 30px 20px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .header h1 { font-size: 2rem; }
+  .concept-card, .question-card { padding: 20px; }
+  .tab-btn { font-size: 0.92rem; padding: 12px 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-badge">Chapter 9 · Dictionaries &amp; Sets</div>
+    <h1>Python Sets { }</h1>
+    <p>Unordered collections of unique items — your toolkit for removing duplicates and comparing groups!</p>
+  </div>
+
+  <!-- TAB NAV -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('concepts')">
+      <span class="tab-icon">📘</span> Concepts
+    </button>
+    <button class="tab-btn" onclick="switchTab('quiz')">
+      <span class="tab-icon">🧪</span> Quiz
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════ CONCEPTS TAB ═══════════════════════════════ -->
+  <div id="tab-concepts" class="tab-content active">
+
+    <!-- CARD 1: Comparison -->
+    <div class="concept-card orange">
+      <h2>📊 Lists vs Tuples vs Sets</h2>
+      <p>You already know lists and tuples. Here's how sets compare:</p>
+      <table class="compare-table">
+        <tr>
+          <th>Feature</th><th>Lists <code>[ ]</code></th><th>Tuples <code>( )</code></th><th>Sets <code>{ }</code></th>
+        </tr>
+        <tr><td>Ordered</td><td class="check">✔</td><td class="check">✔</td><td class="cross">✘</td></tr>
+        <tr><td>Indexed</td><td class="check">✔</td><td class="check">✔</td><td class="cross">✘</td></tr>
+        <tr><td>Add / Update items</td><td class="check">✔</td><td class="cross">✘</td><td class="check">✔</td></tr>
+        <tr><td>Can contain duplicates</td><td class="check">✔</td><td class="check">✔</td><td class="cross">✘</td></tr>
+        <tr><td>Uses</td><td>Square Brackets</td><td>Round Brackets</td><td>Curly Braces</td></tr>
+        <tr><td>Constructor</td>
+          <td><span class="inline-code">list()</span> or <span class="inline-code">[]</span></td>
+          <td><span class="inline-code">tuple()</span> or <span class="inline-code">()</span></td>
+          <td><span class="inline-code">set()</span></td>
+        </tr>
+      </table>
+      <div class="callout">
+        <strong>Key takeaway:</strong> Sets are <strong>unordered</strong>, <strong>unindexed</strong>, and do <strong>not allow duplicates</strong>. Think of a set like a bag of unique items — no order, no repeats!
+      </div>
+    </div>
+
+    <!-- CARD 2: Creating -->
+    <div class="concept-card green">
+      <h2>🛠️ Creating a Set</h2>
+      <h3>Using Curly Braces</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code>fruits = {"apple", "banana", "grapes", "mango"}
+print(fruits)
+print(type(fruits))</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-create1')">▶ Run</button>
+      <div class="output-block" id="out-create1">
+        <div class="output-label">Output</div>
+        <pre>{'mango', 'apple', 'banana', 'grapes'}
+&lt;class 'set'&gt;</pre>
+      </div>
+
+      <h3>Creating an Empty Set — Watch Out!</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code># Common mistake!
+wrong = {}
+print(type(wrong))    # &lt;class 'dict'&gt;  — NOT a set!
+
+# Correct way:
+correct = set()
+print(type(correct))  # &lt;class 'set'&gt;</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-create2')">▶ Run</button>
+      <div class="output-block" id="out-create2">
+        <div class="output-label">Output</div>
+        <pre>&lt;class 'dict'&gt;
+&lt;class 'set'&gt;</pre>
+      </div>
+      <div class="callout warning">
+        <strong>⚠️ Watch out:</strong> <span class="inline-code">{}</span> creates an empty <strong>dictionary</strong>, NOT an empty set. Always use <span class="inline-code">set()</span> for an empty set!
+      </div>
+    </div>
+
+    <!-- CARD 3: No Duplicates -->
+    <div class="concept-card blue">
+      <h2>🚫 Sets Automatically Remove Duplicates</h2>
+      <p>If you add duplicate values, Python keeps only one copy.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code>set_x = {10, 20, 20, 20, 20, 30}
+print(set_x)
+print(*set_x)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-dup1')">▶ Run</button>
+      <div class="output-block" id="out-dup1">
+        <div class="output-label">Output</div>
+        <pre>{10, 20, 30}
+10 20 30</pre>
+      </div>
+
+      <p style="margin-top:14px">A marks list with duplicates <strong>cannot</strong> be properly represented as a set:</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code># marks = [10, 8, 7, 0, 9, 11, 10, 10, 4, 5]
+# Converting to a set loses the duplicate 10s!
+marks_set = {10, 8, 7, 0, 9, 11, 10, 10, 4, 5}
+print(marks_set)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-dup2')">▶ Run</button>
+      <div class="output-block" id="out-dup2">
+        <div class="output-label">Output</div>
+        <pre>{0, 4, 5, 7, 8, 9, 10, 11}</pre>
+      </div>
+      <div class="callout tip">
+        <strong>💡 Pro tip:</strong> Converting a list to a set is a quick way to find unique values!
+      </div>
+    </div>
+
+    <!-- CARD 4: Unordered & Unindexed -->
+    <div class="concept-card purple">
+      <h2>🔀 Sets Are Unordered &amp; Unindexed</h2>
+      <p>Unlike lists and tuples, sets have <strong>no order</strong> and <strong>no index positions</strong>. You cannot access elements by index.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code>set_y = {"amy", "barb", "chris", "dave"}
+first_student = set_y[0]   # This will CRASH!</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-idx')">▶ Run</button>
+      <div class="output-block" id="out-idx">
+        <div class="output-label">Output</div>
+        <pre class="error-text">TypeError: 'set' object is not subscriptable</pre>
+      </div>
+      <div class="callout warning">
+        <strong>⚠️ Remember:</strong> Since sets are unordered, there is no "first" or "last" item. Every time you print a set, the order may be different!
+      </div>
+    </div>
+
+    <!-- CARD 5: Immutable Items Only -->
+    <div class="concept-card teal">
+      <h2>🔒 Sets Only Support Immutable Data Types</h2>
+      <p>Set items must be <strong>immutable</strong> (unchangeable). You can store numbers, strings, booleans, and tuples — but <strong>not lists</strong>.</p>
+
+      <h3>Why Can't You Put a List in a Set?</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code>A = [1, 2, 3]
+B = [2, 3, 4]
+set_x = {A, B}   # This will CRASH!</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-immut1')">▶ Run</button>
+      <div class="output-block" id="out-immut1">
+        <div class="output-label">Output</div>
+        <pre class="error-text">TypeError: unhashable type: 'list'</pre>
+      </div>
+
+      <p style="margin-top: 14px;color:var(--text-secondary)"><strong style="color:var(--accent-yellow)">Think about it:</strong> If lists were allowed, you could modify B to become [1,2,3] — creating duplicates inside the set. That violates the set rule!</p>
+
+      <h3>But Tuples Work Just Fine!</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code>A = (1, 2, 3)
+B = (2, 3, 4)
+set_x = {A, B}
+print(set_x)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-immut2')">▶ Run</button>
+      <div class="output-block" id="out-immut2">
+        <div class="output-label">Output</div>
+        <pre>{(1, 2, 3), (2, 3, 4)}</pre>
+      </div>
+      <div class="callout tip">
+        <strong>💡 Key rule:</strong> Only <strong>immutable</strong> items (numbers, strings, booleans, tuples) can go inside a set — not lists.
+      </div>
+    </div>
+
+    <!-- CARD 6: Mixed Types -->
+    <div class="concept-card pink">
+      <h2>🎨 A Single Set Can Contain Multiple Data Types</h2>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code># student name, age, email, is_active?
+student_info = {"John Doe", 15, "john.doe@gmail.com", True}
+print(student_info)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-mixed')">▶ Run</button>
+      <div class="output-block" id="out-mixed">
+        <div class="output-label">Output</div>
+        <pre>{'John Doe', 'john.doe@gmail.com', True, 15}</pre>
+      </div>
+      <div class="callout">
+        <strong>Notice:</strong> The order in the output is different from how we typed it! Order is <strong>not guaranteed</strong> in sets.
+      </div>
+    </div>
+
+    <!-- CARD 7: CRUD -->
+    <div class="concept-card orange">
+      <h2>📝 CRUD Operations on Sets</h2>
+      <p>Remember the CRUD framework? Here's how sets compare:</p>
+      <table class="compare-table">
+        <tr><th>Operation</th><th>Lists</th><th>Tuples</th><th>Sets</th></tr>
+        <tr><td><strong>C</strong>reate</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td></tr>
+        <tr><td><strong>R</strong>ead</td><td class="check">✔</td><td class="check">✔</td><td>✔ (no indexing!)</td></tr>
+        <tr><td><strong>U</strong>pdate</td><td class="check">✔</td><td class="cross">✘</td><td>✔ (add/remove only)</td></tr>
+        <tr><td><strong>D</strong>elete</td><td class="check">✔</td><td class="cross">✘</td><td class="check">✔</td></tr>
+      </table>
+
+      <h3>Create — Building a Set</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code># Method 1: Create with initial values
+students = {"abe", "barb", "chris"}
+print(students)
+
+# Method 2: Start empty, then add
+students = set()
+students.add("abe")
+students.add("barb")
+students.add("chris")
+students.add("dave")
+print(*students)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-crud')">▶ Run</button>
+      <div class="output-block" id="out-crud">
+        <div class="output-label">Output</div>
+        <pre>{'barb', 'abe', 'chris'}
+dave barb abe chris</pre>
+      </div>
+    </div>
+
+    <!-- CARD 8: Adding & Removing -->
+    <div class="concept-card green">
+      <h2>➕ Adding &amp; ➖ Removing Items</h2>
+
+      <h3>Adding Items</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code># add() — add one element
+students = {"abe", "barb", "chris"}
+students.add("fiona")
+print("After add:", students)
+
+# update() — add multiple elements (from list, tuple, or set)
+more = ["greg", "hannah"]
+students.update(more)
+print("After update:", students)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-add')">▶ Run</button>
+      <div class="output-block" id="out-add">
+        <div class="output-label">Output</div>
+        <pre>After add: {'fiona', 'barb', 'abe', 'chris'}
+After update: {'fiona', 'barb', 'greg', 'abe', 'hannah', 'chris'}</pre>
+      </div>
+
+      <h3>Removing Items — Three Ways</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code>fruits = {"apple", "banana", "cherry", "mango"}
+
+# remove(x) — raises KeyError if not found
+fruits.remove("banana")
+print("After remove:", fruits)
+
+# discard(x) — NO error if not found
+fruits.discard("grape")     # no error!
+print("After discard:", fruits)
+
+# pop() — removes a RANDOM element
+removed = fruits.pop()
+print("Popped:", removed)
+print("Remaining:", fruits)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-remove')">▶ Run</button>
+      <div class="output-block" id="out-remove">
+        <div class="output-label">Output</div>
+        <pre>After remove: {'apple', 'cherry', 'mango'}
+After discard: {'apple', 'cherry', 'mango'}
+Popped: apple
+Remaining: {'cherry', 'mango'}</pre>
+      </div>
+      <div class="callout tip">
+        <strong>💡 Tip:</strong> Use <span class="inline-code">discard()</span> when you're not sure if the item exists. Use <span class="inline-code">remove()</span> when you expect it to be there.
+      </div>
+    </div>
+
+    <!-- CARD 9: Iterating & Membership -->
+    <div class="concept-card blue">
+      <h2>🔄 Iterating &amp; Membership</h2>
+
+      <h3>Looping Through a Set</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code>thisset = {"apple", "banana", "cherry"}
+
+for x in thisset:
+    print(x)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-loop')">▶ Run</button>
+      <div class="output-block" id="out-loop">
+        <div class="output-label">Output (order may vary)</div>
+        <pre>banana
+cherry
+apple</pre>
+      </div>
+
+      <h3>Checking Membership — <span class="inline-code">in</span></h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code>students = {"abe", "barb", "chris", "dan", "ellie"}
+
+if "barb" in students:
+    print("Yes! Barb is registered")
+
+print("zara" in students)
+print("zara" not in students)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-member')">▶ Run</button>
+      <div class="output-block" id="out-member">
+        <div class="output-label">Output</div>
+        <pre>Yes! Barb is registered
+False
+True</pre>
+      </div>
+    </div>
+
+    <!-- CARD 10: Set Operations -->
+    <div class="concept-card purple">
+      <h2>🦸 Set Operations — The Superpower of Sets!</h2>
+      <p>This is where sets truly shine. Let's use the <strong>Mammals vs Aquatic</strong> animals scenario:</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python — Setup</div>
+        </div>
+        <pre><code># Two sets — one for mammals, one for aquatic animals
+mammals = {"Tiger", "Camel", "Sheep", "Whale", "Walrus"}
+aquatic = {"Octopus", "Squid", "Crab", "Whale", "Walrus"}</code></pre>
+      </div>
+
+      <h3>Union — All animals from EITHER group ( <span class="inline-code">|</span> or <span class="inline-code">.union()</span> )</h3>
+      <p style="color:var(--text-secondary)">The union of A and B is the set of elements in A, B, or both (A ∪ B).</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code>mammals = {"Tiger", "Camel", "Sheep", "Whale", "Walrus"}
+aquatic = {"Octopus", "Squid", "Crab", "Whale", "Walrus"}
+
+# union method
+animals = mammals.union(aquatic)
+print("Union (method):", animals)
+
+# | operator
+animals = mammals | aquatic
+print("Union (|):     ", animals)
+
+# Original sets are NOT modified
+print("mammals:", mammals)
+print("aquatic:", aquatic)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-union')">▶ Run</button>
+      <div class="output-block" id="out-union">
+        <div class="output-label">Output</div>
+        <pre>Union (method): {'Octopus', 'Tiger', 'Sheep', 'Walrus', 'Whale', 'Crab', 'Camel', 'Squid'}
+Union (|):      {'Octopus', 'Tiger', 'Sheep', 'Walrus', 'Whale', 'Crab', 'Camel', 'Squid'}
+mammals: {'Tiger', 'Sheep', 'Walrus', 'Whale', 'Camel'}
+aquatic: {'Octopus', 'Walrus', 'Crab', 'Whale', 'Squid'}</pre>
+      </div>
+
+      <h3>Intersection — Animals in BOTH groups ( <span class="inline-code">&amp;</span> or <span class="inline-code">.intersection()</span> )</h3>
+      <p style="color:var(--text-secondary)">The intersection of A and B is the set of elements common to both (A ∩ B).</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code>mammals = {"Tiger", "Camel", "Sheep", "Whale", "Walrus"}
+aquatic = {"Octopus", "Squid", "Crab", "Whale", "Walrus"}
+
+animals = mammals.intersection(aquatic)
+print("Intersection:", animals)
+
+# Using & operator
+animals = mammals & aquatic
+print("Using &:     ", animals)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-inter')">▶ Run</button>
+      <div class="output-block" id="out-inter">
+        <div class="output-label">Output</div>
+        <pre>Intersection: {'Walrus', 'Whale'}
+Using &:      {'Walrus', 'Whale'}</pre>
+      </div>
+
+      <h3>Difference — In one group but NOT the other ( <span class="inline-code">-</span> or <span class="inline-code">.difference()</span> )</h3>
+      <p style="color:var(--text-secondary)">The difference of A and B is the set of elements in A that are not in B (A - B). <strong style="color:var(--accent-red)">Note: A-B ≠ B-A!</strong></p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code>mammals = {"Tiger", "Camel", "Sheep", "Whale", "Walrus"}
+aquatic = {"Octopus", "Squid", "Crab", "Whale", "Walrus"}
+
+# mammals - aquatic (land-only mammals)
+mammals_only = mammals.difference(aquatic)
+print("mammals - aquatic:", mammals_only)
+
+# aquatic - mammals (aquatic-only animals)
+aquatic_only = aquatic.difference(mammals)
+print("aquatic - mammals:", aquatic_only)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-diff')">▶ Run</button>
+      <div class="output-block" id="out-diff">
+        <div class="output-label">Output</div>
+        <pre>mammals - aquatic: {'Sheep', 'Tiger', 'Camel'}
+aquatic - mammals: {'Octopus', 'Squid', 'Crab'}</pre>
+      </div>
+
+      <h3>Symmetric Difference — In one group but NOT both ( <span class="inline-code">^</span> or <span class="inline-code">.symmetric_difference()</span> )</h3>
+      <p style="color:var(--text-secondary)">The symmetric difference is the set of elements in either A or B, but not in both (A △ B).</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code>mammals = {"Tiger", "Camel", "Sheep", "Whale", "Walrus"}
+aquatic = {"Octopus", "Squid", "Crab", "Whale", "Walrus"}
+
+exclusive = mammals.symmetric_difference(aquatic)
+print("Symmetric diff:", exclusive)
+
+# Using ^ operator
+exclusive = mammals ^ aquatic
+print("Using ^:       ", exclusive)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-symdiff')">▶ Run</button>
+      <div class="output-block" id="out-symdiff">
+        <div class="output-label">Output</div>
+        <pre>Symmetric diff: {'Sheep', 'Octopus', 'Crab', 'Camel', 'Tiger', 'Squid'}
+Using ^:        {'Sheep', 'Octopus', 'Crab', 'Camel', 'Tiger', 'Squid'}</pre>
+      </div>
+
+      <h3>Quick Summary</h3>
+      <table class="compare-table">
+        <tr>
+          <th>Operation</th><th>Method</th><th>Operator</th><th>Result</th>
+        </tr>
+        <tr><td>Union</td><td><span class="inline-code">.union()</span></td><td><span class="inline-code">|</span></td><td>ALL animals</td></tr>
+        <tr><td>Intersection</td><td><span class="inline-code">.intersection()</span></td><td><span class="inline-code">&amp;</span></td><td>BOTH groups</td></tr>
+        <tr><td>Difference</td><td><span class="inline-code">.difference()</span></td><td><span class="inline-code">-</span></td><td>One group ONLY</td></tr>
+        <tr><td>Symmetric Diff</td><td><span class="inline-code">.symmetric_difference()</span></td><td><span class="inline-code">^</span></td><td>NOT in both</td></tr>
+      </table>
+    </div>
+
+    <!-- CARD 11: Built-in Functions -->
+    <div class="concept-card teal">
+      <h2>🧰 Built-in Functions on Sets</h2>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">Python</div>
+        </div>
+        <pre><code>numbers = {3, 1, 4, 1, 5, 9, 2, 6}
+print("Set:   ", numbers)   # duplicates removed!
+print("len:   ", len(numbers))
+print("min:   ", min(numbers))
+print("max:   ", max(numbers))
+print("sum:   ", sum(numbers))
+print("sorted:", sorted(numbers))</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-builtin')">▶ Run</button>
+      <div class="output-block" id="out-builtin">
+        <div class="output-label">Output</div>
+        <pre>Set:    {1, 2, 3, 4, 5, 6, 9}
+len:    7
+min:    1
+max:    9
+sum:    30
+sorted: [1, 2, 3, 4, 5, 6, 9]</pre>
+      </div>
+      <div class="callout tip">
+        <strong>💡 Note:</strong> <span class="inline-code">sorted()</span> returns a <strong>list</strong>, not a set — but it still works on a set as input!
+      </div>
+    </div>
+
+  </div><!-- END CONCEPTS TAB -->
+
+
+  <!-- ═══════════════════════════════ QUIZ TAB ═══════════════════════════════ -->
+  <div id="tab-quiz" class="tab-content">
+
+    <div class="quiz-intro">
+      <h2>🧪 Sets Quiz</h2>
+      <p>10 questions · Select your answer, then submit to see your score!</p>
+    </div>
+
+    <div class="quiz-progress-bar">
+      <div class="quiz-progress-fill" id="progressFill"></div>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <div class="submit-section">
+      <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">Submit Quiz</button>
+    </div>
+
+    <div class="results-card" id="resultsCard">
+      <div class="results-emoji" id="resultsEmoji">🎯</div>
+      <h2 id="resultsTitle">Quiz Complete!</h2>
+      <div class="score-display" id="scoreDisplay">0 / 10</div>
+      <div class="score-label" id="scoreLabel">0% — Keep practicing!</div>
+      <div class="classroom-note">
+        📸 <strong>Take a screenshot</strong> of this score and submit it to <strong>Google Classroom</strong>!
+      </div>
+    </div>
+
+  </div><!-- END QUIZ TAB -->
+
+  <div class="footer">
+    Python 101 · Learn and Help Program · Metropolitan State University
+  </div>
+
+</div><!-- END CONTAINER -->
+
+<script>
+// ── TAB SWITCHING ──
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tabName).classList.add('active');
+  const btns = document.querySelectorAll('.tab-btn');
+  if (tabName === 'concepts') btns[0].classList.add('active');
+  else btns[1].classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── RUN BUTTON ──
+function showOutput(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('visible');
+}
+
+// ── QUIZ DATA ──
+const quizData = [
+  {
+    question: "Which brackets are used to create a set in Python?",
+    code: null,
+    options: [
+      "Square brackets [ ]",
+      "Round brackets ( )",
+      "Curly braces { }",
+      "Angle brackets < >"
+    ],
+    correct: 2,
+    explanation: "Sets use curly braces { }. Square brackets are for lists, round brackets are for tuples."
+  },
+  {
+    question: "What will be the output of the following code?",
+    code: "my_set = {1, 2, 3, 2, 1, 4, 3, 5}\nprint(len(my_set))",
+    options: [
+      "8",
+      "5",
+      "4",
+      "Error"
+    ],
+    correct: 1,
+    explanation: "Sets remove duplicates automatically. The unique values are {1, 2, 3, 4, 5}, so len() returns 5."
+  },
+  {
+    question: "How do you create an empty set in Python?",
+    code: null,
+    options: [
+      "empty = {}",
+      "empty = set()",
+      "empty = set[]",
+      "empty = (set)"
+    ],
+    correct: 1,
+    explanation: "Use set() to create an empty set. Using {} creates an empty dictionary, not a set!"
+  },
+  {
+    question: "What will happen when you run this code?",
+    code: 'fruits = {"apple", "banana", "cherry"}\nprint(fruits[0])',
+    options: [
+      'It prints "apple"',
+      'It prints "cherry"',
+      "TypeError: 'set' object is not subscriptable",
+      "It prints a random fruit"
+    ],
+    correct: 2,
+    explanation: "Sets are unordered and unindexed. You cannot use index notation like [0] to access items in a set."
+  },
+  {
+    question: "Which of the following can you put inside a set?",
+    code: null,
+    options: [
+      "Lists — because they are ordered",
+      "Dictionaries — because they use { }",
+      "Tuples — because they are immutable",
+      "Other sets — because they are collections"
+    ],
+    correct: 2,
+    explanation: "Only immutable (unchangeable) items can go inside a set. Tuples are immutable, but lists are mutable and will cause a TypeError."
+  },
+  {
+    question: "What is the difference between remove() and discard()?",
+    code: null,
+    options: [
+      "remove() is faster than discard()",
+      "discard() raises a KeyError if the item is not found",
+      "remove() raises a KeyError if the item is not found; discard() does not",
+      "There is no difference — they do the same thing"
+    ],
+    correct: 2,
+    explanation: "remove() raises a KeyError if the item doesn't exist. discard() silently does nothing if the item is not found."
+  },
+  {
+    question: "Given the two sets below, what is mammals & aquatic?",
+    code: 'mammals = {"Tiger", "Camel", "Sheep", "Whale", "Walrus"}\naquatic = {"Octopus", "Squid", "Crab", "Whale", "Walrus"}',
+    options: [
+      '{"Tiger", "Camel", "Sheep", "Octopus", "Squid", "Crab"}',
+      '{"Whale", "Walrus"}',
+      '{"Tiger", "Camel", "Sheep"}',
+      '{"Octopus", "Squid", "Crab", "Whale", "Walrus", "Tiger", "Camel", "Sheep"}'
+    ],
+    correct: 1,
+    explanation: "The & operator performs intersection — it returns only the elements common to both sets. Whale and Walrus appear in both."
+  },
+  {
+    question: "What does mammals - aquatic return?",
+    code: 'mammals = {"Tiger", "Camel", "Sheep", "Whale", "Walrus"}\naquatic = {"Octopus", "Squid", "Crab", "Whale", "Walrus"}',
+    options: [
+      '{"Whale", "Walrus"}',
+      '{"Octopus", "Squid", "Crab"}',
+      '{"Tiger", "Camel", "Sheep"}',
+      '{"Tiger", "Camel", "Sheep", "Octopus", "Squid", "Crab"}'
+    ],
+    correct: 2,
+    explanation: "The - operator returns elements in mammals that are NOT in aquatic. Tiger, Camel, and Sheep are mammals-only."
+  },
+  {
+    question: "What will this code output?",
+    code: 'x = {10, 20, 30}\nx.add(20)\nx.add(40)\nprint(len(x))',
+    options: [
+      "3",
+      "4",
+      "5",
+      "Error — cannot add to a set"
+    ],
+    correct: 1,
+    explanation: "add(20) does nothing because 20 is already in the set. add(40) adds a new item. Final set is {10, 20, 30, 40}, so len() is 4."
+  },
+  {
+    question: "Which statement about sets is FALSE?",
+    code: null,
+    options: [
+      "Sets are unordered",
+      "Sets cannot contain duplicate values",
+      "Sets support indexing with [0], [1], etc.",
+      "You can loop through a set with a for loop"
+    ],
+    correct: 2,
+    explanation: "Sets do NOT support indexing because they are unordered. You cannot use [0], [1], etc. with sets. All other statements are true."
+  }
+];
+
+// ── BUILD QUIZ ──
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  let html = '';
+  const letters = ['A', 'B', 'C', 'D'];
+
+  quizData.forEach((q, qi) => {
+    html += '<div class="question-card">';
+    html += '<div class="question-num">Question ' + (qi + 1) + ' of 10</div>';
+    html += '<div class="question-text">' + q.question + '</div>';
+
+    if (q.code) {
+      html += '<div class="question-code"><pre>' + escapeHtml(q.code) + '</pre></div>';
+    }
+
+    html += '<div class="options">';
+    q.options.forEach((opt, oi) => {
+      html += '<button class="option-btn" data-question="' + qi + '" data-option="' + oi + '" onclick="selectOption(this,' + qi + ',' + oi + ')">';
+      html += '<span class="option-letter">' + letters[oi] + '</span>';
+      html += '<span class="option-text">' + escapeHtml(opt) + '</span>';
+      html += '</button>';
+    });
+    html += '</div>';
+
+    html += '<div class="explanation" id="exp-' + qi + '">' + q.explanation + '</div>';
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ── SELECT OPTION ──
+const userAnswers = {};
+
+function selectOption(btn, qIdx, oIdx) {
+  // Deselect previous in this question
+  const allBtns = document.querySelectorAll('.option-btn[data-question="' + qIdx + '"]');
+  allBtns.forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  userAnswers[qIdx] = oIdx;
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = Object.keys(userAnswers).length;
+  const pct = (answered / quizData.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// ── SUBMIT QUIZ ──
+function submitQuiz() {
+  const total = quizData.length;
+  const answered = Object.keys(userAnswers).length;
+
+  if (answered < total) {
+    alert('Please answer all ' + total + ' questions before submitting!');
+    return;
+  }
+
+  let score = 0;
+
+  quizData.forEach((q, qi) => {
+    const allBtns = document.querySelectorAll('.option-btn[data-question="' + qi + '"]');
+    allBtns.forEach(b => b.classList.add('disabled'));
+
+    const userAns = userAnswers[qi];
+    const correctAns = q.correct;
+    const expEl = document.getElementById('exp-' + qi);
+
+    if (userAns === correctAns) {
+      score++;
+      allBtns[userAns].classList.add('correct');
+      expEl.classList.add('correct-exp');
+    } else {
+      allBtns[userAns].classList.add('incorrect');
+      allBtns[correctAns].classList.add('correct');
+      expEl.classList.add('incorrect-exp');
+    }
+  });
+
+  // Show results
+  const pct = Math.round((score / total) * 100);
+  document.getElementById('scoreDisplay').textContent = score + ' / ' + total;
+
+  let emoji, title, label;
+  if (pct === 100) { emoji = '🏆'; title = 'Perfect Score!'; label = pct + '% — Outstanding!'; }
+  else if (pct >= 80) { emoji = '🌟'; title = 'Great Job!'; label = pct + '% — Well done!'; }
+  else if (pct >= 60) { emoji = '👍'; title = 'Good Effort!'; label = pct + '% — Keep it up!'; }
+  else if (pct >= 40) { emoji = '📚'; title = 'Keep Practicing!'; label = pct + '% — Review the concepts!'; }
+  else { emoji = '💪'; title = 'Don\'t Give Up!'; label = pct + '% — Try reviewing the Concepts tab!'; }
+
+  document.getElementById('resultsEmoji').textContent = emoji;
+  document.getElementById('resultsTitle').textContent = title;
+  document.getElementById('scoreLabel').textContent = label;
+  document.getElementById('resultsCard').classList.add('visible');
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitBtn').textContent = 'Submitted ✓';
+
+  document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ── INIT ──
+buildQuiz();
+</script>
+
+</body>
+</html>

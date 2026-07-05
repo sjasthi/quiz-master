@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Tuples - Interactive Playbook</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-main: #0f172a;
+    --bg-card: #1e293b;
+    --bg-card-alt: #253349;
+    --bg-code: #0d1520;
+    --accent-orange: #f97316;
+    --accent-yellow: #fbbf24;
+    --accent-green: #34d399;
+    --accent-blue: #38bdf8;
+    --accent-purple: #a78bfa;
+    --accent-pink: #f472b6;
+    --accent-red: #f87171;
+    --accent-teal: #2dd4bf;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border: #334155;
+    --success: #22c55e;
+    --error: #ef4444;
+    --glow-orange: rgba(249, 115, 22, 0.15);
+    --glow-green: rgba(52, 211, 153, 0.15);
+    --glow-blue: rgba(56, 189, 248, 0.15);
+    --glow-teal: rgba(45, 212, 191, 0.15);
+    --glow-purple: rgba(167, 139, 250, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(ellipse at 20% 50%, rgba(45,212,191,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(167,139,250,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(56,189,248,0.06) 0%, transparent 50%);
+    z-index: -1;
+    animation: bgShift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgShift {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(-3%, -3%) rotate(3deg); }
+  }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  /* ── HEADER ── */
+  .header { text-align: center; padding: 40px 20px 30px; position: relative; }
+
+  .header-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue));
+    color: var(--bg-main);
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .header h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .header p { color: var(--text-secondary); font-size: 16px; }
+
+  /* ── TABS ── */
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 6px;
+    margin-bottom: 30px;
+    border: 1px solid var(--border);
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 14px 10px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .tab-btn:hover { color: var(--text-secondary); }
+
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--accent-teal), #0d9488);
+    color: white;
+    box-shadow: 0 4px 20px rgba(45, 212, 191, 0.35);
+  }
+
+  .tab-icon { margin-right: 6px; font-size: 18px; }
+
+  .tab-panel { display: none; animation: fadeIn 0.4s ease; }
+  .tab-panel.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+    transition: border-color 0.3s ease;
+  }
+
+  .card:hover { border-color: rgba(45, 212, 191, 0.3); }
+
+  .card-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-title .icon {
+    width: 32px; height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .icon-teal { background: var(--glow-teal); color: var(--accent-teal); }
+  .icon-green { background: var(--glow-green); color: var(--accent-green); }
+  .icon-blue { background: var(--glow-blue); color: var(--accent-blue); }
+  .icon-purple { background: var(--glow-purple); color: var(--accent-purple); }
+  .icon-orange { background: var(--glow-orange); color: var(--accent-orange); }
+
+  .card p, .card li { color: var(--text-secondary); line-height: 1.7; font-size: 15px; }
+  .card ul { padding-left: 20px; margin-top: 8px; }
+  .card li { margin-bottom: 6px; }
+
+  .highlight {
+    background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+  }
+
+  .keyword {
+    display: inline-block;
+    background: rgba(45, 212, 191, 0.12);
+    color: var(--accent-teal);
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* ── SYNTAX BOX ── */
+  .syntax-box {
+    background: var(--bg-code);
+    border: 2px solid var(--accent-teal);
+    border-radius: 14px;
+    padding: 24px;
+    margin: 20px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .syntax-box::before {
+    content: 'SYNTAX';
+    position: absolute;
+    top: 0; left: 0;
+    background: var(--accent-teal);
+    color: var(--bg-main);
+    font-family: 'Fredoka', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 4px 14px;
+    border-radius: 0 0 10px 0;
+  }
+
+  .syntax-box code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    color: var(--accent-yellow);
+    line-height: 1.8;
+  }
+
+  .syntax-part {
+    display: inline-block;
+    margin: 4px 2px;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .part-var  { background: rgba(251, 191, 36, 0.15); color: var(--accent-yellow); }
+  .part-val  { background: rgba(45, 212, 191, 0.15); color: var(--accent-teal); }
+  .part-type { background: rgba(167, 139, 250, 0.15); color: var(--accent-purple); }
+
+  .syntax-labels {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .syntax-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); }
+  .label-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-var { background: var(--accent-yellow); }
+  .dot-val { background: var(--accent-teal); }
+  .dot-type { background: var(--accent-purple); }
+
+  /* ── ANALOGY BOX ── */
+  .analogy-box {
+    background: linear-gradient(135deg, rgba(167,139,250,0.08), rgba(244,114,182,0.08));
+    border: 1px solid rgba(167,139,250,0.25);
+    border-radius: 14px;
+    padding: 24px;
+    margin: 20px 0;
+  }
+
+  .analogy-box .analogy-title {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--accent-purple);
+    margin-bottom: 10px;
+  }
+
+  /* ── COMPARISON TABLE ── */
+  .compare-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 16px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .compare-table th {
+    background: var(--bg-card-alt);
+    padding: 12px 16px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: left;
+    color: var(--accent-teal);
+  }
+
+  .compare-table td {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .compare-table td:first-child { color: var(--text-primary); font-weight: 600; }
+
+  .compare-table code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--bg-code);
+    padding: 3px 8px;
+    border-radius: 6px;
+    color: var(--accent-yellow);
+    display: inline-block;
+  }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-header span {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .code-dots { display: flex; gap: 6px; }
+  .code-dots span { width: 10px; height: 10px; border-radius: 50%; display: block; }
+  .dot-r { background: #ef4444; }
+  .dot-y { background: #eab308; }
+  .dot-g { background: #22c55e; }
+
+  .code-block pre { padding: 18px; overflow-x: auto; margin: 0; }
+
+  .code-block code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    white-space: pre;
+    display: block;
+  }
+
+  /* Syntax highlighting */
+  .kw  { color: var(--accent-purple); font-weight: 600; }
+  .fn  { color: var(--accent-blue); }
+  .str { color: var(--accent-green); }
+  .num { color: var(--accent-orange); }
+  .cm  { color: var(--text-muted); font-style: italic; }
+  .op  { color: var(--accent-pink); }
+  .var { color: var(--accent-yellow); }
+  .err { color: var(--accent-red); font-weight: 600; }
+
+  /* ── RUN BUTTON & OUTPUT ── */
+  .run-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--accent-green), #10b981);
+    color: var(--bg-main);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 12px 0;
+  }
+
+  .run-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(52, 211, 153, 0.3); }
+
+  .output-box {
+    background: var(--bg-code);
+    border: 1px dashed var(--accent-green);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 8px;
+    display: none;
+  }
+
+  .output-box.visible { display: block; animation: fadeIn 0.3s ease; }
+
+  .output-label {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-green);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .output-box code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent-yellow);
+    white-space: pre;
+    display: block;
+  }
+
+  .output-box code.error-out { color: var(--accent-red); }
+
+  /* ── EXAMPLES TAB ── */
+  .example-nav {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .example-btn {
+    padding: 10px 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .example-btn:hover { border-color: var(--accent-teal); color: var(--accent-teal); }
+
+  .example-btn.active {
+    background: linear-gradient(135deg, var(--accent-teal), #0d9488);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 16px rgba(45, 212, 191, 0.25);
+  }
+
+  .example-panel { display: none; animation: fadeIn 0.3s ease; }
+  .example-panel.active { display: block; }
+
+  .example-desc {
+    background: var(--bg-card-alt);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    border-left: 3px solid var(--accent-teal);
+  }
+
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+
+  @media (max-width: 700px) { .comparison-grid { grid-template-columns: 1fr; } }
+
+  .comparison-col {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-label {
+    padding: 10px 16px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+
+  .label-bad  { background: rgba(248, 113, 113, 0.12); color: var(--accent-red); }
+  .label-good { background: rgba(52, 211, 153, 0.12); color: var(--accent-green); }
+
+  .comparison-col pre { padding: 16px; background: var(--bg-code); margin: 0; }
+
+  .comparison-col code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    white-space: pre;
+    display: block;
+  }
+
+  /* ── TIP BOX ── */
+  .tip-box {
+    background: rgba(56, 189, 248, 0.06);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .tip-box strong { color: var(--accent-blue); }
+
+  .warn-box {
+    background: rgba(251, 191, 36, 0.06);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .warn-box strong { color: var(--accent-yellow); }
+
+  /* ── QUIZ TAB ── */
+  .quiz-progress {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+  }
+
+  .progress-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: var(--bg-code);
+    border-radius: 4px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-teal), var(--accent-blue));
+    border-radius: 4px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .progress-text {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .quiz-question {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease;
+  }
+
+  .quiz-question.answered-correct { border-color: var(--success); }
+  .quiz-question.answered-wrong   { border-color: var(--error); }
+
+  .q-number {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-teal);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+
+  .q-text {
+    font-size: 16px;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    line-height: 1.6;
+    font-weight: 600;
+  }
+
+  .q-code {
+    background: var(--bg-code);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 12px 0;
+    overflow-x: auto;
+  }
+
+  .q-code code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    white-space: pre;
+    display: block;
+  }
+
+  .q-options { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+
+  .q-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .q-option:hover:not(.disabled) {
+    border-color: var(--accent-teal);
+    background: rgba(45, 212, 191, 0.05);
+  }
+
+  .q-option .radio {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+  }
+
+  .q-option.selected .radio { border-color: var(--accent-teal); background: var(--accent-teal); }
+  .q-option.selected .radio::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: white; }
+
+  .q-option.correct-answer { border-color: var(--success); background: rgba(34, 197, 94, 0.08); color: var(--text-primary); }
+  .q-option.correct-answer .radio { border-color: var(--success); background: var(--success); }
+
+  .q-option.wrong-answer { border-color: var(--error); background: rgba(239, 68, 68, 0.08); color: var(--text-primary); }
+  .q-option.wrong-answer .radio { border-color: var(--error); background: var(--error); }
+
+  .q-option.disabled { cursor: default; }
+
+  .q-explanation {
+    margin-top: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    display: none;
+  }
+
+  .q-explanation.visible { display: block; animation: fadeIn 0.3s ease; }
+
+  .q-explanation.correct-exp {
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    color: var(--accent-green);
+  }
+
+  .q-explanation.wrong-exp {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: var(--accent-red);
+  }
+
+  .q-explanation code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: rgba(0,0,0,0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* ── SUBMIT & SCORE ── */
+  .submit-section { text-align: center; padding: 20px 0; }
+
+  .submit-btn {
+    background: linear-gradient(135deg, var(--accent-teal), #0d9488);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 16px 48px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+  }
+
+  .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(45, 212, 191, 0.4); }
+
+  .score-display {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+    margin-top: 24px;
+    background: var(--bg-card);
+    border-radius: 20px;
+    border: 2px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .score-display.visible { display: block; animation: fadeIn 0.5s ease; }
+
+  .score-display::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(45,212,191,0.08), transparent 70%);
+  }
+
+  .score-icon { font-size: 60px; margin-bottom: 16px; position: relative; }
+
+  .score-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .score-number {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 64px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    position: relative;
+  }
+
+  .score-detail { color: var(--text-secondary); font-size: 16px; margin-top: 6px; position: relative; }
+
+  .score-name-section {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    position: relative;
+  }
+
+  .score-name-section label {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .name-input {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    color: var(--text-primary);
+    width: 100%;
+    max-width: 340px;
+    text-align: center;
+    transition: border-color 0.3s ease;
+  }
+
+  .name-input:focus { outline: none; border-color: var(--accent-teal); }
+
+  .screenshot-tip {
+    margin-top: 20px;
+    padding: 14px 20px;
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 12px;
+    color: var(--accent-yellow);
+    font-size: 14px;
+    font-weight: 600;
+    position: relative;
+  }
+
+  .reset-btn {
+    background: var(--bg-card-alt);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 24px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    margin-top: 16px;
+    position: relative;
+  }
+
+  .reset-btn:hover { border-color: var(--accent-teal); color: var(--accent-teal); }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  .footer a { color: var(--accent-teal); text-decoration: none; }
+
+  /* ── CRUD BADGE ── */
+  .crud-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  @media (max-width: 600px) { .crud-grid { grid-template-columns: 1fr; } }
+
+  .crud-item {
+    border-radius: 12px;
+    padding: 16px 20px;
+    border: 1px solid;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .crud-allowed { border-color: rgba(52, 211, 153, 0.3); background: rgba(52, 211, 153, 0.05); }
+  .crud-denied  { border-color: rgba(248, 113, 113, 0.3); background: rgba(248, 113, 113, 0.05); opacity: 0.7; }
+
+  .crud-letter {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .crud-allowed .crud-letter { color: var(--accent-green); }
+  .crud-denied  .crud-letter { color: var(--accent-red); }
+
+  .crud-text h4 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    margin-bottom: 3px;
+  }
+
+  .crud-allowed .crud-text h4 { color: var(--accent-green); }
+  .crud-denied  .crud-text h4 { color: var(--accent-red); text-decoration: line-through; }
+  .crud-text p { font-size: 13px; color: var(--text-muted); }
+
+  /* ── METHODS TABLE ── */
+  .methods-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 16px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .methods-table th {
+    background: var(--bg-card-alt);
+    padding: 12px 16px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: left;
+    color: var(--accent-teal);
+  }
+
+  .methods-table td {
+    padding: 11px 16px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .methods-table td code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--bg-code);
+    padding: 2px 8px;
+    border-radius: 5px;
+    color: var(--accent-yellow);
+  }
+
+  .badge-valid {
+    display: inline-block;
+    background: rgba(52, 211, 153, 0.12);
+    color: var(--accent-green);
+    font-family: 'Fredoka', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-invalid {
+    display: inline-block;
+    background: rgba(248, 113, 113, 0.12);
+    color: var(--accent-red);
+    font-family: 'Fredoka', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-decoration: line-through;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-badge">Python 101 — Chapter 7</div>
+    <h1>Tuples</h1>
+    <p>Interactive Playbook &amp; Quiz</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('concept')">
+      <span class="tab-icon">📘</span>Concept
+    </button>
+    <button class="tab-btn" onclick="switchTab('examples')">
+      <span class="tab-icon">💻</span>Examples
+    </button>
+    <button class="tab-btn" onclick="switchTab('quiz')">
+      <span class="tab-icon">🎯</span>Quiz
+    </button>
+  </div>
+
+  <!-- ═══════════ TAB 1: CONCEPT ═══════════ -->
+  <div id="tab-concept" class="tab-panel active">
+
+    <!-- What is a Tuple? -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon icon-teal">💡</div>
+        What Is a Tuple?
+      </div>
+      <p>A <strong class="highlight">tuple</strong> is a collection of values — just like a list — but with one crucial difference: it is <strong style="color:var(--accent-red);">immutable</strong>, meaning its contents <strong>cannot be changed</strong> after it is created.</p>
+      <div class="analogy-box">
+        <div class="analogy-title">📅 Real-World Analogy</div>
+        <p style="color:var(--text-secondary); line-height:1.7; font-size:15px;">
+          Think of the <strong style="color:var(--accent-yellow);">days of the week</strong> or the <strong style="color:var(--accent-teal);">elements on the Periodic Table</strong>.
+          These things are <em>fixed</em> — they don't change day to day. You wouldn't add an 8th day to the week!
+          A tuple is perfect for storing data like this: ordered, accessible, but <strong style="color:var(--accent-red);">permanently locked</strong>.
+        </p>
+      </div>
+      <div class="syntax-box">
+        <span class="syntax-part part-var">my_tuple</span>
+        <code> = (</code><span class="syntax-part part-val">value1, value2, value3</span><code>)</code>
+        <div class="syntax-labels">
+          <div class="syntax-label"><div class="label-dot dot-var"></div>Variable name</div>
+          <div class="syntax-label"><div class="label-dot dot-val"></div>Values separated by commas</div>
+          <div class="syntax-label" style="color:var(--accent-purple);">( ) Round brackets — not square!</div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span>Python</span>
+        </div>
+        <pre><code><span class="var">days</span>     = (<span class="str">"Monday"</span>, <span class="str">"Tuesday"</span>, <span class="str">"Wednesday"</span>, <span class="str">"Thursday"</span>, <span class="str">"Friday"</span>)
+<span class="var">scores</span>   = (<span class="num">95</span>, <span class="num">87</span>, <span class="num">92</span>, <span class="num">88</span>)
+<span class="var">location</span> = (<span class="num">43.65</span>, <span class="num">-79.38</span>)  <span class="cm"># latitude, longitude — never changes!</span></code></pre>
+      </div>
+    </div>
+
+    <!-- Lists vs Tuples -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon icon-blue">⚖️</div>
+        Lists vs Tuples — Side by Side
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Lists <code>[ ]</code></th>
+            <th>Tuples <code>( )</code></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Ordered</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+          <tr><td>Indexed</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+          <tr><td>Can contain duplicates</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+          <tr><td>Add or Update items</td><td>✅ Yes</td><td>❌ No — immutable!</td></tr>
+          <tr><td>Bracket type</td><td><code>[ ]</code> Square</td><td><code>( )</code> Round</td></tr>
+          <tr><td>Best used for</td><td>Data that changes</td><td>Data that stays fixed</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CRUD -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon icon-orange">🛠️</div>
+        CRUD Operations — What Can You Do?
+      </div>
+      <p>CRUD stands for <strong>Create, Read, Update, Delete</strong>. Tuples only support the first two!</p>
+      <div class="crud-grid" style="margin-top:16px;">
+        <div class="crud-item crud-allowed">
+          <div class="crud-letter">C</div>
+          <div class="crud-text"><h4>Create ✅</h4><p>Create a tuple with initial values</p></div>
+        </div>
+        <div class="crud-item crud-allowed">
+          <div class="crud-letter">R</div>
+          <div class="crud-text"><h4>Read ✅</h4><p>Query, traverse, find, search</p></div>
+        </div>
+        <div class="crud-item crud-denied">
+          <div class="crud-letter">U</div>
+          <div class="crud-text"><h4>Update ❌</h4><p>Cannot modify, change, or edit items</p></div>
+        </div>
+        <div class="crud-item crud-denied">
+          <div class="crud-letter">D</div>
+          <div class="crud-text"><h4>Delete ❌</h4><p>Cannot remove individual items (but can delete the whole tuple)</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Immutability -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon icon-purple">🔒</div>
+        Immutability — You Can't Change Values
+      </div>
+      <p>If you try to <strong style="color:var(--accent-red);">assign a new value</strong> to an index or <strong style="color:var(--accent-red);">append</strong> to a tuple, Python throws an error.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span>Python — Trying to modify a tuple</span>
+        </div>
+        <pre><code><span class="var">students</span> = (<span class="str">"abe"</span>, <span class="str">"barb"</span>, <span class="str">"chris"</span>, <span class="str">"dan"</span>, <span class="str">"ellie"</span>)
+
+<span class="cm"># ❌ Try to change index 3 from "dan" to "anna"</span>
+<span class="var">students</span>[<span class="num">3</span>] = <span class="str">"anna"</span>
+
+<span class="cm"># ❌ Try to append</span>
+<span class="var">students</span>.<span class="fn">append</span>(<span class="str">"frank"</span>)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showErrorOutput('out-immut')">▶ Run Code</button>
+      <div id="out-immut" class="output-box">
+        <div class="output-label">Output</div>
+        <code class="error-out">TypeError: 'tuple' object does not support item assignment
+AttributeError: 'tuple' object has no attribute 'append'</code>
+      </div>
+    </div>
+
+    <!-- Tuple Methods -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon icon-teal">📋</div>
+        Tuple Methods — Only Two Are Valid
+      </div>
+      <p>Because tuples are immutable, most list methods simply <strong>don't exist</strong> for tuples. Only two remain:</p>
+      <table class="methods-table">
+        <thead>
+          <tr><th>Method</th><th>Purpose</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>index(x)</code></td>
+            <td>Returns the index of the <strong>first</strong> occurrence of x</td>
+            <td><span class="badge-valid">✓ Valid</span></td>
+          </tr>
+          <tr>
+            <td><code>count(x)</code></td>
+            <td>Counts how many times x appears in the tuple</td>
+            <td><span class="badge-valid">✓ Valid</span></td>
+          </tr>
+          <tr><td><code>append(x)</code></td><td>Add x to the end</td><td><span class="badge-invalid">✗ Invalid</span></td></tr>
+          <tr><td><code>extend()</code></td><td>Add all items from another list</td><td><span class="badge-invalid">✗ Invalid</span></td></tr>
+          <tr><td><code>insert(i,x)</code></td><td>Insert at position</td><td><span class="badge-invalid">✗ Invalid</span></td></tr>
+          <tr><td><code>remove(x)</code></td><td>Remove first item x</td><td><span class="badge-invalid">✗ Invalid</span></td></tr>
+          <tr><td><code>pop()</code></td><td>Remove last item</td><td><span class="badge-invalid">✗ Invalid</span></td></tr>
+          <tr><td><code>sort()</code></td><td>Sort elements</td><td><span class="badge-invalid">✗ Invalid</span></td></tr>
+          <tr><td><code>reverse()</code></td><td>Reverse the sequence</td><td><span class="badge-invalid">✗ Invalid</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Single-element tuple trap -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon icon-orange">⚠️</div>
+        Common Trap — Single-Element Tuples
+      </div>
+      <p>Students often think <code class="keyword">(x)</code> is a tuple. It's <strong style="color:var(--accent-red);">not!</strong> Python treats it as regular parentheses.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span>Python</span>
+        </div>
+        <pre><code><span class="var">x</span> = (<span class="num">5</span>)
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="var">x</span>))   <span class="cm"># &lt;class 'int'&gt;   ← NOT a tuple!</span>
+
+<span class="var">y</span> = (<span class="str">"hello"</span>)
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="var">y</span>))   <span class="cm"># &lt;class 'str'&gt;   ← NOT a tuple!</span>
+
+<span class="cm"># ✅ The fix: add a trailing COMMA</span>
+<span class="var">a</span> = (<span class="num">5</span>,)
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="var">a</span>))   <span class="cm"># &lt;class 'tuple'&gt;  ← THIS is a tuple!</span>
+<span class="fn">print</span>(<span class="var">a</span>)          <span class="cm"># (5,)</span></code></pre>
+      </div>
+      <div class="warn-box">
+        <strong>⚠️ Remember:</strong> It's the <strong>comma</strong> that makes a tuple — not the brackets. <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-code);padding:2px 6px;border-radius:4px;">(5,)</code> is a tuple. <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-code);padding:2px 6px;border-radius:4px;">(5)</code> is just the integer 5.
+      </div>
+    </div>
+
+    <!-- Recreating Tuples -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon icon-green">🔄</div>
+        Recreating a Tuple — It's Not the Same as Modifying!
+      </div>
+      <p>You <strong>cannot change</strong> a tuple — but you <strong>can replace</strong> it entirely by assigning a brand new tuple to the same variable.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span>Python</span>
+        </div>
+        <pre><code><span class="cm"># Reassign to a brand new tuple</span>
+<span class="var">x</span> = (<span class="num">3</span>, <span class="num">4</span>)
+<span class="fn">print</span>(<span class="var">x</span>)          <span class="cm"># (3, 4)</span>
+
+<span class="var">x</span> = (<span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>)    <span class="cm"># x now points to a completely new tuple</span>
+<span class="fn">print</span>(<span class="var">x</span>)          <span class="cm"># (3, 4, 5)</span>
+
+<span class="cm"># Concatenate a tuple with itself using +</span>
+<span class="var">x</span> = (<span class="num">3</span>, <span class="num">4</span>)
+<span class="var">x</span> = <span class="var">x</span> + <span class="var">x</span>
+<span class="fn">print</span>(<span class="var">x</span>)          <span class="cm"># (3, 4, 3, 4)</span></code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-recreate', '(3, 4)\n(3, 4, 5)\n(3, 4, 3, 4)')">▶ Run Code</button>
+      <div id="out-recreate" class="output-box">
+        <div class="output-label">Output</div>
+        <code></code>
+      </div>
+      <div class="tip-box">
+        <strong>💡 Why is this okay?</strong> Python creates a <em>brand new tuple</em> in memory each time. The original tuple is never touched — which is why tuples stay truly immutable!
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════ TAB 2: EXAMPLES ═══════════ -->
+  <div id="tab-examples" class="tab-panel">
+
+    <div class="example-nav">
+      <button class="example-btn active" onclick="switchExample(0)">Ex 1: Indexing &amp; Slicing</button>
+      <button class="example-btn" onclick="switchExample(1)">Ex 2: Iteration &amp; Membership</button>
+      <button class="example-btn" onclick="switchExample(2)">Ex 3: Built-in Functions</button>
+      <button class="example-btn" onclick="switchExample(3)">Ex 4: index() &amp; count()</button>
+      <button class="example-btn" onclick="switchExample(4)">Ex 5: When to Use Tuples</button>
+    </div>
+
+    <!-- Example 1: Indexing & Slicing -->
+    <div class="example-panel active" id="ex-0">
+      <div class="example-desc">
+        <strong>Goal:</strong> Access elements in a tuple using <strong>indexing</strong> and <strong>slicing</strong> — exactly the same as lists!
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span>Python</span>
+        </div>
+        <pre><code><span class="var">students</span> = (<span class="str">"abe"</span>, <span class="str">"barb"</span>, <span class="str">"chris"</span>, <span class="str">"dan"</span>, <span class="str">"ellie"</span>)
+<span class="cm">#  index:      0        1         2          3        4</span>
+
+<span class="fn">print</span>(<span class="var">students</span>[<span class="num">0</span>])    <span class="cm"># abe        — first element</span>
+<span class="fn">print</span>(<span class="var">students</span>[<span class="num">4</span>])    <span class="cm"># ellie      — last element (index 4)</span>
+<span class="fn">print</span>(<span class="var">students</span>[<span class="op">-</span><span class="num">1</span>])   <span class="cm"># ellie      — also last element (negative index)</span>
+<span class="fn">print</span>(<span class="var">students</span>[<span class="num">1</span>:<span class="num">3</span>])  <span class="cm"># ('barb', 'chris')  — slice from index 1 up to (not including) 3</span>
+<span class="fn">print</span>(<span class="var">students</span>[<span class="num">2</span>:])   <span class="cm"># ('chris', 'dan', 'ellie')  — from index 2 to the end</span></code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-ex0', `abe\nellie\nellie\n('barb', 'chris')\n('chris', 'dan', 'ellie')`)">▶ Run Code</button>
+      <div id="out-ex0" class="output-box">
+        <div class="output-label">Output</div>
+        <code></code>
+      </div>
+      <div class="tip-box">
+        <strong>💡 Key point:</strong> Indexing and slicing work <strong>identically</strong> to lists. Positive indices count from the left (starting at 0), negative indices count from the right (starting at -1).
+      </div>
+    </div>
+
+    <!-- Example 2: Iteration & Membership -->
+    <div class="example-panel" id="ex-1">
+      <div class="example-desc">
+        <strong>Goal:</strong> Loop through a tuple and use <strong>in</strong> / <strong>not in</strong> membership operators — same as lists!
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span>Python</span>
+        </div>
+        <pre><code><span class="var">planets</span> = (<span class="str">"Mercury"</span>, <span class="str">"Venus"</span>, <span class="str">"Earth"</span>, <span class="str">"Mars"</span>)
+
+<span class="cm"># Iterating with a for loop</span>
+<span class="kw">for</span> <span class="var">planet</span> <span class="kw">in</span> <span class="var">planets</span>:
+    <span class="fn">print</span>(<span class="var">planet</span>)
+
+<span class="cm"># Membership operators</span>
+<span class="fn">print</span>(<span class="str">"Earth"</span> <span class="kw">in</span> <span class="var">planets</span>)       <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="str">"Pluto"</span> <span class="kw">not in</span> <span class="var">planets</span>)   <span class="cm"># True  (Pluto was reclassified!)</span>
+<span class="fn">print</span>(<span class="str">"Mars"</span> <span class="kw">not in</span> <span class="var">planets</span>)    <span class="cm"># False</span></code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-ex1', 'Mercury\nVenus\nEarth\nMars\nTrue\nTrue\nFalse')">▶ Run Code</button>
+      <div id="out-ex1" class="output-box">
+        <div class="output-label">Output</div>
+        <code></code>
+      </div>
+    </div>
+
+    <!-- Example 3: Built-in Functions -->
+    <div class="example-panel" id="ex-2">
+      <div class="example-desc">
+        <strong>Goal:</strong> Use Python's <strong>built-in functions</strong> on tuples — <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-code);padding:2px 6px;border-radius:4px;">len()</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-code);padding:2px 6px;border-radius:4px;">min()</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-code);padding:2px 6px;border-radius:4px;">max()</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-code);padding:2px 6px;border-radius:4px;">sum()</code>, and <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-code);padding:2px 6px;border-radius:4px;">sorted()</code>.
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span>Python</span>
+        </div>
+        <pre><code><span class="var">scores</span> = (<span class="num">72</span>, <span class="num">95</span>, <span class="num">88</span>, <span class="num">61</span>, <span class="num">79</span>)
+
+<span class="fn">print</span>(<span class="fn">len</span>(<span class="var">scores</span>))          <span class="cm"># 5   — number of elements</span>
+<span class="fn">print</span>(<span class="fn">min</span>(<span class="var">scores</span>))          <span class="cm"># 61  — lowest score</span>
+<span class="fn">print</span>(<span class="fn">max</span>(<span class="var">scores</span>))          <span class="cm"># 95  — highest score</span>
+<span class="fn">print</span>(<span class="fn">sum</span>(<span class="var">scores</span>))          <span class="cm"># 395 — total</span>
+<span class="fn">print</span>(<span class="fn">sorted</span>(<span class="var">scores</span>))       <span class="cm"># [61, 72, 79, 88, 95] — returns a LIST!</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="fn">sorted</span>(<span class="var">scores</span>))) <span class="cm"># &lt;class 'list'&gt;</span></code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-ex2', '5\n61\n95\n395\n[61, 72, 79, 88, 95]\n<class \'list\'>')">▶ Run Code</button>
+      <div id="out-ex2" class="output-box">
+        <div class="output-label">Output</div>
+        <code></code>
+      </div>
+      <div class="warn-box">
+        <strong>⚠️ Note:</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-code);padding:2px 6px;border-radius:4px;">sorted()</code> returns a <strong>list</strong>, not a tuple. This makes sense — a sorted result is new data, and sorting would imply changing the tuple!
+      </div>
+    </div>
+
+    <!-- Example 4: index() and count() -->
+    <div class="example-panel" id="ex-3">
+      <div class="example-desc">
+        <strong>Goal:</strong> Use the only two tuple methods — <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-code);padding:2px 6px;border-radius:4px;">index(x)</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-code);padding:2px 6px;border-radius:4px;">count(x)</code>.
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span>Python</span>
+        </div>
+        <pre><code><span class="var">students</span> = (<span class="str">"abe"</span>, <span class="str">"barb"</span>, <span class="str">"chris"</span>, <span class="str">"abe"</span>, <span class="str">"dan"</span>, <span class="str">"chris"</span>, <span class="str">"ellie"</span>)
+<span class="cm">#  index:      0        1         2          3       4         5          6</span>
+
+<span class="cm"># index(x) — returns the position of the FIRST match</span>
+<span class="fn">print</span>(<span class="var">students</span>.<span class="fn">index</span>(<span class="str">"abe"</span>))    <span class="cm"># 0  (first "abe" is at index 0)</span>
+<span class="fn">print</span>(<span class="var">students</span>.<span class="fn">index</span>(<span class="str">"chris"</span>))  <span class="cm"># 2  (first "chris" is at index 2)</span>
+
+<span class="cm"># count(x) — counts how many times x appears</span>
+<span class="fn">print</span>(<span class="var">students</span>.<span class="fn">count</span>(<span class="str">"abe"</span>))    <span class="cm"># 2  (appears at index 0 and 3)</span>
+<span class="fn">print</span>(<span class="var">students</span>.<span class="fn">count</span>(<span class="str">"chris"</span>))  <span class="cm"># 2  (appears at index 2 and 5)</span>
+<span class="fn">print</span>(<span class="var">students</span>.<span class="fn">count</span>(<span class="str">"dan"</span>))    <span class="cm"># 1  (appears only once)</span></code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-ex3', '0\n2\n2\n2\n1')">▶ Run Code</button>
+      <div id="out-ex3" class="output-box">
+        <div class="output-label">Output</div>
+        <code></code>
+      </div>
+    </div>
+
+    <!-- Example 5: When to Use Tuples -->
+    <div class="example-panel" id="ex-4">
+      <div class="example-desc">
+        <strong>Goal:</strong> Understand <em>when</em> to reach for a tuple instead of a list — and see real-world examples.
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span>Python — Good use cases for tuples</span>
+        </div>
+        <pre><code><span class="cm"># ✅ Days of the week — never changes</span>
+<span class="var">days_of_week</span> = (<span class="str">"Sunday"</span>, <span class="str">"Monday"</span>, <span class="str">"Tuesday"</span>, <span class="str">"Wednesday"</span>,
+                <span class="str">"Thursday"</span>, <span class="str">"Friday"</span>, <span class="str">"Saturday"</span>)
+
+<span class="cm"># ✅ RGB colour — fixed values (Red=255, Green=0, Blue=128)</span>
+<span class="var">magenta</span> = (<span class="num">255</span>, <span class="num">0</span>, <span class="num">128</span>)
+
+<span class="cm"># ✅ GPS coordinates — location doesn't randomly change</span>
+<span class="var">toronto</span> = (<span class="num">43.651070</span>, <span class="op">-</span><span class="num">79.347015</span>)
+
+<span class="cm"># ✅ Periodic table element info — always the same</span>
+<span class="var">hydrogen</span> = (<span class="str">"H"</span>, <span class="num">1</span>, <span class="str">"Hydrogen"</span>)   <span class="cm"># symbol, atomic number, name</span>
+
+<span class="cm"># Access just like a list</span>
+<span class="fn">print</span>(<span class="str">f"Today is {<span class="var">days_of_week</span>[<span class="num">1</span>]}"</span>)   <span class="cm"># Today is Monday</span>
+<span class="fn">print</span>(<span class="str">f"Red: {<span class="var">magenta</span>[<span class="num">0</span>]}, Green: {<span class="var">magenta</span>[<span class="num">1</span>]}, Blue: {<span class="var">magenta</span>[<span class="num">2</span>]}"</span>)</code></pre>
+      </div>
+      <button class="run-btn" onclick="showOutput('out-ex4', 'Today is Monday\nRed: 255, Green: 0, Blue: 128')">▶ Run Code</button>
+      <div id="out-ex4" class="output-box">
+        <div class="output-label">Output</div>
+        <code></code>
+      </div>
+      <div class="tip-box">
+        <strong>💡 Rule of thumb:</strong> Ask yourself — <em>"Should this data ever change?"</em> If the answer is <strong>No</strong>, use a tuple. If it might change, use a list.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════ TAB 3: QUIZ ═══════════ -->
+  <div id="tab-quiz" class="tab-panel">
+
+    <div class="quiz-progress">
+      <div class="progress-text">Progress: <span id="progressText">0 of 10 answered</span></div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <div id="quizContainer"></div>
+
+    <div class="submit-section">
+      <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">Submit Quiz 🎯</button>
+    </div>
+
+    <div class="score-display" id="scoreDisplay">
+      <div class="score-icon" id="scoreIcon"></div>
+      <div class="score-title" id="scoreTitle"></div>
+      <div class="score-number" id="scoreNumber"></div>
+      <div class="score-detail" id="scoreDetail"></div>
+      <div class="score-name-section">
+        <label for="studentName">Enter your name for the screenshot:</label>
+        <input type="text" id="studentName" class="name-input" placeholder="Your name here..." oninput="updateScoreName()">
+        <div id="studentNameDisplay" style="margin-top:10px;font-family:'Fredoka',sans-serif;font-size:18px;color:var(--accent-teal);"></div>
+        <div class="screenshot-tip">
+          📸 Take a screenshot of this score and submit it to Google Classroom!
+        </div>
+        <button class="reset-btn" onclick="resetQuiz()">🔁 Try Again</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  Python 101 — Chapter 7 &nbsp;|&nbsp; <a href="https://www.w3schools.com/python/python_ref_tuple.asp" target="_blank">W3Schools Tuple Reference</a>
+</div>
+
+<script>
+// ── TAB SWITCHING ──
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ── EXAMPLE SWITCHING ──
+function switchExample(idx) {
+  document.querySelectorAll('.example-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.example-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('ex-' + idx).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ── OUTPUT HELPERS ──
+function showOutput(id, text) {
+  const box = document.getElementById(id);
+  box.classList.add('visible');
+  box.querySelector('code').textContent = text;
+}
+
+function showErrorOutput(id) {
+  const box = document.getElementById(id);
+  box.classList.add('visible');
+  box.querySelector('code').textContent =
+    "TypeError: 'tuple' object does not support item assignment\nAttributeError: 'tuple' object has no attribute 'append'";
+}
+
+// ── QUIZ DATA ──
+const quizData = [
+  {
+    question: "Which of the following correctly creates a tuple?",
+    code: null,
+    options: [
+      'colours = ["red", "green", "blue"]',
+      'colours = ("red", "green", "blue")',
+      'colours = {"red", "green", "blue"}',
+      'colours = <"red", "green", "blue">'
+    ],
+    correct: 1,
+    explanation: "Tuples use <strong>round brackets</strong> <code>( )</code>. Square brackets <code>[ ]</code> create a list, and curly braces <code>{ }</code> create a set."
+  },
+  {
+    question: "What is the output of this code?",
+    code: 'days = ("Mon", "Tue", "Wed", "Thu", "Fri")\nprint(days[2])',
+    options: [
+      '"Tue"',
+      '"Wed"',
+      '"Thu"',
+      'IndexError'
+    ],
+    correct: 1,
+    explanation: "Index <code>2</code> gives the third element (counting from 0): <code>\"Mon\"</code>=0, <code>\"Tue\"</code>=1, <code>\"Wed\"</code>=2."
+  },
+  {
+    question: "What happens when you run this code?",
+    code: 'scores = (95, 87, 92)\nscores[0] = 100',
+    options: [
+      'scores becomes (100, 87, 92)',
+      'scores becomes (95, 87, 92, 100)',
+      'TypeError: tuple object does not support item assignment',
+      'SyntaxError'
+    ],
+    correct: 2,
+    explanation: "Tuples are <strong>immutable</strong> — you cannot change any element after creation. Python raises a <code>TypeError</code>."
+  },
+  {
+    question: "What is the output of this code?",
+    code: 'nums = (3, 7, 3, 9, 3, 1)\nprint(nums.count(3))',
+    options: [
+      '1',
+      '2',
+      '3',
+      '0'
+    ],
+    correct: 2,
+    explanation: "The <code>count(x)</code> method counts how many times <code>x</code> appears. The number <code>3</code> appears at index 0, 2, and 4 — so the answer is <code>3</code>."
+  },
+  {
+    question: "What is the output of this code?",
+    code: 'animals = ("cat", "dog", "fish", "dog", "bird")\nprint(animals.index("dog"))',
+    options: [
+      '1',
+      '3',
+      '2',
+      '[1, 3]'
+    ],
+    correct: 0,
+    explanation: "<code>index(x)</code> returns the position of the <strong>first</strong> occurrence only. <code>\"dog\"</code> first appears at index <code>1</code>."
+  },
+  {
+    question: "A student writes x = (7). What is the type of x?",
+    code: null,
+    options: [
+      'tuple',
+      'list',
+      'int',
+      'str'
+    ],
+    correct: 2,
+    explanation: "<code>(7)</code> is just parentheses around an integer — Python sees it as the number <code>7</code>. To create a single-element tuple you need a trailing comma: <code>(7,)</code>."
+  },
+  {
+    question: "Which two methods are valid on a tuple?",
+    code: null,
+    options: [
+      'append() and remove()',
+      'sort() and reverse()',
+      'index() and count()',
+      'insert() and pop()'
+    ],
+    correct: 2,
+    explanation: "Because tuples are immutable, only <strong>read-only</strong> methods work: <code>index(x)</code> (find position) and <code>count(x)</code> (count occurrences). All mutating methods are unavailable."
+  },
+  {
+    question: "What is the output of this code?",
+    code: 'x = (3, 4)\nx = x + x\nprint(x)',
+    options: [
+      '(6, 8)',
+      '(3, 4, 3, 4)',
+      'TypeError: cannot add tuples',
+      '(3, 4)'
+    ],
+    correct: 1,
+    explanation: "The <code>+</code> operator <strong>concatenates</strong> two tuples into a brand new one. <code>(3,4) + (3,4)</code> produces <code>(3, 4, 3, 4)</code>. This is not modifying the original — it creates a new tuple."
+  },
+  {
+    question: "What is the output of this code?",
+    code: 'scores = (72, 95, 61, 88)\nprint(min(scores), max(scores))',
+    options: [
+      '61 95',
+      '72 88',
+      '95 61',
+      'TypeError'
+    ],
+    correct: 0,
+    explanation: "Python's built-in <code>min()</code> and <code>max()</code> functions work on tuples just like lists. The smallest value is <code>61</code> and the largest is <code>95</code>."
+  },
+  {
+    question: "What is the output of this code?",
+    code: 'location = (43.65, -79.38)\nprint("Toronto" in location)',
+    options: [
+      'True',
+      'False',
+      'TypeError',
+      '43.65'
+    ],
+    correct: 1,
+    explanation: "The <code>in</code> operator checks if a value exists in the tuple. <code>\"Toronto\"</code> is a string, and the tuple only contains numbers (<code>43.65</code> and <code>-79.38</code>), so the result is <code>False</code>."
+  }
+];
+
+// ── QUIZ ENGINE ──
+const quizState = { answers: new Array(quizData.length).fill(-1), submitted: false };
+
+function buildQuiz() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+
+  quizData.forEach((q, qi) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-question';
+    div.id = 'question-' + qi;
+
+    let codeHTML = '';
+    if (q.code) {
+      codeHTML = `<div class="q-code"><code>${escapeAndHighlight(q.code)}</code></div>`;
+    }
+
+    let optionsHTML = '';
+    q.options.forEach((opt, oi) => {
+      optionsHTML += `
+        <button class="q-option" id="opt-${qi}-${oi}" onclick="selectAnswer(${qi}, ${oi})">
+          <div class="radio"></div>
+          <span>${opt}</span>
+        </button>`;
+    });
+
+    div.innerHTML = `
+      <div class="q-number">Question ${qi + 1} of ${quizData.length}</div>
+      <div class="q-text">${q.question}</div>
+      ${codeHTML}
+      <div class="q-options">${optionsHTML}</div>
+      <div class="q-explanation" id="explain-${qi}"></div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+function escapeAndHighlight(code) {
+  return code
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\b(for|in|if|else|not|and|or|def|return|import|from|while|True|False|None)\b/g, '<span class="kw">$1</span>')
+    .replace(/\b(print|len|range|round|int|str|float|list|tuple|min|max|sum|sorted|type|index|count|append|lower|upper)\b/g, '<span class="fn">$1</span>')
+    .replace(/(?<!=)(["'])(.*?)\1/g, '<span class="str">$&</span>')
+    .replace(/\b(\d+\.?\d*)\b/g, '<span class="num">$1</span>')
+    .replace(/(#.*)/g, '<span class="cm">$1</span>');
+}
+
+function selectAnswer(qi, oi) {
+  if (quizState.submitted) return;
+  quizState.answers[qi] = oi;
+  document.querySelectorAll(`[id^="opt-${qi}-"]`).forEach(btn => btn.classList.remove('selected'));
+  document.getElementById(`opt-${qi}-${oi}`).classList.add('selected');
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = quizState.answers.filter(a => a !== -1).length;
+  const pct = (answered / quizData.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${answered} of ${quizData.length} answered`;
+}
+
+function submitQuiz() {
+  const unanswered = quizState.answers.filter(a => a === -1).length;
+  if (unanswered > 0) {
+    alert(`Please answer all questions before submitting. You still have ${unanswered} unanswered question(s).`);
+    return;
+  }
+
+  quizState.submitted = true;
+  let score = 0;
+
+  quizData.forEach((q, qi) => {
+    const selected = quizState.answers[qi];
+    const correct = q.correct;
+    const questionDiv = document.getElementById('question-' + qi);
+    const explainDiv = document.getElementById('explain-' + qi);
+
+    document.querySelectorAll(`[id^="opt-${qi}-"]`).forEach(btn => btn.classList.add('disabled'));
+
+    if (selected === correct) {
+      score++;
+      document.getElementById(`opt-${qi}-${selected}`).classList.add('correct-answer');
+      questionDiv.classList.add('answered-correct');
+      explainDiv.className = 'q-explanation visible correct-exp';
+      explainDiv.innerHTML = '✅ Correct! ' + q.explanation;
+    } else {
+      document.getElementById(`opt-${qi}-${selected}`).classList.add('wrong-answer');
+      document.getElementById(`opt-${qi}-${correct}`).classList.add('correct-answer');
+      questionDiv.classList.add('answered-wrong');
+      explainDiv.className = 'q-explanation visible wrong-exp';
+      explainDiv.innerHTML = '❌ Incorrect. ' + q.explanation;
+    }
+  });
+
+  const pct = Math.round((score / quizData.length) * 100);
+  let icon, title;
+  if (pct === 100) { icon = '🏆'; title = 'Perfect Score! Amazing!'; }
+  else if (pct >= 80) { icon = '🌟'; title = 'Great Job!'; }
+  else if (pct >= 60) { icon = '👍'; title = 'Good Effort!'; }
+  else if (pct >= 40) { icon = '📚'; title = 'Keep Practicing!'; }
+  else { icon = '💪'; title = "Don't Give Up!"; }
+
+  document.getElementById('scoreIcon').textContent = icon;
+  document.getElementById('scoreTitle').textContent = title;
+  document.getElementById('scoreNumber').textContent = `${score} / ${quizData.length}`;
+  document.getElementById('scoreDetail').textContent = `You scored ${pct}%`;
+  document.getElementById('scoreDisplay').classList.add('visible');
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('scoreDisplay').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function updateScoreName() {
+  const name = document.getElementById('studentName').value.trim();
+  document.getElementById('studentNameDisplay').textContent = name ? `Student: ${name}` : '';
+}
+
+function resetQuiz() {
+  quizState.answers = new Array(quizData.length).fill(-1);
+  quizState.submitted = false;
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('progressText').textContent = '0 of 10 answered';
+  document.getElementById('scoreDisplay').classList.remove('visible');
+  document.getElementById('submitBtn').style.display = '';
+  document.getElementById('studentName').value = '';
+  document.getElementById('studentNameDisplay').textContent = '';
+  buildQuiz();
+  document.getElementById('quizContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── INIT ──
+buildQuiz();
+</script>
+</body>
+</html>

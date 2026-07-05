@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Concepts Interactive Playbook</title>
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 3px solid #667eea;
+            overflow-x: auto;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            background: #e0e0e0;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background: #d0d0d0;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            margin-bottom: -3px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .concept-box {
+            background: #f9f9f9;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .example-box {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .example-box py-script {
+            display: block;
+            white-space: pre;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+        }
+
+        .code-header {
+            background: #2d2d2d;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 8px 8px 0 0;
+            font-weight: bold;
+            margin-bottom: -20px;
+            margin-top: 15px;
+        }
+
+        .run-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .run-button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .output-box {
+            background: #f0f0f0;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            min-height: 50px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .key-point {
+            background: #e3f2fd;
+            border-left: 5px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question {
+            background: #f9f9f9;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .question h4 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .options {
+            margin-left: 20px;
+        }
+
+        .option {
+            margin: 10px 0;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .option label {
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .submit-quiz {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 30px auto;
+            display: block;
+            transition: all 0.3s;
+        }
+
+        .submit-quiz:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+            display: none;
+            font-size: 1.5em;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .score-display h3 {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .score-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .instruction-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .instruction-box strong {
+            color: #856404;
+        }
+
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'Courier New', monospace;
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #e83e8c;
+        }
+
+        .interactive-editor {
+            margin: 20px 0;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+
+        .try-it {
+            background: #4CAF50;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        table th {
+            background: #667eea;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐍 Python Concepts Interactive Playbook</h1>
+            <p>Learn by Doing: Map, Filter, Reduce, Indexing, Operators, and More!</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="openTab(event, 'map-filter-reduce')">Map, Filter & Reduce</button>
+            <button class="tab" onclick="openTab(event, 'negative-indexing')">Negative Indexing</button>
+            <button class="tab" onclick="openTab(event, 'membership')">Membership Operators</button>
+            <button class="tab" onclick="openTab(event, 'list-traversals')">List Traversals</button>
+            <button class="tab" onclick="openTab(event, 'lists-strings')">Lists & Strings</button>
+            <button class="tab" onclick="openTab(event, 'quiz')">📝 Quiz</button>
+        </div>
+
+        <div class="content">
+            <!-- Tab 1: Map, Filter, and Reduce -->
+            <div id="map-filter-reduce" class="tab-content active">
+                <h2>🗺️ Map, Filter, and Reduce</h2>
+                
+                <div class="concept-box">
+                    <h3>What are Map, Filter, and Reduce?</h3>
+                    <p>These are powerful functional programming tools that help you process lists efficiently:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Map:</strong> Transforms each element in a list</li>
+                        <li><strong>Filter:</strong> Selects elements that meet a condition</li>
+                        <li><strong>Reduce:</strong> Combines all elements into a single value</li>
+                    </ul>
+                </div>
+
+                <h3>🎯 Map Function</h3>
+                <div class="key-point">
+                    <strong>Map</strong> applies a function to every item in a list and returns a new list with the results.
+                    <br><br>
+                    <strong>Syntax:</strong> <code>map(function, iterable)</code>
+                </div>
+
+                <div class="code-header">Example 1: Double All Numbers</div>
+                <div class="example-box">
+                    <py-script>
+                        # Map example - Double each number
+                        numbers = [1, 2, 3, 4, 5]
+
+                        # Using map with a lambda function
+                        doubled = list(map(lambda x: x * 2, numbers))
+
+                        print("Original numbers:", numbers)
+                        print("Doubled numbers:", doubled)
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 2: Convert to Uppercase</div>
+                <div class="example-box">
+                    <py-script>
+                        # Map example - Convert strings to uppercase
+                        fruits = ['apple', 'banana', 'cherry']
+
+                        # Using map with str.upper
+                        uppercase_fruits = list(map(str.upper, fruits))
+
+                        print("Original:", fruits)
+                        print("Uppercase:", uppercase_fruits)
+                    </py-script>
+                </div>
+
+                <h3>🔍 Filter Function</h3>
+                <div class="key-point">
+                    <strong>Filter</strong> selects elements from a list that satisfy a condition (return True).
+                    <br><br>
+                    <strong>Syntax:</strong> <code>filter(function, iterable)</code>
+                </div>
+
+                <div class="code-header">Example 3: Filter Even Numbers</div>
+                <div class="example-box">
+                    <py-script>
+                        # Filter example - Get only even numbers
+                        numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+                        # Using filter with a lambda function
+                        evens = list(filter(lambda x: x % 2 == 0, numbers))
+
+                        print("All numbers:", numbers)
+                        print("Even numbers only:", evens)
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 4: Filter Long Words</div>
+                <div class="example-box">
+                    <py-script>
+                        # Filter example - Get words longer than 5 characters
+                        words = ['cat', 'elephant', 'dog', 'butterfly', 'ant']
+
+                        # Filter words with length > 5
+                        long_words = list(filter(lambda word: len(word) > 5, words))
+
+                        print("All words:", words)
+                        print("Long words (>5 chars):", long_words)
+                    </py-script>
+                </div>
+
+                <h3>🔄 Reduce Function</h3>
+                <div class="key-point">
+                    <strong>Reduce</strong> applies a function cumulatively to items in a list, reducing it to a single value.
+                    <br><br>
+                    <strong>Note:</strong> Reduce is in the <code>functools</code> module, so you need to import it!
+                    <br>
+                    <strong>Syntax:</strong> <code>reduce(function, iterable)</code>
+                </div>
+
+                <div class="code-header">Example 5: Sum All Numbers</div>
+                <div class="example-box">
+                    <py-script>
+                        from functools import reduce
+
+                        # Reduce example - Sum all numbers
+                        numbers = [1, 2, 3, 4, 5]
+
+                        # Using reduce to sum all numbers
+                        total = reduce(lambda x, y: x + y, numbers)
+
+                        print("Numbers:", numbers)
+                        print("Sum using reduce:", total)
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 6: Find Maximum Value</div>
+                <div class="example-box">
+                    <py-script>
+                        from functools import reduce
+
+                        # Reduce example - Find maximum number
+                        numbers = [15, 42, 7, 89, 23, 56]
+
+                        # Using reduce to find max
+                        maximum = reduce(lambda x, y: x if x > y else y, numbers)
+
+                        print("Numbers:", numbers)
+                        print("Maximum value:", maximum)
+                    </py-script>
+                </div>
+
+                <h3>🎨 Combining Map, Filter, and Reduce</h3>
+                <div class="code-header">Example 7: Complex Example</div>
+                <div class="example-box">
+                    <py-script>
+                        from functools import reduce
+
+                        # Start with numbers 1-10
+                        numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+                        # Step 1: Filter even numbers
+                        evens = list(filter(lambda x: x % 2 == 0, numbers))
+                        print("Step 1 - Even numbers:", evens)
+
+                        # Step 2: Map - Square each even number
+                        squared = list(map(lambda x: x ** 2, evens))
+                        print("Step 2 - Squared:", squared)
+
+                        # Step 3: Reduce - Sum all squared values
+                        total = reduce(lambda x, y: x + y, squared)
+                        print("Step 3 - Total sum:", total)
+                    </py-script>
+                </div>
+
+                <div class="interactive-editor">
+                    <h3>✏️ Try It Yourself!</h3>
+                    <p>Modify the code below and run it:</p>
+                    <textarea id="map-code">numbers = [10, 15, 20, 25, 30]
+# Try changing the lambda function!
+result = list(map(lambda x: x + 5, numbers))
+print("Result:", result)</textarea>
+                    <br>
+                    <button class="run-button" onclick="runMapCode()">▶️ Run Code</button>
+                    <div class="output-box" id="map-output"></div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Negative Indexing -->
+            <div id="negative-indexing" class="tab-content">
+                <h2>🔢 Negative Indexing</h2>
+                
+                <div class="concept-box">
+                    <h3>What is Negative Indexing?</h3>
+                    <p>Negative indexing allows you to access elements from the end of a list/string using negative numbers.</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><code>-1</code> refers to the last element</li>
+                        <li><code>-2</code> refers to the second-to-last element</li>
+                        <li><code>-3</code> refers to the third-to-last element</li>
+                        <li>And so on...</li>
+                    </ul>
+                </div>
+
+                <h3>📊 Visual Representation</h3>
+                <div class="concept-box">
+                    <table>
+                        <tr>
+                            <th>Element</th>
+                            <td>'A'</td>
+                            <td>'B'</td>
+                            <td>'C'</td>
+                            <td>'D'</td>
+                            <td>'E'</td>
+                        </tr>
+                        <tr>
+                            <th>Positive Index</th>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <th>Negative Index</th>
+                            <td>-5</td>
+                            <td>-4</td>
+                            <td>-3</td>
+                            <td>-2</td>
+                            <td>-1</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="code-header">Example 1: Accessing List Elements</div>
+                <div class="example-box">
+                    <py-script>
+                        # List with negative indexing
+                        fruits = ['apple', 'banana', 'cherry', 'date', 'elderberry']
+
+                        print("Full list:", fruits)
+                        print()
+                        print("Last element (index -1):", fruits[-1])
+                        print("Second-to-last (index -2):", fruits[-2])
+                        print("Third-to-last (index -3):", fruits[-3])
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 2: String Negative Indexing</div>
+                <div class="example-box">
+                    <py-script>
+                        # String with negative indexing
+                        word = "PYTHON"
+
+                        print("String:", word)
+                        print()
+                        print("Last character:", word[-1])
+                        print("First character:", word[0], "or", word[-6])
+                        print("Second-to-last:", word[-2])
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 3: Negative Slicing</div>
+                <div class="example-box">
+                    <py-script>
+                        # Using negative indices in slicing
+                        numbers = [10, 20, 30, 40, 50, 60, 70, 80, 90]
+
+                        print("Full list:", numbers)
+                        print()
+                        print("Last 3 elements:", numbers[-3:])
+                        print("From start to second-to-last:", numbers[:-2])
+                        print("Reverse the list:", numbers[::-1])
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 4: Practical Application</div>
+                <div class="example-box">
+                    <py-script>
+                        # Getting file extension using negative indexing
+                        filename = "document.pdf"
+
+                        # Get last 4 characters (including the dot)
+                        extension = filename[-4:]
+                        print("Filename:", filename)
+                        print("Extension:", extension)
+
+                        # Another example
+                        image = "photo.jpg"
+                        ext = image[-4:]
+                        print("\nFilename:", image)
+                        print("Extension:", ext)
+                    </py-script>
+                </div>
+
+                <h3>🎯 Why Use Negative Indexing?</h3>
+                <div class="key-point">
+                    <strong>Benefits:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Easy access to elements from the end without knowing the length</li>
+                        <li>More readable code when working with end elements</li>
+                        <li>Useful for slicing and reversing sequences</li>
+                    </ul>
+                </div>
+
+                <div class="interactive-editor">
+                    <h3>✏️ Try It Yourself!</h3>
+                    <p>Experiment with negative indexing:</p>
+                    <textarea id="negative-code">my_list = [100, 200, 300, 400, 500]
+# Try different negative indices!
+print("Last element:", my_list[-1])
+print("Your turn - try index -3:", my_list[-3])</textarea>
+                    <br>
+                    <button class="run-button" onclick="runNegativeCode()">▶️ Run Code</button>
+                    <div class="output-box" id="negative-output"></div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Membership Operators -->
+            <div id="membership" class="tab-content">
+                <h2>🔍 Membership Operators</h2>
+                
+                <div class="concept-box">
+                    <h3>What are Membership Operators?</h3>
+                    <p>Membership operators test whether a value is present in a sequence (list, string, tuple, etc.)</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><code>in</code> - Returns True if value is found in the sequence</li>
+                        <li><code>not in</code> - Returns True if value is NOT found in the sequence</li>
+                    </ul>
+                </div>
+
+                <h3>✅ The 'in' Operator</h3>
+                <div class="code-header">Example 1: Check if Item in List</div>
+                <div class="example-box">
+                    <py-script>
+                        # Using 'in' with lists
+                        fruits = ['apple', 'banana', 'cherry', 'date']
+
+                        print("Fruits list:", fruits)
+                        print()
+                        print("Is 'banana' in fruits?", 'banana' in fruits)
+                        print("Is 'grape' in fruits?", 'grape' in fruits)
+                        print("Is 'apple' in fruits?", 'apple' in fruits)
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 2: Check Substring in String</div>
+                <div class="example-box">
+                    <py-script>
+                        # Using 'in' with strings
+                        sentence = "Python is awesome!"
+
+                        print("Sentence:", sentence)
+                        print()
+                        print("Is 'Python' in sentence?", 'Python' in sentence)
+                        print("Is 'Java' in sentence?", 'Java' in sentence)
+                        print("Is 'awesome' in sentence?", 'awesome' in sentence)
+                    </py-script>
+                </div>
+
+                <h3>❌ The 'not in' Operator</h3>
+                <div class="code-header">Example 3: Check if NOT in List</div>
+                <div class="example-box">
+                    <py-script>
+                        # Using 'not in' with lists
+                        numbers = [1, 2, 3, 4, 5]
+
+                        print("Numbers:", numbers)
+                        print()
+                        print("Is 10 not in numbers?", 10 not in numbers)
+                        print("Is 3 not in numbers?", 3 not in numbers)
+                        print("Is 7 not in numbers?", 7 not in numbers)
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 4: Practical User Input Validation</div>
+                <div class="example-box">
+                    <py-script>
+                        # Validate user choice
+                        valid_choices = ['yes', 'no', 'maybe']
+                        user_input = 'yes'
+
+                        if user_input in valid_choices:
+                            print(f"'{user_input}' is a valid choice!")
+                        else:
+                            print(f"'{user_input}' is NOT a valid choice.")
+
+                        # Try with invalid input
+                        user_input2 = 'unknown'
+                        if user_input2 not in valid_choices:
+                            print(f"\n'{user_input2}' is not a valid choice.")
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 5: Check Multiple Items</div>
+                <div class="example-box">
+                    <py-script>
+                        # Check multiple items
+                        shopping_list = ['milk', 'eggs', 'bread', 'butter']
+
+                        items_to_buy = ['eggs', 'cheese', 'milk']
+
+                        print("Shopping list:", shopping_list)
+                        print("Items to buy:", items_to_buy)
+                        print()
+
+                        for item in items_to_buy:
+                            if item in shopping_list:
+                                print(f"✓ {item} is already on the list")
+                            else:
+                                print(f"✗ {item} needs to be added")
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 6: Dictionary Membership (Keys)</div>
+                <div class="example-box">
+                    <py-script>
+                        # Using 'in' with dictionaries (checks keys by default)
+                        student_grades = {
+                            'Alice': 95,
+                            'Bob': 87,
+                            'Charlie': 92
+                        }
+
+                        print("Student grades:", student_grades)
+                        print()
+                        print("Is 'Alice' in the dictionary?", 'Alice' in student_grades)
+                        print("Is 'David' in the dictionary?", 'David' in student_grades)
+
+                        # Check if value is in dictionary values
+                        print("\nIs 95 in the values?", 95 in student_grades.values())
+                    </py-script>
+                </div>
+
+                <h3>🎯 Common Use Cases</h3>
+                <div class="key-point">
+                    <strong>When to use membership operators:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Input validation</li>
+                        <li>Searching for items in collections</li>
+                        <li>Filtering data</li>
+                        <li>Checking user permissions or access</li>
+                        <li>Finding substrings in text</li>
+                    </ul>
+                </div>
+
+                <div class="interactive-editor">
+                    <h3>✏️ Try It Yourself!</h3>
+                    <p>Test membership operators:</p>
+                    <textarea id="membership-code">colors = ['red', 'blue', 'green', 'yellow']
+# Try checking for different colors!
+print("Is 'blue' in colors?", 'blue' in colors)
+print("Is 'purple' not in colors?", 'purple' not in colors)</textarea>
+                    <br>
+                    <button class="run-button" onclick="runMembershipCode()">▶️ Run Code</button>
+                    <div class="output-box" id="membership-output"></div>
+                </div>
+            </div>
+
+            <!-- Tab 4: List Traversals -->
+            <div id="list-traversals" class="tab-content">
+                <h2>🚶 List Traversals</h2>
+                
+                <div class="concept-box">
+                    <h3>What is List Traversal?</h3>
+                    <p>List traversal means visiting each element in a list one by one to process or examine it. Think of it like walking through a hallway and looking at each door!</p>
+                </div>
+
+                <h3>Method 1: For Loop (Direct Access)</h3>
+                <div class="key-point">
+                    <strong>Best for:</strong> When you only need the values, not the indices
+                </div>
+                <div class="code-header">Example 1: Simple For Loop</div>
+                <div class="example-box">
+                    <py-script>
+                        # Traverse using for loop
+                        fruits = ['apple', 'banana', 'cherry', 'date']
+
+                        print("Method 1: Direct access with for loop")
+                        for fruit in fruits:
+                            print(f"I like {fruit}")
+                    </py-script>
+                </div>
+
+                <h3>Method 2: For Loop with Range and Length</h3>
+                <div class="key-point">
+                    <strong>Best for:</strong> When you need the index position
+                </div>
+                <div class="code-header">Example 2: Using Range and Index</div>
+                <div class="example-box">
+                    <py-script>
+                        # Traverse using range and index
+                        colors = ['red', 'green', 'blue', 'yellow']
+
+                        print("Method 2: Using range and index")
+                        for i in range(len(colors)):
+                            print(f"Index {i}: {colors[i]}")
+                    </py-script>
+                </div>
+
+                <h3>Method 3: Enumerate (Best of Both Worlds!)</h3>
+                <div class="key-point">
+                    <strong>Best for:</strong> When you need BOTH index and value
+                </div>
+                <div class="code-header">Example 3: Using Enumerate</div>
+                <div class="example-box">
+                    <py-script>
+                        # Traverse using enumerate
+                        animals = ['cat', 'dog', 'elephant', 'giraffe']
+
+                        print("Method 3: Using enumerate")
+                        for index, animal in enumerate(animals):
+                            print(f"Animal #{index + 1}: {animal}")
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 4: Enumerate with Custom Start</div>
+                <div class="example-box">
+                    <py-script>
+                        # Enumerate with custom start index
+                        students = ['Alice', 'Bob', 'Charlie', 'Diana']
+
+                        print("Class Roster:")
+                        for position, student in enumerate(students, start=1):
+                            print(f"{position}. {student}")
+                    </py-script>
+                </div>
+
+                <h3>Method 4: While Loop</h3>
+                <div class="key-point">
+                    <strong>Best for:</strong> When you need manual control over the index
+                </div>
+                <div class="code-header">Example 5: Using While Loop</div>
+                <div class="example-box">
+                    <py-script>
+                        # Traverse using while loop
+                        numbers = [10, 20, 30, 40, 50]
+
+                        print("Method 4: Using while loop")
+                        i = 0
+                        while i < len(numbers):
+                            print(f"Index {i}: {numbers[i]}")
+                            i += 1
+                    </py-script>
+                </div>
+
+                <h3>🎨 Advanced Traversal Patterns</h3>
+                
+                <div class="code-header">Example 6: Reverse Traversal</div>
+                <div class="example-box">
+                    <py-script>
+                        # Traverse in reverse order
+                        letters = ['A', 'B', 'C', 'D', 'E']
+
+                        print("Forward:")
+                        for letter in letters:
+                            print(letter, end=' ')
+
+                        print("\n\nReverse using reversed():")
+                        for letter in reversed(letters):
+                            print(letter, end=' ')
+
+                        print("\n\nReverse using negative step:")
+                        for i in range(len(letters)-1, -1, -1):
+                            print(letters[i], end=' ')
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 7: Skip Elements (Step)</div>
+                <div class="example-box">
+                    <py-script>
+                        # Traverse every other element
+                        numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+                        print("Original list:", numbers)
+                        print("\nEvery other element (step=2):")
+                        for i in range(0, len(numbers), 2):
+                            print(numbers[i], end=' ')
+
+                        print("\n\nEvery third element (step=3):")
+                        for i in range(0, len(numbers), 3):
+                            print(numbers[i], end=' ')
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 8: Parallel Traversal (Two Lists)</div>
+                <div class="example-box">
+                    <py-script>
+                        # Traverse two lists simultaneously using zip
+                        names = ['Alice', 'Bob', 'Charlie']
+                        scores = [95, 87, 92]
+
+                        print("Using zip for parallel traversal:")
+                        for name, score in zip(names, scores):
+                            print(f"{name} scored {score}")
+                    </py-script>
+                </div>
+
+                <h3>📊 Comparison Table</h3>
+                <div class="concept-box">
+                    <table>
+                        <tr>
+                            <th>Method</th>
+                            <th>Access to Index?</th>
+                            <th>Access to Value?</th>
+                            <th>Best Use Case</th>
+                        </tr>
+                        <tr>
+                            <td>for item in list</td>
+                            <td>❌ No</td>
+                            <td>✅ Yes</td>
+                            <td>Simple iteration</td>
+                        </tr>
+                        <tr>
+                            <td>for i in range(len(list))</td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                            <td>Need indices</td>
+                        </tr>
+                        <tr>
+                            <td>for i, item in enumerate(list)</td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                            <td>Need both (best!)</td>
+                        </tr>
+                        <tr>
+                            <td>while loop</td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                            <td>Manual control</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="interactive-editor">
+                    <h3>✏️ Try It Yourself!</h3>
+                    <p>Try different traversal methods:</p>
+                    <textarea id="traversal-code">my_list = [100, 200, 300, 400, 500]
+# Try enumerate!
+for index, value in enumerate(my_list):
+    print(f"Index {index}: {value}")</textarea>
+                    <br>
+                    <button class="run-button" onclick="runTraversalCode()">▶️ Run Code</button>
+                    <div class="output-box" id="traversal-output"></div>
+                </div>
+            </div>
+
+            <!-- Tab 5: Lists and Strings -->
+            <div id="lists-strings" class="tab-content">
+                <h2>📝 Lists and Strings (String Traversals)</h2>
+                
+                <div class="concept-box">
+                    <h3>Strings and Lists: Best Friends! 🤝</h3>
+                    <p>Strings and lists are very similar in Python:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Both are <strong>sequences</strong></li>
+                        <li>Both can be <strong>indexed</strong> and <strong>sliced</strong></li>
+                        <li>Both can be <strong>traversed</strong></li>
+                        <li>You can easily <strong>convert</strong> between them!</li>
+                    </ul>
+                </div>
+
+                <h3>🔄 Converting Between Strings and Lists</h3>
+                
+                <div class="code-header">Example 1: String to List (split)</div>
+                <div class="example-box">
+                    <py-script>
+                        # Convert string to list using split()
+                        sentence = "Python is fun and powerful"
+
+                        # Split on spaces (default)
+                        words = sentence.split()
+                        print("Original string:", sentence)
+                        print("List of words:", words)
+                        print("Number of words:", len(words))
+
+                        # Split on a specific character
+                        csv_data = "apple,banana,cherry,date"
+                        fruits = csv_data.split(',')
+                        print("\nCSV string:", csv_data)
+                        print("List of fruits:", fruits)
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 2: List to String (join)</div>
+                <div class="example-box">
+                    <py-script>
+                        # Convert list to string using join()
+                        words = ['Python', 'is', 'awesome']
+
+                        # Join with spaces
+                        sentence = ' '.join(words)
+                        print("List:", words)
+                        print("Joined string:", sentence)
+
+                        # Join with different separator
+                        dashed = '-'.join(words)
+                        print("Dashed:", dashed)
+
+                        # Join with comma and space
+                        csv = ', '.join(words)
+                        print("CSV format:", csv)
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 3: String to List of Characters</div>
+                <div class="example-box">
+                    <py-script>
+                        # Convert string to list of characters
+                        word = "PYTHON"
+
+                        # Using list()
+                        chars = list(word)
+                        print("Word:", word)
+                        print("Characters:", chars)
+
+                        # Alternative using list comprehension
+                        chars2 = [char for char in word]
+                        print("Characters (method 2):", chars2)
+                    </py-script>
+                </div>
+
+                <h3>🚶 String Traversal Methods</h3>
+                
+                <div class="code-header">Example 4: Traverse String Characters</div>
+                <div class="example-box">
+                    <py-script>
+                        # Method 1: Direct character access
+                        word = "HELLO"
+
+                        print("Method 1: Direct access")
+                        for char in word:
+                            print(char, end=' ')
+
+                        print("\n\nMethod 2: Using index")
+                        for i in range(len(word)):
+                            print(f"Index {i}: {word[i]}")
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 5: Enumerate String</div>
+                <div class="example-box">
+                    <py-script>
+                        # Using enumerate with strings
+                        message = "Python"
+
+                        print("Using enumerate:")
+                        for index, char in enumerate(message):
+                            print(f"Position {index}: '{char}'")
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 6: Count Vowels in String</div>
+                <div class="example-box">
+                    <py-script>
+                        # Practical example: Count vowels
+                        text = "Hello World, How Are You?"
+                        vowels = "aeiouAEIOU"
+                        vowel_count = 0
+
+                        for char in text:
+                            if char in vowels:
+                                vowel_count += 1
+
+                        print("Text:", text)
+                        print("Number of vowels:", vowel_count)
+
+                        # Show which vowels were found
+                        found_vowels = [char for char in text if char in vowels]
+                        print("Vowels found:", found_vowels)
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 7: Reverse a String</div>
+                <div class="example-box">
+                    <py-script>
+                        # Different ways to reverse a string
+                        original = "PYTHON"
+
+                        # Method 1: Using slicing
+                        reversed1 = original[::-1]
+                        print("Original:", original)
+                        print("Reversed (slicing):", reversed1)
+
+                        # Method 2: Using reversed() and join
+                        reversed2 = ''.join(reversed(original))
+                        print("Reversed (reversed()):", reversed2)
+
+                        # Method 3: Manual traversal
+                        reversed3 = ""
+                        for i in range(len(original)-1, -1, -1):
+                            reversed3 += original[i]
+                        print("Reversed (manual):", reversed3)
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 8: Check if Palindrome</div>
+                <div class="example-box">
+                    <py-script>
+                        # Check if a word is a palindrome
+                        def is_palindrome(word):
+                            # Remove spaces and convert to lowercase
+                            word = word.replace(' ', '').lower()
+                            return word == word[::-1]
+
+                        # Test words
+                        test_words = ['racecar', 'python', 'madam', 'hello', 'noon']
+
+                        for word in test_words:
+                            result = "IS" if is_palindrome(word) else "is NOT"
+                            print(f"'{word}' {result} a palindrome")
+                    </py-script>
+                </div>
+
+                <h3>🎨 String Manipulation with Lists</h3>
+                
+                <div class="code-header">Example 9: Capitalize Each Word</div>
+                <div class="example-box">
+                    <py-script>
+                        # Capitalize each word using split and join
+                        sentence = "python is an amazing programming language"
+
+                        # Split into words
+                        words = sentence.split()
+
+                        # Capitalize each word
+                        capitalized_words = [word.capitalize() for word in words]
+
+                        # Join back together
+                        result = ' '.join(capitalized_words)
+
+                        print("Original:", sentence)
+                        print("Capitalized:", result)
+
+                        # Or use the built-in method
+                        print("Using .title():", sentence.title())
+                    </py-script>
+                </div>
+
+                <div class="code-header">Example 10: Remove Duplicates from String</div>
+                <div class="example-box">
+                    <py-script>
+                        # Remove duplicate characters while preserving order
+                        text = "programming"
+
+                        # Using list to track seen characters
+                        seen = []
+                        result = []
+
+                        for char in text:
+                            if char not in seen:
+                                seen.append(char)
+                                result.append(char)
+
+                        unique_string = ''.join(result)
+                        print("Original:", text)
+                        print("Without duplicates:", unique_string)
+                    </py-script>
+                </div>
+
+                <h3>📊 String vs List Operations</h3>
+                <div class="concept-box">
+                    <table>
+                        <tr>
+                            <th>Operation</th>
+                            <th>String</th>
+                            <th>List</th>
+                        </tr>
+                        <tr>
+                            <td>Access element</td>
+                            <td>text[0]</td>
+                            <td>list[0]</td>
+                        </tr>
+                        <tr>
+                            <td>Get length</td>
+                            <td>len(text)</td>
+                            <td>len(list)</td>
+                        </tr>
+                        <tr>
+                            <td>Slice</td>
+                            <td>text[1:4]</td>
+                            <td>list[1:4]</td>
+                        </tr>
+                        <tr>
+                            <td>Concatenate</td>
+                            <td>"a" + "b"</td>
+                            <td>[1] + [2]</td>
+                        </tr>
+                        <tr>
+                            <td>Mutable?</td>
+                            <td>❌ No</td>
+                            <td>✅ Yes</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="key-point">
+                    <strong>Key Difference:</strong> Strings are <strong>immutable</strong> (can't be changed), while lists are <strong>mutable</strong> (can be modified).
+                    <br><br>
+                    You can't do: <code>text[0] = 'X'</code> ❌
+                    <br>
+                    But you can do: <code>my_list[0] = 'X'</code> ✅
+                </div>
+
+                <div class="interactive-editor">
+                    <h3>✏️ Try It Yourself!</h3>
+                    <p>Experiment with strings and lists:</p>
+                    <textarea id="strings-code">sentence = "Learn Python Programming"
+words = sentence.split()
+print("Words:", words)
+print("Reversed:", ' '.join(reversed(words)))</textarea>
+                    <br>
+                    <button class="run-button" onclick="runStringsCode()">▶️ Run Code</button>
+                    <div class="output-box" id="strings-output"></div>
+                </div>
+            </div>
+
+            <!-- Tab 6: Quiz -->
+            <div id="quiz" class="tab-content">
+                <h2>📝 Python Concepts Quiz</h2>
+                
+                <div class="instruction-box">
+                    <strong>📸 Instructions:</strong> Answer all 10 questions and click "Submit Quiz" to see your score. Take a screenshot of your final score and submit it to your teacher!
+                </div>
+
+                <div class="quiz-container">
+                    <form id="quiz-form">
+                        <!-- Question 1 -->
+                        <div class="question">
+                            <h4>1. What does the map() function do?</h4>
+                            <div class="options">
+                                <div class="option">
+                                    <input type="radio" name="q1" value="a" id="q1a">
+                                    <label for="q1a">A) Filters elements from a list</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q1" value="b" id="q1b">
+                                    <label for="q1b">B) Applies a function to every element in a list</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q1" value="c" id="q1c">
+                                    <label for="q1c">C) Combines all elements into one value</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q1" value="d" id="q1d">
+                                    <label for="q1d">D) Sorts the list</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 2 -->
+                        <div class="question">
+                            <h4>2. What is the value of fruits[-1] if fruits = ['apple', 'banana', 'cherry']?</h4>
+                            <div class="options">
+                                <div class="option">
+                                    <input type="radio" name="q2" value="a" id="q2a">
+                                    <label for="q2a">A) 'apple'</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q2" value="b" id="q2b">
+                                    <label for="q2b">B) 'banana'</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q2" value="c" id="q2c">
+                                    <label for="q2c">C) 'cherry'</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q2" value="d" id="q2d">
+                                    <label for="q2d">D) Error</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 3 -->
+                        <div class="question">
+                            <h4>3. Which operator checks if a value is NOT in a sequence?</h4>
+                            <div class="options">
+                                <div class="option">
+                                    <input type="radio" name="q3" value="a" id="q3a">
+                                    <label for="q3a">A) in</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q3" value="b" id="q3b">
+                                    <label for="q3b">B) not in</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q3" value="c" id="q3c">
+                                    <label for="q3c">C) !=</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q3" value="d" id="q3d">
+                                    <label for="q3d">D) is not</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 4 -->
+                        <div class="question">
+                            <h4>4. What does the filter() function return?</h4>
+                            <div class="options">
+                                <div class="option">
+                                    <input type="radio" name="q4" value="a" id="q4a">
+                                    <label for="q4a">A) All elements from the list</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q4" value="b" id="q4b">
+                                    <label for="q4b">B) Only elements that satisfy a condition</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q4" value="c" id="q4c">
+                                    <label for="q4c">C) A single combined value</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q4" value="d" id="q4d">
+                                    <label for="q4d">D) Nothing</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 5 -->
+                        <div class="question">
+                            <h4>5. Which function gives you both the index and value while traversing a list?</h4>
+                            <div class="options">
+                                <div class="option">
+                                    <input type="radio" name="q5" value="a" id="q5a">
+                                    <label for="q5a">A) range()</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q5" value="b" id="q5b">
+                                    <label for="q5b">B) enumerate()</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q5" value="c" id="q5c">
+                                    <label for="q5c">C) zip()</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q5" value="d" id="q5d">
+                                    <label for="q5d">D) len()</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 6 -->
+                        <div class="question">
+                            <h4>6. What module do you need to import to use the reduce() function?</h4>
+                            <div class="options">
+                                <div class="option">
+                                    <input type="radio" name="q6" value="a" id="q6a">
+                                    <label for="q6a">A) math</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q6" value="b" id="q6b">
+                                    <label for="q6b">B) functools</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q6" value="c" id="q6c">
+                                    <label for="q6c">C) itertools</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q6" value="d" id="q6d">
+                                    <label for="q6d">D) No import needed</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 7 -->
+                        <div class="question">
+                            <h4>7. How do you convert a string to a list of words?</h4>
+                            <div class="options">
+                                <div class="option">
+                                    <input type="radio" name="q7" value="a" id="q7a">
+                                    <label for="q7a">A) string.join()</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q7" value="b" id="q7b">
+                                    <label for="q7b">B) string.split()</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q7" value="c" id="q7c">
+                                    <label for="q7c">C) list(string)</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q7" value="d" id="q7d">
+                                    <label for="q7d">D) string.convert()</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 8 -->
+                        <div class="question">
+                            <h4>8. What does 'Python'[::-1] return?</h4>
+                            <div class="options">
+                                <div class="option">
+                                    <input type="radio" name="q8" value="a" id="q8a">
+                                    <label for="q8a">A) 'Python'</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q8" value="b" id="q8b">
+                                    <label for="q8b">B) 'nohtyP'</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q8" value="c" id="q8c">
+                                    <label for="q8c">C) 'P'</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q8" value="d" id="q8d">
+                                    <label for="q8d">D) Error</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 9 -->
+                        <div class="question">
+                            <h4>9. If my_list = [10, 20, 30, 40], what is my_list[-2]?</h4>
+                            <div class="options">
+                                <div class="option">
+                                    <input type="radio" name="q9" value="a" id="q9a">
+                                    <label for="q9a">A) 10</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q9" value="b" id="q9b">
+                                    <label for="q9b">B) 20</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q9" value="c" id="q9c">
+                                    <label for="q9c">C) 30</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q9" value="d" id="q9d">
+                                    <label for="q9d">D) 40</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 10 -->
+                        <div class="question">
+                            <h4>10. How do you join a list of strings into a single string with spaces?</h4>
+                            <div class="options">
+                                <div class="option">
+                                    <input type="radio" name="q10" value="a" id="q10a">
+                                    <label for="q10a">A) list.join(' ')</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q10" value="b" id="q10b">
+                                    <label for="q10b">B) ' '.join(list)</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q10" value="c" id="q10c">
+                                    <label for="q10c">C) join(list, ' ')</label>
+                                </div>
+                                <div class="option">
+                                    <input type="radio" name="q10" value="d" id="q10d">
+                                    <label for="q10d">D) list.split(' ')</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="submit-quiz" onclick="submitQuiz()">Submit Quiz</button>
+                    </form>
+
+                    <div class="score-display" id="score-display">
+                        <h3>🎉 Your Quiz Results</h3>
+                        <div class="score-number" id="score-number"></div>
+                        <p id="score-message"></p>
+                        <p style="margin-top: 20px; font-size: 0.9em;">📸 Take a screenshot now and submit to your teacher!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching function
+        function openTab(evt, tabName) {
+            var i, tabContent, tabs;
+            
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].classList.remove("active");
+            }
+            
+            tabs = document.getElementsByClassName("tab");
+            for (i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // Helper function to run Python code using PyScript
+        async function runPythonCode(codeId, outputId) {
+            const code = document.getElementById(codeId).value;
+            const output = document.getElementById(outputId);
+            
+            output.innerHTML = '<em style="color: #666;">Running...</em>';
+            
+            try {
+                // Wait for PyScript to be ready
+                await new Promise(resolve => {
+                    if (window.pyscript && window.pyscript.interpreter) {
+                        resolve();
+                    } else {
+                        const checkReady = setInterval(() => {
+                            if (window.pyscript && window.pyscript.interpreter) {
+                                clearInterval(checkReady);
+                                resolve();
+                            }
+                        }, 100);
+                    }
+                });
+
+                // Capture print output
+                let printOutput = '';
+                const pythonCode = `
+import sys
+from io import StringIO
+
+# Capture stdout
+old_stdout = sys.stdout
+sys.stdout = StringIO()
+
+try:
+${code.split('\n').map(line => '    ' + line).join('\n')}
+    output_text = sys.stdout.getvalue()
+except Exception as e:
+    output_text = f"Error: {str(e)}"
+finally:
+    sys.stdout = old_stdout
+
+output_text
+`;
+
+                // Execute the code
+                const result = await pyscript.interpreter.runPython(pythonCode);
+                
+                if (result) {
+                    output.innerHTML = result.replace(/\n/g, '<br>');
+                } else {
+                    output.innerHTML = '<em style="color: #28a745;">Code executed successfully (no output)</em>';
+                }
+            } catch (error) {
+                output.innerHTML = `<span style="color: red;">Error: ${error.message}</span>`;
+            }
+        }
+
+        // Interactive code runners
+        function runMapCode() {
+            runPythonCode('map-code', 'map-output');
+        }
+
+        function runNegativeCode() {
+            runPythonCode('negative-code', 'negative-output');
+        }
+
+        function runMembershipCode() {
+            runPythonCode('membership-code', 'membership-output');
+        }
+
+        function runTraversalCode() {
+            runPythonCode('traversal-code', 'traversal-output');
+        }
+
+        function runStringsCode() {
+            runPythonCode('strings-code', 'strings-output');
+        }
+
+        // Quiz submission
+        function submitQuiz() {
+            const answers = {
+                q1: 'b',  // map applies function to every element
+                q2: 'c',  // -1 is last element (cherry)
+                q3: 'b',  // not in
+                q4: 'b',  // filter returns elements that satisfy condition
+                q5: 'b',  // enumerate()
+                q6: 'b',  // functools
+                q7: 'b',  // split()
+                q8: 'b',  // 'nohtyP'
+                q9: 'c',  // -2 is second to last (30)
+                q10: 'b'  // ' '.join(list)
+            };
+
+            let score = 0;
+            let totalQuestions = 10;
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selectedAnswer && selectedAnswer.value === answers[`q${i}`]) {
+                    score++;
+                }
+            }
+
+            const percentage = (score / totalQuestions) * 100;
+            const scoreDisplay = document.getElementById('score-display');
+            const scoreNumber = document.getElementById('score-number');
+            const scoreMessage = document.getElementById('score-message');
+
+            scoreNumber.textContent = `${score} / ${totalQuestions}`;
+            
+            let message = '';
+            let emoji = '';
+            if (percentage >= 90) {
+                message = 'Outstanding! You mastered these concepts!';
+                emoji = '🌟';
+            } else if (percentage >= 80) {
+                message = 'Great job! You have a strong understanding!';
+                emoji = '🎉';
+            } else if (percentage >= 70) {
+                message = 'Good work! Review the concepts you missed.';
+                emoji = '👍';
+            } else if (percentage >= 60) {
+                message = 'Passing! But review the material for better understanding.';
+                emoji = '📚';
+            } else {
+                message = 'Keep studying! Review all the tabs and try again.';
+                emoji = '💪';
+            }
+
+            scoreMessage.innerHTML = `${emoji} ${message}<br>Score: ${percentage.toFixed(0)}%`;
+            scoreDisplay.style.display = 'block';
+            
+            // Scroll to score
+            scoreDisplay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+</body>
+</html>

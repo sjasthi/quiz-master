@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python 101 – Lists Playbook 🐍</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d2e;
+    --card2: #20243a;
+    --border: #2e3352;
+    --accent1: #7c3aed;
+    --accent2: #06b6d4;
+    --accent3: #f59e0b;
+    --accent4: #10b981;
+    --accent5: #f43f5e;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --code-bg: #0d1117;
+    --tab-active: #7c3aed;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 600px 400px at 10% 20%, rgba(124,58,237,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 500px 300px at 90% 80%, rgba(6,182,212,0.10) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  /* Header */
+  header {
+    text-align: center;
+    padding: 36px 20px 28px;
+  }
+  header .snake-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  header h1 {
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 900;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 50%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+  header p {
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 6px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tab-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 11px;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--text); background: var(--card2); }
+  .tab-btn.active {
+    background: var(--accent1);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(124,58,237,0.4);
+  }
+  .tab-btn.active.tab2 { background: var(--accent2); box-shadow: 0 4px 16px rgba(6,182,212,0.4); }
+  .tab-btn.active.tab3 { background: var(--accent4); box-shadow: 0 4px 16px rgba(16,185,129,0.4); }
+  .tab-btn.active.tab4 { background: var(--accent3); color: #1a1a1a; box-shadow: 0 4px 16px rgba(245,158,11,0.4); }
+
+  /* Tab Content */
+  .tab-content { display: none; animation: fadeIn 0.3s ease; }
+  .tab-content.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Section cards */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .card-icon {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .icon-purple { background: rgba(124,58,237,0.2); }
+  .icon-cyan   { background: rgba(6,182,212,0.2); }
+  .icon-green  { background: rgba(16,185,129,0.2); }
+  .icon-amber  { background: rgba(245,158,11,0.2); }
+  .icon-pink   { background: rgba(244,63,94,0.2); }
+
+  .card h2 { font-size: 20px; font-weight: 800; }
+  .card h3 { font-size: 16px; font-weight: 800; margin-bottom: 10px; color: #c4b5fd; }
+  .card p  { font-size: 14px; line-height: 1.7; color: #cbd5e1; margin-bottom: 10px; }
+  .card p:last-child { margin-bottom: 0; }
+
+  /* Code blocks */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid #2d333b;
+    border-radius: 12px;
+    margin: 14px 0;
+    overflow: hidden;
+  }
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    background: #161b22;
+    border-bottom: 1px solid #2d333b;
+  }
+  .code-header span {
+    font-size: 12px;
+    font-weight: 700;
+    color: #6e7681;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .code-header .dots { display: flex; gap: 6px; }
+  .code-header .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-red   { background: #ff5f56; }
+  .dot-amber { background: #ffbd2e; }
+  .dot-green { background: #27c93f; }
+  pre {
+    padding: 16px 18px;
+    font-family: 'Fira Code', monospace;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #e6edf3;
+    overflow-x: auto;
+    white-space: pre;
+    tab-size: 4;
+  }
+  /* Syntax highlighting */
+  .kw  { color: #ff79c6; }
+  .str { color: #f1fa8c; }
+  .num { color: #bd93f9; }
+  .cmt { color: #6272a4; font-style: italic; }
+  .fn  { color: #50fa7b; }
+  .var { color: #8be9fd; }
+  .op  { color: #ff79c6; }
+  .bool{ color: #bd93f9; }
+
+  /* Info boxes */
+  .tip-box {
+    display: flex;
+    gap: 12px;
+    background: rgba(124,58,237,0.1);
+    border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin: 14px 0;
+    font-size: 14px;
+    color: #c4b5fd;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+  .tip-box.cyan  { background: rgba(6,182,212,0.1);  border-color: rgba(6,182,212,0.3);  color: #67e8f9; }
+  .tip-box.green { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); color: #6ee7b7; }
+  .tip-box.amber { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.3); color: #fcd34d; }
+  .tip-box.pink  { background: rgba(244,63,94,0.1);  border-color: rgba(244,63,94,0.3);  color: #fda4af; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; margin: 14px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th {
+    background: rgba(124,58,237,0.2);
+    color: #c4b5fd;
+    font-weight: 800;
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  td {
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    color: #cbd5e1;
+    font-family: 'Fira Code', monospace;
+    font-size: 12.5px;
+  }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  /* Grid visual for 2D */
+  .grid-visual {
+    display: inline-grid;
+    gap: 4px;
+    margin: 14px auto;
+    background: transparent;
+  }
+  .grid-cell {
+    width: 56px; height: 48px;
+    background: var(--card2);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fira Code', monospace;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    transition: all 0.2s;
+  }
+  .grid-cell.highlight-row { background: rgba(124,58,237,0.25); border-color: #7c3aed; color: #c4b5fd; }
+  .grid-cell.highlight-col { background: rgba(6,182,212,0.25);  border-color: #06b6d4; color: #67e8f9; }
+  .grid-cell.highlight-cell{ background: rgba(245,158,11,0.35); border-color: #f59e0b; color: #fcd34d; font-weight: 900; }
+  .grid-label { color: var(--muted); font-size: 12px; font-family: 'Fira Code', monospace; text-align: center; }
+  .grid-wrap { text-align: center; margin: 16px 0; }
+
+  /* Tags / badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 800;
+    margin: 2px;
+  }
+  .badge-str  { background: rgba(241,250,140,0.15); color: #f1fa8c; border: 1px solid rgba(241,250,140,0.3); }
+  .badge-int  { background: rgba(189,147,249,0.15); color: #bd93f9; border: 1px solid rgba(189,147,249,0.3); }
+  .badge-bool { background: rgba(80,250,123,0.15);  color: #50fa7b; border: 1px solid rgba(80,250,123,0.3); }
+  .badge-float{ background: rgba(255,184,108,0.15); color: #ffb86c; border: 1px solid rgba(255,184,108,0.3); }
+  .badge-list { background: rgba(255,121,198,0.15); color: #ff79c6; border: 1px solid rgba(255,121,198,0.3); }
+
+  /* Divider */
+  .divider { height: 1px; background: var(--border); margin: 22px 0; }
+
+  /* ========== QUIZ ========== */
+  .quiz-intro {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(244,63,94,0.1));
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 16px;
+    margin-bottom: 24px;
+  }
+  .quiz-intro h2 { font-size: 24px; font-weight: 900; color: #fcd34d; margin-bottom: 6px; }
+  .quiz-intro p  { font-size: 14px; color: var(--muted); }
+
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.3s;
+  }
+  .question-card.correct-card { border-color: #10b981; }
+  .question-card.wrong-card   { border-color: #f43f5e; }
+
+  .q-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: var(--accent1);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+  .q-tag {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: 8px;
+  }
+  .q-tag.mixed  { background: rgba(124,58,237,0.2); color: #c4b5fd; }
+  .q-tag.nested { background: rgba(6,182,212,0.2);  color: #67e8f9; }
+  .q-tag.twod   { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+
+  .q-text {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 12px 0 16px;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .q-code-inline {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    background: rgba(255,255,255,0.08);
+    padding: 2px 7px;
+    border-radius: 6px;
+    color: #f1fa8c;
+  }
+
+  .q-code-block {
+    background: var(--code-bg);
+    border: 1px solid #2d333b;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 10px 0 16px;
+    font-family: 'Fira Code', monospace;
+    font-size: 12.5px;
+    color: #e6edf3;
+    white-space: pre;
+    overflow-x: auto;
+    line-height: 1.7;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option-btn {
+    width: 100%;
+    padding: 11px 16px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--accent3);
+    background: rgba(245,158,11,0.07);
+    color: #fcd34d;
+  }
+  .option-btn.selected {
+    border-color: var(--accent3);
+    background: rgba(245,158,11,0.1);
+    color: #fcd34d;
+  }
+  .option-btn.correct {
+    border-color: #10b981;
+    background: rgba(16,185,129,0.15);
+    color: #6ee7b7;
+  }
+  .option-btn.wrong {
+    border-color: #f43f5e;
+    background: rgba(244,63,94,0.1);
+    color: #fda4af;
+  }
+  .option-btn:disabled { cursor: default; }
+  .option-letter {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+
+  .feedback {
+    display: none;
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #6ee7b7; }
+  .feedback.wrong   { background: rgba(244,63,94,0.1);   border: 1px solid rgba(244,63,94,0.3);   color: #fda4af; }
+
+  /* Submit / Score */
+  .quiz-footer { text-align: center; margin-top: 28px; }
+  .submit-btn {
+    padding: 14px 40px;
+    background: linear-gradient(135deg, #f59e0b, #f43f5e);
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 17px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 6px 24px rgba(245,158,11,0.35);
+    letter-spacing: 0.5px;
+  }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(245,158,11,0.45); }
+  .submit-btn:active { transform: translateY(0); }
+
+  #score-display {
+    display: none;
+    margin-top: 28px;
+  }
+  .score-card {
+    background: linear-gradient(135deg, var(--card), var(--card2));
+    border: 2px solid var(--accent3);
+    border-radius: 20px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(245,158,11,0.2);
+  }
+  .score-emoji { font-size: 52px; margin-bottom: 12px; }
+  .score-main {
+    font-size: 52px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #fcd34d, #fb923c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .score-label { font-size: 16px; font-weight: 700; color: var(--muted); margin-bottom: 16px; }
+  .score-message { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 20px; }
+  .score-breakdown {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .breakdown-item {
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .breakdown-item.purple { background: rgba(124,58,237,0.2); color: #c4b5fd; border: 1px solid rgba(124,58,237,0.3); }
+  .breakdown-item.cyan   { background: rgba(6,182,212,0.2);  color: #67e8f9; border: 1px solid rgba(6,182,212,0.3); }
+  .breakdown-item.green  { background: rgba(16,185,129,0.2); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+
+  .classroom-note {
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fcd34d;
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+
+  /* Progress bar */
+  .progress-bar-wrap { background: var(--card2); border-radius: 6px; height: 6px; margin: 0 0 24px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); transition: width 0.4s ease; }
+
+  /* Nested visual */
+  .nest-visual {
+    background: var(--code-bg);
+    border: 1px solid #2d333b;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 14px 0;
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    color: #e6edf3;
+    white-space: pre;
+    overflow-x: auto;
+    line-height: 1.8;
+  }
+
+  /* Interactive Code Editor */
+  .editor-wrap {
+    background: var(--code-bg);
+    border: 1px solid #2d333b;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 14px 0;
+  }
+  .editor-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    background: #161b22;
+    border-bottom: 1px solid #2d333b;
+  }
+  .editor-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #6e7681;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .editor-label::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #27c93f;
+    animation: blink 2s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .run-btn {
+    padding: 5px 16px;
+    background: linear-gradient(135deg, #10b981, #06b6d4);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .run-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16,185,129,0.4); }
+  .run-btn:active { transform: translateY(0); }
+  .run-btn:disabled { opacity: 0.55; cursor: default; }
+  .code-textarea {
+    width: 100%;
+    background: var(--code-bg);
+    border: none;
+    color: #e6edf3;
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 16px 18px;
+    resize: vertical;
+    min-height: 190px;
+    outline: none;
+    tab-size: 4;
+    -moz-tab-size: 4;
+    display: block;
+  }
+  .output-section { border-top: 1px solid #2d333b; }
+  .output-label {
+    padding: 5px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #6e7681;
+    text-transform: uppercase;
+    background: #0d1117;
+    border-bottom: 1px solid #2d333b;
+  }
+  .output-box {
+    background: #0a0d14;
+    padding: 12px 18px;
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    color: #a3e635;
+    min-height: 44px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.7;
+  }
+  .output-box.error   { color: #f87171; }
+  .output-box.waiting { color: #6e7681; font-style: italic; }
+  .output-box.loading { color: #f59e0b; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .tabs { gap: 4px; }
+    .tab-btn { font-size: 12px; padding: 8px 6px; min-width: 0; }
+    .card { padding: 18px 16px; }
+    pre { font-size: 12px; }
+    .grid-cell { width: 46px; height: 40px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- Header -->
+  <header>
+    <div class="snake-badge">🐍 Python 101</div>
+    <h1>Lists: Mixed, Nested & 2D</h1>
+    <p>Interactive Playbook &nbsp;·&nbsp; Chapter 7 &nbsp;·&nbsp; Metropolitan State University</p>
+  </header>
+
+  <!-- Tabs -->
+  <div class="tabs" role="tablist">
+    <button class="tab-btn active"     onclick="showTab('mixed',  this)" role="tab">🎨 Mixed Lists</button>
+    <button class="tab-btn tab2"       onclick="showTab('nested', this)" role="tab">📦 Nested Lists</button>
+    <button class="tab-btn tab3"       onclick="showTab('twod',   this)" role="tab">📊 2D Lists</button>
+    <button class="tab-btn tab4"       onclick="showTab('quiz',   this)" role="tab">🧠 Quiz</button>
+  </div>
+
+  <!-- ==================== MIXED LISTS ==================== -->
+  <div id="tab-mixed" class="tab-content active">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-purple">🎨</div>
+        <h2>What is a Mixed List?</h2>
+      </div>
+      <p>A <strong>mixed list</strong> (also called a <em>heterogeneous list</em>) is a list that contains <strong>different data types</strong> all in one list. Python is super flexible — your list can hold integers, strings, floats, booleans, and more, all at the same time!</p>
+      <div class="tip-box">💡 <span><strong>Backpack analogy:</strong> Think of a mixed list like your school backpack — it holds your textbook (string), pencil count (int), whether you did homework (bool), and your GPA (float) all at once!</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-cyan">📋</div>
+        <h2>Homogeneous vs Heterogeneous</h2>
+      </div>
+      <h3>Same Type (Homogeneous)</h3>
+      <p>All items are the same data type:</p>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot dot-red"></div><div class="dot dot-amber"></div><div class="dot dot-green"></div></div><span>Python</span></div>
+        <pre><span class="cmt"># All integers</span>
+<span class="var">nums</span>  <span class="op">=</span> [<span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>, <span class="num">3</span>]
+
+<span class="cmt"># All strings</span>
+<span class="var">names</span> <span class="op">=</span> [<span class="str">"python"</span>, <span class="str">"java"</span>, <span class="str">"javascript"</span>]
+
+<span class="cmt"># All characters</span>
+<span class="var">chars</span> <span class="op">=</span> [<span class="str">'a'</span>, <span class="str">'z'</span>, <span class="str">'x'</span>]</pre>
+      </div>
+
+      <h3>Different Types (Heterogeneous / Mixed)</h3>
+      <p>Items can be different data types — this is a <strong>mixed list</strong>:</p>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot dot-red"></div><div class="dot dot-amber"></div><div class="dot dot-green"></div></div><span>Python</span></div>
+        <pre><span class="cmt"># A student record with mixed types</span>
+<span class="var">student</span> <span class="op">=</span> [<span class="str">'Srikar'</span>, <span class="num">15</span>, <span class="bool">True</span>, <span class="num">3.94</span>]
+<span class="cmt">#           str      int   bool   float</span></pre>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <tr><th>Index</th><th>Value</th><th>Data Type</th></tr>
+          <tr><td>student[0]</td><td>'Srikar'</td><td><span class="badge badge-str">str</span></td></tr>
+          <tr><td>student[1]</td><td>15</td><td><span class="badge badge-int">int</span></td></tr>
+          <tr><td>student[2]</td><td>True</td><td><span class="badge badge-bool">bool</span></td></tr>
+          <tr><td>student[3]</td><td>3.94</td><td><span class="badge badge-float">float</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-green">🔍</div>
+        <h2>Accessing Mixed List Items</h2>
+      </div>
+      <p>Access items using their <strong>index</strong> (position), starting from <strong>0</strong>:</p>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot dot-red"></div><div class="dot dot-amber"></div><div class="dot dot-green"></div></div><span>Python</span></div>
+        <pre><span class="var">student</span> <span class="op">=</span> [<span class="str">'Srikar'</span>, <span class="num">15</span>, <span class="bool">True</span>, <span class="num">3.94</span>]
+
+<span class="fn">print</span>(<span class="var">student</span>[<span class="num">0</span>])   <span class="cmt"># Output: Srikar</span>
+<span class="fn">print</span>(<span class="var">student</span>[<span class="num">1</span>])   <span class="cmt"># Output: 15</span>
+<span class="fn">print</span>(<span class="var">student</span>[<span class="num">2</span>])   <span class="cmt"># Output: True</span>
+<span class="fn">print</span>(<span class="var">student</span>[<span class="num">3</span>])   <span class="cmt"># Output: 3.94</span>
+<span class="fn">print</span>(<span class="var">student</span>[<span class="op">-</span><span class="num">1</span>])  <span class="cmt"># Output: 3.94 (last item!)</span></pre>
+      </div>
+      <div class="tip-box amber">⚡ <span><strong>Remember:</strong> <code>-1</code> is always a shortcut for the <em>last</em> item in any list!</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-amber">✅</div>
+        <h2>What Can a Mixed List Hold?</h2>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot dot-red"></div><div class="dot dot-amber"></div><div class="dot dot-green"></div></div><span>Python</span></div>
+        <pre><span class="cmt"># A mixed list can hold ANY of these:</span>
+<span class="var">my_list</span> <span class="op">=</span> [
+    <span class="str">"hello"</span>,           <span class="cmt"># str  - text</span>
+    <span class="num">42</span>,                <span class="cmt"># int  - whole number</span>
+    <span class="num">3.14</span>,              <span class="cmt"># float- decimal number</span>
+    <span class="bool">True</span>,              <span class="cmt"># bool - True or False</span>
+    [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]           <span class="cmt"># list - even another list!</span>
+]</pre>
+      </div>
+      <p>Data type badges: <span class="badge badge-str">str</span> <span class="badge badge-int">int</span> <span class="badge badge-float">float</span> <span class="badge badge-bool">bool</span> <span class="badge badge-list">list</span></p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-pink">🧪</div>
+        <h2>Try It Yourself!</h2>
+      </div>
+      <p>Edit the code below and click <strong>▶ Run Code</strong> to see the output right here!</p>
+      <div class="editor-wrap">
+        <div class="editor-toolbar">
+          <span class="editor-label">Interactive Python Editor</span>
+          <button class="run-btn" onclick="runCode('editor-mixed', 'output-mixed')">▶ Run Code</button>
+        </div>
+        <textarea class="code-textarea" id="editor-mixed" spellcheck="false"># Create your own student record!
+my_info = ['YourName', 14, True, 3.5, 'email@example.com']
+
+print("Name: ",  my_info[0])
+print("Age:  ",  my_info[1])
+print("Likes Python:", my_info[2])
+print("GPA:  ",  my_info[3])
+print("Email:",  my_info[4])
+print("Type of name:", type(my_info[0]))
+print("Type of age: ", type(my_info[1]))</textarea>
+        <div class="output-section">
+          <div class="output-label">▸ Output</div>
+          <div class="output-box waiting" id="output-mixed">Click "▶ Run Code" to see the output here...</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-mixed -->
+
+  <!-- ==================== NESTED LISTS ==================== -->
+  <div id="tab-nested" class="tab-content">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-cyan">📦</div>
+        <h2>What is a Nested List?</h2>
+      </div>
+      <p>A <strong>nested list</strong> is a list that contains <strong>other lists as elements</strong>. Think of it like folders on your computer — a folder can contain sub-folders inside it!</p>
+      <div class="tip-box cyan">🗂️ <span><strong>Folder analogy:</strong> Just like a folder can have sub-folders, a list can have other lists inside it!</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-purple">🎒</div>
+        <h2>A Student Record with Nested Lists</h2>
+      </div>
+      <p>What if we want to store a student's courses and grades inside the same student list?</p>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot dot-red"></div><div class="dot dot-amber"></div><div class="dot dot-green"></div></div><span>Python</span></div>
+        <pre><span class="var">student_1</span> <span class="op">=</span> [<span class="str">"abe"</span>, <span class="num">15</span>, <span class="bool">True</span>, <span class="num">3.9</span>, <span class="str">"<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d4b5b6b194b3b9b5bdb8fab7bbb9">[email&#160;protected]</a>"</span>,
+             [<span class="str">'physics'</span>, <span class="str">'maths'</span>, <span class="str">'English'</span>],
+             [<span class="num">89</span>, <span class="num">95</span>, <span class="num">76</span>]
+            ]
+<span class="cmt">#  Index:   0     1     2    3        4               5                       6</span></pre>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Index</th><th>Value</th><th>Type</th></tr>
+          <tr><td>student_1[0]</td><td>"abe"</td><td><span class="badge badge-str">str</span></td></tr>
+          <tr><td>student_1[1]</td><td>15</td><td><span class="badge badge-int">int</span></td></tr>
+          <tr><td>student_1[2]</td><td>True</td><td><span class="badge badge-bool">bool</span></td></tr>
+          <tr><td>student_1[4]</td><td>"<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="59383b3c193e34383035773a3634">[email&#160;protected]</a>"</td><td><span class="badge badge-str">str</span></td></tr>
+          <tr><td>student_1[5]</td><td>['physics', 'maths', 'English']</td><td><span class="badge badge-list">list</span></td></tr>
+          <tr><td>student_1[6]</td><td>[89, 95, 76]</td><td><span class="badge badge-list">list</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-green">🔑</div>
+        <h2>Accessing Nested List Items</h2>
+      </div>
+      <p>Use <strong>two sets of square brackets</strong> to drill into a nested list:</p>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot dot-red"></div><div class="dot dot-amber"></div><div class="dot dot-green"></div></div><span>Python</span></div>
+        <pre><span class="var">student_1</span> <span class="op">=</span> [<span class="str">"abe"</span>, <span class="num">15</span>, <span class="bool">True</span>, <span class="num">3.9</span>, <span class="str">"<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b1d0d3d4f1d6dcd0d8dd9fd2dedc">[email&#160;protected]</a>"</span>,
+             [<span class="str">'physics'</span>, <span class="str">'maths'</span>, <span class="str">'English'</span>],
+             [<span class="num">89</span>, <span class="num">95</span>, <span class="num">76</span>]]
+
+<span class="cmt"># Get the whole courses list</span>
+<span class="fn">print</span>(<span class="var">student_1</span>[<span class="num">5</span>])        <span class="cmt"># ['physics', 'maths', 'English']</span>
+
+<span class="cmt"># Get just the last course</span>
+<span class="fn">print</span>(<span class="var">student_1</span>[<span class="num">5</span>][<span class="op">-</span><span class="num">1</span>])     <span class="cmt"># 'English'</span>
+
+<span class="cmt"># Get the first grade</span>
+<span class="fn">print</span>(<span class="var">student_1</span>[<span class="num">6</span>][<span class="num">0</span>])      <span class="cmt"># 89</span>
+
+<span class="cmt"># Get the second course</span>
+<span class="fn">print</span>(<span class="var">student_1</span>[<span class="num">5</span>][<span class="num">1</span>])      <span class="cmt"># 'maths'</span></pre>
+      </div>
+      <div class="tip-box">🎯 <span><strong>Formula:</strong> <code>list[outer_index][inner_index]</code> — first pick WHICH inner list, then pick WHICH item inside it.</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-amber">📖</div>
+        <h2>Bookcase Example</h2>
+      </div>
+      <p>Imagine a bookcase: some slots have a single book, others have a whole book series (a list)!</p>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot dot-red"></div><div class="dot dot-amber"></div><div class="dot dot-green"></div></div><span>Python</span></div>
+        <pre><span class="var">book_case</span> <span class="op">=</span> [
+    <span class="str">'python'</span>,                                                <span class="cmt"># index 0</span>
+    <span class="str">'maths'</span>,                                                 <span class="cmt"># index 1</span>
+    [<span class="str">"Hunger Games 1"</span>, <span class="str">"Hunger Games 2"</span>, <span class="str">"Hunger Games 3"</span>], <span class="cmt"># index 2</span>
+    <span class="str">"science"</span>,                                               <span class="cmt"># index 3</span>
+    [<span class="str">"Harry Potter 1"</span>, <span class="str">"Harry Potter 2"</span>, <span class="str">"Harry Potter 3"</span>]  <span class="cmt"># index 4</span>
+]
+
+<span class="cmt"># Get the Hunger Games series</span>
+<span class="fn">print</span>(<span class="var">book_case</span>[<span class="num">2</span>])        <span class="cmt"># ['Hunger Games 1', 'Hunger Games 2', 'Hunger Games 3']</span>
+
+<span class="cmt"># Get just "Hunger Games 2"</span>
+<span class="fn">print</span>(<span class="var">book_case</span>[<span class="num">2</span>][<span class="num">1</span>])     <span class="cmt"># 'Hunger Games 2'</span>
+
+<span class="cmt"># Get "Harry Potter 3" (last book)</span>
+<span class="fn">print</span>(<span class="var">book_case</span>[<span class="num">4</span>][<span class="op">-</span><span class="num">1</span>])    <span class="cmt"># 'Harry Potter 3'</span></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-pink">🧅</div>
+        <h2>Deeply Nested Lists</h2>
+      </div>
+      <p>Lists can be nested many levels deep! Each extra <code style="background:rgba(255,255,255,0.1);padding:1px 6px;border-radius:4px;font-family:'Fira Code',monospace">[index]</code> peels one layer off, like an onion 🧅</p>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot dot-red"></div><div class="dot dot-amber"></div><div class="dot dot-green"></div></div><span>Python</span></div>
+        <pre><span class="var">nested_x</span> <span class="op">=</span> [<span class="str">'a'</span>, [<span class="str">'bb'</span>, [<span class="str">'cxt'</span>, [<span class="str">'dy'</span>, <span class="str">'xy'</span>], <span class="str">'ee'</span>, <span class="str">'ff'</span>], <span class="str">'g'</span>, <span class="str">'h'</span>]]
+
+<span class="cmt"># Peel the layers one by one:</span>
+<span class="fn">print</span>(<span class="var">nested_x</span>[<span class="num">1</span>])             <span class="cmt"># ['bb', ['cxt', ['dy','xy'],'ee','ff'], 'g', 'h']</span>
+<span class="fn">print</span>(<span class="var">nested_x</span>[<span class="num">1</span>][<span class="num">1</span>])          <span class="cmt"># ['cxt', ['dy', 'xy'], 'ee', 'ff']</span>
+<span class="fn">print</span>(<span class="var">nested_x</span>[<span class="num">1</span>][<span class="num">1</span>][<span class="num">1</span>])       <span class="cmt"># ['dy', 'xy']</span>
+<span class="fn">print</span>(<span class="var">nested_x</span>[<span class="num">1</span>][<span class="num">1</span>][<span class="num">1</span>][<span class="num">1</span>])    <span class="cmt"># 'xy'</span></pre>
+      </div>
+      <div class="tip-box pink">🧅 <span>Each <code>[index]</code> goes <strong>one level deeper</strong> into the nested structure!</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-cyan">🧪</div>
+        <h2>Try It Yourself!</h2>
+      </div>
+      <p>Edit the code below and click <strong>▶ Run Code</strong> to see the output right here!</p>
+      <div class="editor-wrap">
+        <div class="editor-toolbar">
+          <span class="editor-label">Interactive Python Editor</span>
+          <button class="run-btn" onclick="runCode('editor-nested', 'output-nested')">▶ Run Code</button>
+        </div>
+        <textarea class="code-textarea" id="editor-nested" spellcheck="false"># Build your own nested list!
+hobbies = ['reading', 'gaming', 'cooking']
+pets    = ['dog', 'cat']
+
+me = ['YourName', 14, True, hobbies, pets]
+
+print("Name:       ", me[0])
+print("Hobbies:    ", me[3])
+print("2nd hobby:  ", me[3][1])
+print("First pet:  ", me[4][0])
+print("Last hobby: ", me[3][-1])</textarea>
+        <div class="output-section">
+          <div class="output-label">▸ Output</div>
+          <div class="output-box waiting" id="output-nested">Click "▶ Run Code" to see the output here...</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-nested -->
+
+  <!-- ==================== 2D LISTS ==================== -->
+  <div id="tab-twod" class="tab-content">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-green">📊</div>
+        <h2>What is a 2D List?</h2>
+      </div>
+      <p>A <strong>2D list</strong> is a nested list where every inner list has the <strong>same number of elements</strong>, forming a neat <strong>grid</strong> — like a table, spreadsheet, or chessboard!</p>
+      <div class="tip-box green">🏟️ <span><strong>Theater seat analogy:</strong> Think of a 2D list like movie theater seats — you always say <strong>Row first, then Seat</strong> (column). Same with 2D lists: <code>list[row][col]</code>!</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-purple">🏗️</div>
+        <h2>Creating a 2D List</h2>
+      </div>
+      <p>Imagine test scores for 3 students across 3 tests:</p>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot dot-red"></div><div class="dot dot-amber"></div><div class="dot dot-green"></div></div><span>Python</span></div>
+        <pre><span class="var">py_marks</span> <span class="op">=</span> [
+    [<span class="num">10</span>, <span class="num">25</span>, <span class="num">14</span>],   <span class="cmt"># Student 1's scores  ← Row 0</span>
+    [<span class="num">46</span>, <span class="num">65</span>, <span class="num">72</span>],   <span class="cmt"># Student 2's scores  ← Row 1</span>
+    [<span class="num">37</span>, <span class="num">98</span>, <span class="num">99</span>]    <span class="cmt"># Student 3's scores  ← Row 2</span>
+]
+
+<span class="cmt"># Or on one line:</span>
+<span class="var">py_marks</span> <span class="op">=</span> [[<span class="num">10</span>, <span class="num">25</span>, <span class="num">14</span>], [<span class="num">46</span>, <span class="num">65</span>, <span class="num">72</span>], [<span class="num">37</span>, <span class="num">98</span>, <span class="num">99</span>]]</pre>
+      </div>
+
+      <div class="grid-wrap">
+        <div style="display:inline-block">
+          <div style="display:grid;grid-template-columns:40px repeat(3,56px);gap:4px;margin-bottom:4px">
+            <div class="grid-label"></div>
+            <div class="grid-label">Col 0</div>
+            <div class="grid-label">Col 1</div>
+            <div class="grid-label">Col 2</div>
+          </div>
+          <div style="display:grid;grid-template-columns:40px repeat(3,56px);gap:4px;align-items:center">
+            <div class="grid-label">Row 0</div>
+            <div class="grid-cell">10</div>
+            <div class="grid-cell">25</div>
+            <div class="grid-cell">14</div>
+            <div class="grid-label">Row 1</div>
+            <div class="grid-cell">46</div>
+            <div class="grid-cell">65</div>
+            <div class="grid-cell">72</div>
+            <div class="grid-label">Row 2</div>
+            <div class="grid-cell">37</div>
+            <div class="grid-cell">98</div>
+            <div class="grid-cell">99</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-cyan">🗺️</div>
+        <h2>Accessing 2D List Elements</h2>
+      </div>
+      <p>Use <strong>two indexes</strong>: <code style="background:rgba(255,255,255,0.1);padding:1px 6px;border-radius:4px;font-family:'Fira Code',monospace">list[row][col]</code></p>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot dot-red"></div><div class="dot dot-amber"></div><div class="dot dot-green"></div></div><span>Python</span></div>
+        <pre><span class="var">scores</span> <span class="op">=</span> [[<span class="num">10</span>, <span class="num">25</span>, <span class="num">14</span>],
+          [<span class="num">46</span>, <span class="num">65</span>, <span class="num">72</span>],
+          [<span class="num">37</span>, <span class="num">98</span>, <span class="num">99</span>]]
+
+<span class="fn">print</span>(<span class="var">scores</span>[<span class="num">0</span>][<span class="num">0</span>])  <span class="cmt"># → 10  (Row 0, Col 0)</span>
+<span class="fn">print</span>(<span class="var">scores</span>[<span class="num">1</span>][<span class="num">2</span>])  <span class="cmt"># → 72  (Row 1, Col 2)</span>
+<span class="fn">print</span>(<span class="var">scores</span>[<span class="num">2</span>][<span class="num">1</span>])  <span class="cmt"># → 98  (Row 2, Col 1)</span>
+<span class="fn">print</span>(<span class="var">scores</span>[<span class="num">0</span>][<span class="op">-</span><span class="num">1</span>]) <span class="cmt"># → 14  (Row 0, last col)</span></pre>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <tr><th></th><th>Column 0</th><th>Column 1</th><th>Column 2</th></tr>
+          <tr><td><strong>Row 0</strong></td><td>scores[0][0] = 10</td><td>scores[0][1] = 25</td><td>scores[0][2] = 14</td></tr>
+          <tr><td><strong>Row 1</strong></td><td>scores[1][0] = 46</td><td>scores[1][1] = 65</td><td>scores[1][2] = 72</td></tr>
+          <tr><td><strong>Row 2</strong></td><td>scores[2][0] = 37</td><td>scores[2][1] = 98</td><td>scores[2][2] = 99</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-amber">📐</div>
+        <h2>Measuring a 2D List</h2>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot dot-red"></div><div class="dot dot-amber"></div><div class="dot dot-green"></div></div><span>Python</span></div>
+        <pre><span class="var">scores</span> <span class="op">=</span> [[<span class="num">10</span>, <span class="num">25</span>, <span class="num">14</span>, <span class="num">73</span>],
+          [<span class="num">46</span>, <span class="num">65</span>, <span class="num">72</span>, <span class="num">53</span>],
+          [<span class="num">37</span>, <span class="num">98</span>, <span class="num">99</span>, <span class="num">15</span>]]
+
+<span class="fn">print</span>(<span class="fn">len</span>(<span class="var">scores</span>))      <span class="cmt"># → 3  (number of rows)</span>
+<span class="fn">print</span>(<span class="fn">len</span>(<span class="var">scores</span>[<span class="num">0</span>]))   <span class="cmt"># → 4  (number of columns)</span>
+<span class="cmt"># Total elements = 3 × 4 = 12</span></pre>
+      </div>
+      <div class="tip-box amber">📏 <span><code>len(list)</code> = number of <strong>rows</strong> &nbsp;·&nbsp; <code>len(list[0])</code> = number of <strong>columns</strong></span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-pink">🔴</div>
+        <h2>Row-Major Traversal</h2>
+      </div>
+      <p>Go <strong>left to right, then top to bottom</strong> — row by row. Like reading a book!</p>
+      <p style="color:var(--muted);font-family:'Fira Code',monospace;font-size:13px;margin-bottom:8px">Order: 10, 25, 14, 73, 46, 65, 72, 53, 37, 98, 99, 15</p>
+
+      <div class="grid-wrap">
+        <div style="display:inline-block">
+          <div style="display:grid;grid-template-columns:40px repeat(4,52px);gap:4px;margin-bottom:4px">
+            <div class="grid-label"></div>
+            <div class="grid-label">Col 0</div><div class="grid-label">Col 1</div>
+            <div class="grid-label">Col 2</div><div class="grid-label">Col 3</div>
+          </div>
+          <div style="display:grid;grid-template-columns:40px repeat(4,52px);gap:4px;align-items:center">
+            <div class="grid-label">Row 0</div>
+            <div class="grid-cell highlight-row">10</div><div class="grid-cell highlight-row">25</div>
+            <div class="grid-cell highlight-row">14</div><div class="grid-cell highlight-row">73</div>
+            <div class="grid-label">Row 1</div>
+            <div class="grid-cell highlight-row" style="opacity:0.6">46</div><div class="grid-cell highlight-row" style="opacity:0.6">65</div>
+            <div class="grid-cell highlight-row" style="opacity:0.6">72</div><div class="grid-cell highlight-row" style="opacity:0.6">53</div>
+            <div class="grid-label">Row 2</div>
+            <div class="grid-cell highlight-row" style="opacity:0.3">37</div><div class="grid-cell highlight-row" style="opacity:0.3">98</div>
+            <div class="grid-cell highlight-row" style="opacity:0.3">99</div><div class="grid-cell highlight-row" style="opacity:0.3">15</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot dot-red"></div><div class="dot dot-amber"></div><div class="dot dot-green"></div></div><span>Python – Row-Major Traversal</span></div>
+        <pre><span class="var">scores</span> <span class="op">=</span> [[<span class="num">10</span>, <span class="num">25</span>, <span class="num">14</span>, <span class="num">73</span>],
+          [<span class="num">46</span>, <span class="num">65</span>, <span class="num">72</span>, <span class="num">53</span>],
+          [<span class="num">37</span>, <span class="num">98</span>, <span class="num">99</span>, <span class="num">15</span>]]
+
+<span class="cmt"># Row by row (outer loop = rows, inner loop = columns)</span>
+<span class="kw">for</span> <span class="var">row</span> <span class="kw">in</span> <span class="var">scores</span>:
+    <span class="kw">for</span> <span class="var">item</span> <span class="kw">in</span> <span class="var">row</span>:
+        <span class="fn">print</span>(<span class="var">item</span>, end<span class="op">=</span><span class="str">", "</span>)
+
+<span class="cmt"># Output: 10, 25, 14, 73, 46, 65, 72, 53, 37, 98, 99, 15,</span></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-cyan">🔵</div>
+        <h2>Column-Major Traversal</h2>
+      </div>
+      <p>Go <strong>top to bottom, then left to right</strong> — column by column!</p>
+      <p style="color:var(--muted);font-family:'Fira Code',monospace;font-size:13px;margin-bottom:8px">Order: 10, 46, 37, 25, 65, 98, 14, 72, 99, 73, 53, 15</p>
+
+      <div class="grid-wrap">
+        <div style="display:inline-block">
+          <div style="display:grid;grid-template-columns:40px repeat(4,52px);gap:4px;margin-bottom:4px">
+            <div class="grid-label"></div>
+            <div class="grid-label">Col 0</div><div class="grid-label">Col 1</div>
+            <div class="grid-label">Col 2</div><div class="grid-label">Col 3</div>
+          </div>
+          <div style="display:grid;grid-template-columns:40px repeat(4,52px);gap:4px;align-items:center">
+            <div class="grid-label">Row 0</div>
+            <div class="grid-cell highlight-col">10</div><div class="grid-cell" style="opacity:0.4">25</div>
+            <div class="grid-cell" style="opacity:0.2">14</div><div class="grid-cell" style="opacity:0.1">73</div>
+            <div class="grid-label">Row 1</div>
+            <div class="grid-cell highlight-col">46</div><div class="grid-cell" style="opacity:0.4">65</div>
+            <div class="grid-cell" style="opacity:0.2">72</div><div class="grid-cell" style="opacity:0.1">53</div>
+            <div class="grid-label">Row 2</div>
+            <div class="grid-cell highlight-col">37</div><div class="grid-cell" style="opacity:0.4">98</div>
+            <div class="grid-cell" style="opacity:0.2">99</div><div class="grid-cell" style="opacity:0.1">15</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot dot-red"></div><div class="dot dot-amber"></div><div class="dot dot-green"></div></div><span>Python – Column-Major Traversal</span></div>
+        <pre><span class="var">scores</span> <span class="op">=</span> [[<span class="num">10</span>, <span class="num">25</span>, <span class="num">14</span>, <span class="num">73</span>],
+          [<span class="num">46</span>, <span class="num">65</span>, <span class="num">72</span>, <span class="num">53</span>],
+          [<span class="num">37</span>, <span class="num">98</span>, <span class="num">99</span>, <span class="num">15</span>]]
+
+<span class="var">num_rows</span> <span class="op">=</span> <span class="fn">len</span>(<span class="var">scores</span>)       <span class="cmt"># 3</span>
+<span class="var">num_cols</span> <span class="op">=</span> <span class="fn">len</span>(<span class="var">scores</span>[<span class="num">0</span>])    <span class="cmt"># 4</span>
+
+<span class="cmt"># Column by column (outer loop = columns, inner loop = rows)</span>
+<span class="kw">for</span> <span class="var">col</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="var">num_cols</span>):
+    <span class="kw">for</span> <span class="var">row</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="var">num_rows</span>):
+        <span class="fn">print</span>(<span class="var">scores</span>[<span class="var">row</span>][<span class="var">col</span>], end<span class="op">=</span><span class="str">", "</span>)
+
+<span class="cmt"># Output: 10, 46, 37, 25, 65, 98, 14, 72, 99, 73, 53, 15,</span></pre>
+      </div>
+      <div class="tip-box cyan">💡 <span><strong>Key difference:</strong> In row-major the <strong>row loop is outer</strong>. In column-major the <strong>column loop is outer</strong>!</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-pink">🧪</div>
+        <h2>Try It Yourself!</h2>
+      </div>
+      <p>Edit the code below and click <strong>▶ Run Code</strong> to see the output right here!</p>
+      <div class="editor-wrap">
+        <div class="editor-toolbar">
+          <span class="editor-label">Interactive Python Editor</span>
+          <button class="run-btn" onclick="runCode('editor-twod', 'output-twod')">▶ Run Code</button>
+        </div>
+        <textarea class="code-textarea" id="editor-twod" spellcheck="false">grid = [[1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]]
+
+# 1. Print the center value
+print("Center value:", grid[1][1])
+
+# 2. Row-major traversal
+print("\nRow-Major:")
+for row in grid:
+    for item in row:
+        print(item, end=" ")
+
+# 3. Column-major traversal
+print("\n\nColumn-Major:")
+for col in range(len(grid[0])):
+    for row in range(len(grid)):
+        print(grid[row][col], end=" ")</textarea>
+        <div class="output-section">
+          <div class="output-label">▸ Output</div>
+          <div class="output-box waiting" id="output-twod">Click "▶ Run Code" to see the output here...</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-twod -->
+
+  <!-- ==================== QUIZ ==================== -->
+  <div id="tab-quiz" class="tab-content">
+
+    <div class="quiz-intro">
+      <h2>🧠 Lists Quiz</h2>
+      <p>10 questions &nbsp;·&nbsp; Mixed Lists, Nested Lists & 2D Lists &nbsp;·&nbsp; Submit to see your score!</p>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="quiz-progress" style="width:0%"></div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="question-card" id="qcard-1">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+        <span class="q-number">1</span>
+        <span style="font-size:14px;font-weight:800;color:var(--text)">Mixed Lists</span>
+        <span class="q-tag mixed">Mixed</span>
+      </div>
+      <div class="q-text">
+        What data types are in this mixed list?<br>
+        <code class="q-code-inline">student = ['Anna', 16, True, 3.85]</code>
+      </div>
+      <div class="options" id="opts-1">
+        <button class="option-btn" onclick="selectAnswer(1, 'A', false)"><span class="option-letter">A</span> str, str, str, str</button>
+        <button class="option-btn" onclick="selectAnswer(1, 'B', true)"><span class="option-letter">B</span> str, int, bool, float</button>
+        <button class="option-btn" onclick="selectAnswer(1, 'C', false)"><span class="option-letter">C</span> str, float, bool, int</button>
+        <button class="option-btn" onclick="selectAnswer(1, 'D', false)"><span class="option-letter">D</span> list, int, bool, float</button>
+      </div>
+      <div class="feedback" id="fb-1"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-card" id="qcard-2">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+        <span class="q-number" style="background:var(--accent2)">2</span>
+        <span style="font-size:14px;font-weight:800;color:var(--text)">Mixed Lists</span>
+        <span class="q-tag mixed">Mixed</span>
+      </div>
+      <div class="q-text">
+        Given <code class="q-code-inline">info = ['Python', 101, False, 9.99]</code>, what does <code class="q-code-inline">info[-1]</code> return?
+      </div>
+      <div class="options" id="opts-2">
+        <button class="option-btn" onclick="selectAnswer(2, 'A', false)"><span class="option-letter">A</span> 'Python'</button>
+        <button class="option-btn" onclick="selectAnswer(2, 'B', false)"><span class="option-letter">B</span> 101</button>
+        <button class="option-btn" onclick="selectAnswer(2, 'C', false)"><span class="option-letter">C</span> False</button>
+        <button class="option-btn" onclick="selectAnswer(2, 'D', true)"><span class="option-letter">D</span> 9.99</button>
+      </div>
+      <div class="feedback" id="fb-2"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-card" id="qcard-3">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+        <span class="q-number" style="background:var(--accent2)">3</span>
+        <span style="font-size:14px;font-weight:800;color:var(--text)">Nested Lists</span>
+        <span class="q-tag nested">Nested</span>
+      </div>
+      <div class="q-text">What does <code class="q-code-inline">book_case[2][1]</code> return?</div>
+      <div class="q-code-block">book_case = ['python',
+             'maths',
+             ["Hunger Games 1", "Hunger Games 2", "Hunger Games 3"],
+             "science",
+             ["Harry Potter 1", "Harry Potter 2", "Harry Potter 3"]
+            ]</div>
+      <div class="options" id="opts-3">
+        <button class="option-btn" onclick="selectAnswer(3, 'A', false)"><span class="option-letter">A</span> 'maths'</button>
+        <button class="option-btn" onclick="selectAnswer(3, 'B', true)"><span class="option-letter">B</span> 'Hunger Games 2'</button>
+        <button class="option-btn" onclick="selectAnswer(3, 'C', false)"><span class="option-letter">C</span> 'Hunger Games 1'</button>
+        <button class="option-btn" onclick="selectAnswer(3, 'D', false)"><span class="option-letter">D</span> 'Harry Potter 2'</button>
+      </div>
+      <div class="feedback" id="fb-3"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-card" id="qcard-4">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+        <span class="q-number" style="background:var(--accent2)">4</span>
+        <span style="font-size:14px;font-weight:800;color:var(--text)">Nested Lists</span>
+        <span class="q-tag nested">Nested</span>
+      </div>
+      <div class="q-text">What is the correct way to get <strong>'nova'</strong> from the student list?</div>
+      <div class="q-code-block">student = ['Anna', 15, True, 3.94,
+           ['reading', 'trekking', 'ethnic foods'],
+           ['pluto', 'nova']
+          ]</div>
+      <div class="options" id="opts-4">
+        <button class="option-btn" onclick="selectAnswer(4, 'A', false)"><span class="option-letter">A</span> student[5][0]</button>
+        <button class="option-btn" onclick="selectAnswer(4, 'B', true)"><span class="option-letter">B</span> student[5][1]</button>
+        <button class="option-btn" onclick="selectAnswer(4, 'C', false)"><span class="option-letter">C</span> student[4][1]</button>
+        <button class="option-btn" onclick="selectAnswer(4, 'D', false)"><span class="option-letter">D</span> student[6][1]</button>
+      </div>
+      <div class="feedback" id="fb-4"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-card" id="qcard-5">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+        <span class="q-number" style="background:var(--accent4)">5</span>
+        <span style="font-size:14px;font-weight:800;color:var(--text)">2D Lists</span>
+        <span class="q-tag twod">2D</span>
+      </div>
+      <div class="q-text">What does <code class="q-code-inline">scores[1][2]</code> return?</div>
+      <div class="q-code-block">scores = [[10, 25, 14],
+          [46, 65, 72],
+          [37, 98, 99]]</div>
+      <div class="options" id="opts-5">
+        <button class="option-btn" onclick="selectAnswer(5, 'A', false)"><span class="option-letter">A</span> 65</button>
+        <button class="option-btn" onclick="selectAnswer(5, 'B', false)"><span class="option-letter">B</span> 46</button>
+        <button class="option-btn" onclick="selectAnswer(5, 'C', true)"><span class="option-letter">C</span> 72</button>
+        <button class="option-btn" onclick="selectAnswer(5, 'D', false)"><span class="option-letter">D</span> 14</button>
+      </div>
+      <div class="feedback" id="fb-5"></div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question-card" id="qcard-6">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+        <span class="q-number" style="background:var(--accent4)">6</span>
+        <span style="font-size:14px;font-weight:800;color:var(--text)">2D Lists</span>
+        <span class="q-tag twod">2D</span>
+      </div>
+      <div class="q-text">How many <strong>rows</strong> and <strong>columns</strong> does this 2D list have?</div>
+      <div class="q-code-block">data = [[1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 10, 11, 12]]</div>
+      <div class="options" id="opts-6">
+        <button class="option-btn" onclick="selectAnswer(6, 'A', false)"><span class="option-letter">A</span> 4 rows, 3 columns</button>
+        <button class="option-btn" onclick="selectAnswer(6, 'B', true)"><span class="option-letter">B</span> 3 rows, 4 columns</button>
+        <button class="option-btn" onclick="selectAnswer(6, 'C', false)"><span class="option-letter">C</span> 3 rows, 3 columns</button>
+        <button class="option-btn" onclick="selectAnswer(6, 'D', false)"><span class="option-letter">D</span> 4 rows, 4 columns</button>
+      </div>
+      <div class="feedback" id="fb-6"></div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-card" id="qcard-7">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+        <span class="q-number" style="background:var(--accent4)">7</span>
+        <span style="font-size:14px;font-weight:800;color:var(--text)">2D Lists</span>
+        <span class="q-tag twod">2D</span>
+      </div>
+      <div class="q-text">
+        Which code correctly gives the <strong>number of columns</strong> in a 2D list called <code class="q-code-inline">grid</code>?
+      </div>
+      <div class="options" id="opts-7">
+        <button class="option-btn" onclick="selectAnswer(7, 'A', false)"><span class="option-letter">A</span> len(grid)</button>
+        <button class="option-btn" onclick="selectAnswer(7, 'B', true)"><span class="option-letter">B</span> len(grid[0])</button>
+        <button class="option-btn" onclick="selectAnswer(7, 'C', false)"><span class="option-letter">C</span> grid.columns()</button>
+        <button class="option-btn" onclick="selectAnswer(7, 'D', false)"><span class="option-letter">D</span> len(grid[1][0])</button>
+      </div>
+      <div class="feedback" id="fb-7"></div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-card" id="qcard-8">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+        <span class="q-number" style="background:var(--accent4)">8</span>
+        <span style="font-size:14px;font-weight:800;color:var(--text)">2D Lists – Traversal</span>
+        <span class="q-tag twod">2D</span>
+      </div>
+      <div class="q-text">Which traversal order produces this output: <code class="q-code-inline">1, 4, 7, 2, 5, 8, 3, 6, 9</code>?</div>
+      <div class="q-code-block">grid = [[1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]]</div>
+      <div class="options" id="opts-8">
+        <button class="option-btn" onclick="selectAnswer(8, 'A', false)"><span class="option-letter">A</span> Row-major (left to right, top to bottom)</button>
+        <button class="option-btn" onclick="selectAnswer(8, 'B', true)"><span class="option-letter">B</span> Column-major (top to bottom, left to right)</button>
+        <button class="option-btn" onclick="selectAnswer(8, 'C', false)"><span class="option-letter">C</span> Diagonal traversal</button>
+        <button class="option-btn" onclick="selectAnswer(8, 'D', false)"><span class="option-letter">D</span> Reverse row-major</button>
+      </div>
+      <div class="feedback" id="fb-8"></div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="question-card" id="qcard-9">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+        <span class="q-number" style="background:var(--accent4)">9</span>
+        <span style="font-size:14px;font-weight:800;color:var(--text)">2D Lists – Code</span>
+        <span class="q-tag twod">2D</span>
+      </div>
+      <div class="q-text">Which code correctly performs <strong>column-major traversal</strong>?</div>
+      <div class="options" id="opts-9">
+        <button class="option-btn" onclick="selectAnswer(9, 'A', false)">
+          <span class="option-letter">A</span>
+          <span style="font-family:'Fira Code',monospace;font-size:12px">for row in grid:<br>&nbsp;&nbsp;&nbsp;&nbsp;for item in row:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(item)</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(9, 'B', true)">
+          <span class="option-letter">B</span>
+          <span style="font-family:'Fira Code',monospace;font-size:12px">for col in range(len(grid[0])):<br>&nbsp;&nbsp;&nbsp;&nbsp;for row in range(len(grid)):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(grid[row][col])</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(9, 'C', false)">
+          <span class="option-letter">C</span>
+          <span style="font-family:'Fira Code',monospace;font-size:12px">for row in range(len(grid)):<br>&nbsp;&nbsp;&nbsp;&nbsp;for col in range(len(grid[0])):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(grid[row][col])</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(9, 'D', false)">
+          <span class="option-letter">D</span>
+          <span style="font-family:'Fira Code',monospace;font-size:12px">for item in grid:<br>&nbsp;&nbsp;&nbsp;&nbsp;print(item)</span>
+        </button>
+      </div>
+      <div class="feedback" id="fb-9"></div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-card" id="qcard-10">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+        <span class="q-number" style="background:var(--accent4)">10</span>
+        <span style="font-size:14px;font-weight:800;color:var(--text)">2D Lists – Access</span>
+        <span class="q-tag twod">2D</span>
+      </div>
+      <div class="q-text">What value is stored at row 2, column 3 of this 2D list?</div>
+      <div class="q-code-block">matrix = [[10, 25, 14, 73],
+          [46, 65, 72, 53],
+          [37, 98, 99, 15]]</div>
+      <div class="options" id="opts-10">
+        <button class="option-btn" onclick="selectAnswer(10, 'A', false)"><span class="option-letter">A</span> 99</button>
+        <button class="option-btn" onclick="selectAnswer(10, 'B', false)"><span class="option-letter">B</span> 53</button>
+        <button class="option-btn" onclick="selectAnswer(10, 'C', true)"><span class="option-letter">C</span> 15</button>
+        <button class="option-btn" onclick="selectAnswer(10, 'D', false)"><span class="option-letter">D</span> 72</button>
+      </div>
+      <div class="feedback" id="fb-10"></div>
+    </div>
+
+    <!-- Submit -->
+    <div class="quiz-footer">
+      <button class="submit-btn" id="submit-btn" onclick="submitQuiz()">🎯 Submit Quiz</button>
+    </div>
+
+    <!-- Score Display -->
+    <div id="score-display">
+      <div class="score-card">
+        <div class="score-emoji" id="score-emoji">🎉</div>
+        <div class="score-main" id="score-main">0/10</div>
+        <div class="score-label">FINAL SCORE</div>
+        <div class="score-message" id="score-message">Great work!</div>
+        <div class="score-breakdown">
+          <div class="breakdown-item purple" id="bd-mixed">Mixed Lists: 0/2</div>
+          <div class="breakdown-item cyan"   id="bd-nested">Nested Lists: 0/2</div>
+          <div class="breakdown-item green"  id="bd-twod">2D Lists: 0/6</div>
+        </div>
+        <div class="classroom-note">
+          📸 Take a <strong>screenshot</strong> of this score and submit it to <strong>Google Classroom</strong>!
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-quiz -->
+
+</div><!-- /wrapper -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // ===== Pyodide Python Runner =====
+  var pyodideInstance = null;
+  var pyodideLoadPromise = null;
+
+  function loadPyodideOnce() {
+    if (pyodideLoadPromise) return pyodideLoadPromise;
+    pyodideLoadPromise = loadPyodide({
+      indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/"
+    }).then(function(py) {
+      pyodideInstance = py;
+      return py;
+    });
+    return pyodideLoadPromise;
+  }
+
+  async function runCode(editorId, outputId) {
+    var code = document.getElementById(editorId).value;
+    var outputEl = document.getElementById(outputId);
+    var btn = outputEl.closest('.editor-wrap').querySelector('.run-btn');
+
+    btn.disabled = true;
+    outputEl.className = 'output-box loading';
+    outputEl.textContent = '⏳ Loading Python engine... (first run takes ~10 sec, then it\'s instant!)';
+
+    try {
+      var pyodide = await loadPyodideOnce();
+
+      // Wrap user code: redirect stdout/stderr, run, capture output
+      var wrapped = `
+import sys, io as _io
+_out = _io.StringIO()
+_err = _io.StringIO()
+_old_out, _old_err = sys.stdout, sys.stderr
+sys.stdout, sys.stderr = _out, _err
+try:
+${code.split('\n').map(function(l){ return '    ' + l; }).join('\n')}
+except Exception as _e:
+    sys.stderr.write(str(_e))
+finally:
+    sys.stdout, sys.stderr = _old_out, _old_err
+print(_out.getvalue(), end='')
+`;
+      // Use a separate capture run
+      var captureScript = `
+import sys, io as _io
+_cap = _io.StringIO()
+_old = sys.stdout
+sys.stdout = _cap
+try:
+${code.split('\n').map(function(l){ return '    ' + l; }).join('\n')}
+finally:
+    sys.stdout = _old
+_cap.getvalue()
+`;
+      var stdout = '';
+      var errorMsg = '';
+      try {
+        stdout = await pyodide.runPythonAsync(captureScript);
+        if (stdout === undefined || stdout === null) stdout = '';
+      } catch(e) {
+        errorMsg = String(e).replace(/^PythonError:\s*/, '').trim();
+      }
+
+      btn.disabled = false;
+
+      if (errorMsg) {
+        outputEl.className = 'output-box error';
+        outputEl.textContent = '❌ Error:\n' + errorMsg;
+      } else if (String(stdout).trim() === '') {
+        outputEl.className = 'output-box waiting';
+        outputEl.textContent = '✅ Code ran — no output. Try adding print() statements!';
+      } else {
+        outputEl.className = 'output-box';
+        outputEl.textContent = String(stdout);
+      }
+
+    } catch(e) {
+      btn.disabled = false;
+      outputEl.className = 'output-box error';
+      outputEl.textContent = '❌ Engine error: ' + e.message;
+    }
+  }
+
+  // ===== Tab switching =====
+  function showTab(name, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // Quiz state
+  var answers = {};
+  var correctness = {};
+  var TOTAL = 10;
+
+  // Which question belongs to which category
+  var categories = {
+    1: 'mixed', 2: 'mixed',
+    3: 'nested', 4: 'nested',
+    5: 'twod', 6: 'twod', 7: 'twod', 8: 'twod', 9: 'twod', 10: 'twod'
+  };
+
+  var feedbackMessages = {
+    1: { correct: "✅ Correct! 'Anna' is a str, 16 is an int, True is a bool, and 3.85 is a float.", wrong: "❌ Not quite. 'Anna' → str, 16 → int, True → bool, 3.85 → float." },
+    2: { correct: "✅ Correct! -1 always refers to the last item in a list, which is 9.99.", wrong: "❌ Remember: index -1 always gives you the LAST item. That's 9.99 here!" },
+    3: { correct: "✅ Correct! book_case[2] gets the Hunger Games list, then [1] gets the second book (index 1 = 2nd item).", wrong: "❌ book_case[2] is the Hunger Games list: ['HG1', 'HG2', 'HG3']. Then [1] gives index 1 = 'Hunger Games 2'." },
+    4: { correct: "✅ Correct! student[5] gives ['pluto', 'nova'], and [1] gives the second item: 'nova'.", wrong: "❌ student[5] is the pets list ['pluto', 'nova']. Index [1] gives 'nova' (index 0 = 'pluto', index 1 = 'nova')." },
+    5: { correct: "✅ Correct! scores[1] gives [46, 65, 72]. Then [2] gives the 3rd item: 72.", wrong: "❌ scores[1] = [46, 65, 72]. Index [2] gives the 3rd element = 72." },
+    6: { correct: "✅ Correct! len(data) = 3 rows (3 inner lists). len(data[0]) = 4 columns (4 items in each row).", wrong: "❌ Count the inner lists for rows (3), and count items in one inner list for columns (4). So 3 rows, 4 columns." },
+    7: { correct: "✅ Correct! len(grid[0]) gives the length of the first row, which equals the number of columns.", wrong: "❌ len(grid) gives rows. len(grid[0]) gives columns — it measures how many items are in one row!" },
+    8: { correct: "✅ Correct! Column-major goes top-to-bottom first: col 0 → 1,4,7 then col 1 → 2,5,8 then col 2 → 3,6,9.", wrong: "❌ This is column-major! It reads down each column first. Row-major would give: 1,2,3,4,5,6,7,8,9." },
+    9: { correct: "✅ Correct! In column-major, the COLUMN loop is on the outside and the ROW loop is on the inside.", wrong: "❌ For column-major, the column loop must be OUTER and row loop INNER, using grid[row][col] inside." },
+    10: { correct: "✅ Correct! matrix[2][3] → row 2 = [37, 98, 99, 15] → index 3 = 15.", wrong: "❌ matrix[2] gives row 2: [37, 98, 99, 15]. Then index [3] gives the 4th item = 15." }
+  };
+
+  function selectAnswer(qNum, letter, isCorrect) {
+    if (answers[qNum] !== undefined) return; // already answered
+
+    answers[qNum] = letter;
+    correctness[qNum] = isCorrect;
+
+    var opts = document.querySelectorAll('#opts-' + qNum + ' .option-btn');
+    opts.forEach(function(btn) { btn.disabled = true; });
+
+    // Find clicked button
+    var clickedBtn = event.currentTarget;
+    clickedBtn.classList.add('selected');
+
+    // Update progress
+    updateProgress();
+  }
+
+  function updateProgress() {
+    var answered = Object.keys(answers).length;
+    document.getElementById('quiz-progress').style.width = (answered / TOTAL * 100) + '%';
+  }
+
+  function submitQuiz() {
+    // Count unanswered
+    var unanswered = 0;
+    for (var i = 1; i <= TOTAL; i++) {
+      if (answers[i] === undefined) unanswered++;
+    }
+
+    if (unanswered > 0) {
+      var ok = confirm('You have ' + unanswered + ' unanswered question(s). Submit anyway? Unanswered questions will be marked incorrect.');
+      if (!ok) return;
+      // Mark unanswered as wrong
+      for (var i = 1; i <= TOTAL; i++) {
+        if (answers[i] === undefined) {
+          answers[i] = 'X';
+          correctness[i] = false;
+        }
+      }
+    }
+
+    // Calculate scores
+    var total = 0, mixedScore = 0, nestedScore = 0, twodScore = 0;
+    for (var i = 1; i <= TOTAL; i++) {
+      if (correctness[i]) {
+        total++;
+        if (categories[i] === 'mixed')  mixedScore++;
+        if (categories[i] === 'nested') nestedScore++;
+        if (categories[i] === 'twod')   twodScore++;
+      }
+    }
+
+    // Highlight all question cards
+    for (var i = 1; i <= TOTAL; i++) {
+      var card = document.getElementById('qcard-' + i);
+      if (correctness[i]) card.classList.add('correct-card');
+      else card.classList.add('wrong-card');
+    }
+
+    // Reveal feedback and highlight correct/wrong options
+    for (var i = 1; i <= TOTAL; i++) {
+      var opts = document.querySelectorAll('#opts-' + i + ' .option-btn');
+      var selectedBtn = document.querySelector('#opts-' + i + ' .option-btn.selected');
+
+      // Highlight correct option
+      opts.forEach(function(btn) {
+        var onclickStr = btn.getAttribute('onclick');
+        if (onclickStr && onclickStr.includes(', true)')) {
+          btn.classList.add('correct');
+        }
+      });
+
+      // Highlight chosen option if wrong
+      if (selectedBtn && !correctness[i]) {
+        selectedBtn.classList.add('wrong');
+      }
+
+      // Show feedback
+      var fb = document.getElementById('fb-' + i);
+      fb.textContent = correctness[i] ? feedbackMessages[i].correct : feedbackMessages[i].wrong;
+      fb.className = 'feedback show ' + (correctness[i] ? 'correct' : 'wrong');
+    }
+
+    // Show score
+    var pct = Math.round(total / TOTAL * 100);
+    var emoji, message;
+    if (pct === 100) { emoji = '🏆'; message = 'Perfect score! You are a Python List Master! 🐍'; }
+    else if (pct >= 80)  { emoji = '🌟'; message = 'Amazing work! You really know your lists!'; }
+    else if (pct >= 60)  { emoji = '👍'; message = 'Good job! Keep practicing and you\'ll ace it!'; }
+    else if (pct >= 40)  { emoji = '💪'; message = 'Nice try! Review the lessons and try again!'; }
+    else                 { emoji = '📚'; message = 'Keep studying! You\'ve got this! Review the tabs above.'; }
+
+    document.getElementById('score-emoji').textContent = emoji;
+    document.getElementById('score-main').textContent = total + '/10';
+    document.getElementById('score-message').textContent = message;
+    document.getElementById('bd-mixed').textContent  = '🎨 Mixed Lists: ' + mixedScore + '/2';
+    document.getElementById('bd-nested').textContent = '📦 Nested Lists: ' + nestedScore + '/2';
+    document.getElementById('bd-twod').textContent   = '📊 2D Lists: ' + twodScore + '/6';
+
+    document.getElementById('score-display').style.display = 'block';
+    document.getElementById('submit-btn').disabled = true;
+    document.getElementById('score-display').scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

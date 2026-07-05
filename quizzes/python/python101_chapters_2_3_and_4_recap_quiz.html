@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python 101 Recap Quiz - Chapters 1-4</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+            margin: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            font-weight: normal;
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .instructions h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .instructions p {
+            color: #856404;
+            line-height: 1.6;
+        }
+
+        .question {
+            background: #f8f9fa;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .question.correct {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .question.incorrect {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .topic-badge {
+            display: inline-block;
+            background: #e9ecef;
+            color: #495057;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-size: 0.95em;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .code-block .comment {
+            color: #6a9955;
+        }
+
+        .code-block .keyword {
+            color: #569cd6;
+        }
+
+        .code-block .string {
+            color: #ce9178;
+        }
+
+        .code-block .number {
+            color: #b5cea8;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .option-btn {
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            text-align: left;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        .option-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option-btn.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .option-btn.incorrect {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            margin-right: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option-btn.selected .option-letter {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .option-btn.correct .option-letter,
+        .option-btn.incorrect .option-letter {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 0.95em;
+            display: none;
+            line-height: 1.6;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 50px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .results h2 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .results .score {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .results .percentage {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .results .breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .results .breakdown-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .results .breakdown-item h4 {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .results .breakdown-item p {
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .results .message {
+            font-size: 1.2em;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .screenshot-instructions {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .screenshot-instructions.show {
+            display: block;
+        }
+
+        .screenshot-instructions h3 {
+            color: #0c5460;
+            margin-bottom: 10px;
+        }
+
+        .screenshot-instructions ul {
+            color: #0c5460;
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐍 Python 101 Recap Quiz</h1>
+            <h2>Chapters 1-4: Operators, Conditions & Loops</h2>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Instructions:</h3>
+            <p>This quiz covers topics from Chapters 1-4. Read each question carefully and select the best answer. Once you've answered all questions, click <strong>Submit Quiz</strong> to see your results. Then take a screenshot and submit it to Google Classroom.</p>
+        </div>
+
+        <div id="quiz">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+
+        <div class="submit-section">
+            <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">Submit Quiz</button>
+        </div>
+
+        <div class="results" id="results">
+            <h2>🎉 Quiz Results</h2>
+            <div class="score" id="scoreDisplay"></div>
+            <div class="percentage" id="percentageDisplay"></div>
+            <div class="breakdown" id="breakdownDisplay"></div>
+            <div class="message" id="messageDisplay"></div>
+        </div>
+
+        <div class="screenshot-instructions" id="screenshotInstructions">
+            <h3>📸 How to Submit:</h3>
+            <ul>
+                <li><strong>Windows:</strong> Press <kbd>Windows + Shift + S</kbd> to take a screenshot</li>
+                <li><strong>Mac:</strong> Press <kbd>Cmd + Shift + 4</kbd> to take a screenshot</li>
+                <li><strong>Chromebook:</strong> Press <kbd>Ctrl + Show Windows</kbd> (or F5) then select area</li>
+                <li>Upload the screenshot to <strong>Google Classroom</strong></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Arithmetic Operators (2 questions)
+            {
+                id: 1,
+                topic: "Arithmetic Operators",
+                text: "What is the result of the following expression?",
+                code: "result = 15 // 4\nprint(result)",
+                options: [
+                    "3.75",
+                    "3",
+                    "4",
+                    "3.0"
+                ],
+                answer: 1,
+                explanation: "The // operator performs floor division, which divides and rounds down to the nearest integer. 15 divided by 4 is 3.75, which rounds down to 3."
+            },
+            {
+                id: 2,
+                topic: "Arithmetic Operators",
+                text: "What does the % (modulus) operator return?",
+                options: [
+                    "The quotient of division",
+                    "The remainder of division",
+                    "The percentage of a number",
+                    "The result of multiplication"
+                ],
+                answer: 1,
+                explanation: "The % (modulus) operator returns the remainder after division. For example, 17 % 5 returns 2 because 17 divided by 5 is 3 with a remainder of 2."
+            },
+            
+            // Conditions (2 questions)
+            {
+                id: 3,
+                topic: "Conditions",
+                text: "What will be printed when this code runs?",
+                code: "x = 10\nif x > 15:\n    print(\"A\")\nelif x > 5:\n    print(\"B\")\nelse:\n    print(\"C\")",
+                options: [
+                    "A",
+                    "B",
+                    "C",
+                    "Nothing will be printed"
+                ],
+                answer: 1,
+                explanation: "x is 10. The first condition (x > 15) is False, so we check the elif. The condition (x > 5) is True, so \"B\" is printed. Once a condition is True, no other conditions in that block are checked."
+            },
+            {
+                id: 4,
+                topic: "Conditions",
+                text: "Which of the following is the correct structure for a conditional statement?",
+                options: [
+                    "if condition: → else: → elif condition:",
+                    "if condition: → elif condition: → else:",
+                    "elif condition: → if condition: → else:",
+                    "if condition: → else: → if condition:"
+                ],
+                answer: 1,
+                explanation: "The correct order is: if (required, comes first) → elif (optional, can have multiple) → else (optional, comes last). You cannot start with elif or else."
+            },
+            
+            // While Loops (2 questions)
+            {
+                id: 5,
+                topic: "While Loops",
+                text: "What does a while loop do?",
+                options: [
+                    "Runs code exactly once",
+                    "Runs code a fixed number of times",
+                    "Runs code repeatedly as long as a condition is True",
+                    "Runs code for each item in a sequence"
+                ],
+                answer: 2,
+                explanation: "A while loop continues to execute its code block as long as the condition remains True. It checks the condition before each iteration and stops when the condition becomes False."
+            },
+            {
+                id: 6,
+                topic: "While Loops",
+                text: "What will be the final value printed?",
+                code: "count = 0\nwhile count < 3:\n    count = count + 1\nprint(count)",
+                options: [
+                    "0",
+                    "1",
+                    "2",
+                    "3"
+                ],
+                answer: 3,
+                explanation: "The loop runs while count < 3. It starts at 0, then becomes 1, then 2, then 3. When count becomes 3, the condition (3 < 3) is False, so the loop stops. Then it prints 3."
+            },
+            
+            // Range Function (2 questions)
+            {
+                id: 7,
+                topic: "Range Function",
+                text: "How many numbers does range(5) generate?",
+                options: [
+                    "4 numbers (1, 2, 3, 4)",
+                    "5 numbers (1, 2, 3, 4, 5)",
+                    "5 numbers (0, 1, 2, 3, 4)",
+                    "6 numbers (0, 1, 2, 3, 4, 5)"
+                ],
+                answer: 2,
+                explanation: "range(5) generates 5 numbers starting from 0 up to (but not including) 5: 0, 1, 2, 3, 4. Range always starts at 0 by default and does not include the stop value."
+            },
+            {
+                id: 8,
+                topic: "Range Function",
+                text: "What numbers does range(2, 10, 3) generate?",
+                options: [
+                    "2, 5, 8",
+                    "2, 5, 8, 11",
+                    "3, 6, 9",
+                    "2, 3, 4, 5, 6, 7, 8, 9"
+                ],
+                answer: 0,
+                explanation: "range(2, 10, 3) starts at 2, stops before 10, and steps by 3. So it generates: 2, 5, 8. The next value would be 11, but that exceeds the stop value of 10."
+            },
+            
+            // For Loops (2 questions)
+            {
+                id: 9,
+                topic: "For Loops",
+                text: "How many times will this loop execute?",
+                code: "for i in range(1, 6):\n    print(i)",
+                options: [
+                    "4 times",
+                    "5 times",
+                    "6 times",
+                    "7 times"
+                ],
+                answer: 1,
+                explanation: "range(1, 6) generates numbers from 1 to 5 (not including 6): 1, 2, 3, 4, 5. That's 5 numbers, so the loop executes 5 times."
+            },
+            {
+                id: 10,
+                topic: "For Loops",
+                text: "What is printed by this code?",
+                code: "for num in range(3):\n    if num == 1:\n        continue\n    print(num)",
+                options: [
+                    "0 1 2",
+                    "0 2",
+                    "1 2 3",
+                    "0 1"
+                ],
+                answer: 1,
+                explanation: "range(3) generates 0, 1, 2. When num is 1, continue skips the print statement and goes to the next iteration. So it only prints 0 and 2."
+            }
+        ];
+
+        let userAnswers = {};
+
+        function initQuiz() {
+            const quizContainer = document.getElementById('quiz');
+            
+            questions.forEach(question => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.id = `question-${question.id}`;
+                
+                let questionHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${question.id}</span>
+                        <span class="topic-badge">${question.topic}</span>
+                    </div>
+                    <div class="question-text">${question.text}</div>
+                `;
+                
+                if (question.code) {
+                    questionHTML += `<div class="code-block">${formatCode(question.code)}</div>`;
+                }
+                
+                questionHTML += '<div class="options">';
+                
+                question.options.forEach((option, index) => {
+                    const letter = String.fromCharCode(65 + index); // A, B, C, D
+                    questionHTML += `
+                        <button class="option-btn" onclick="selectAnswer(${question.id}, ${index})">
+                            <span class="option-letter">${letter}</span>
+                            <span>${option}</span>
+                        </button>
+                    `;
+                });
+                
+                questionHTML += '</div>';
+                questionHTML += `<div class="feedback" id="feedback-${question.id}"></div>`;
+                
+                questionDiv.innerHTML = questionHTML;
+                quizContainer.appendChild(questionDiv);
+            });
+        }
+
+        function formatCode(code) {
+            // Return code as-is, CSS white-space: pre-wrap will handle formatting
+            return code;
+        }
+
+        function selectAnswer(questionId, answerIndex) {
+            if (document.getElementById('submitBtn').disabled) {
+                return;
+            }
+
+            userAnswers[questionId] = answerIndex;
+            
+            const questionDiv = document.getElementById(`question-${questionId}`);
+            const buttons = questionDiv.querySelectorAll('.option-btn');
+            
+            buttons.forEach((btn, index) => {
+                btn.classList.remove('selected');
+                if (index === answerIndex) {
+                    btn.classList.add('selected');
+                }
+            });
+
+            updateSubmitButton();
+        }
+
+        function updateSubmitButton() {
+            const submitBtn = document.getElementById('submitBtn');
+            if (Object.keys(userAnswers).length === questions.length) {
+                submitBtn.disabled = false;
+            }
+        }
+
+        function submitQuiz() {
+            if (Object.keys(userAnswers).length !== questions.length) {
+                alert('Please answer all questions before submitting!');
+                return;
+            }
+
+            let correctAnswers = 0;
+            const topicScores = {};
+            
+            questions.forEach(question => {
+                if (!topicScores[question.topic]) {
+                    topicScores[question.topic] = { correct: 0, total: 0 };
+                }
+                topicScores[question.topic].total++;
+                
+                const questionDiv = document.getElementById(`question-${question.id}`);
+                const buttons = questionDiv.querySelectorAll('.option-btn');
+                const feedbackDiv = document.getElementById(`feedback-${question.id}`);
+                
+                buttons.forEach(btn => btn.disabled = true);
+                
+                const userAnswer = userAnswers[question.id];
+                const isCorrect = userAnswer === question.answer;
+                
+                if (isCorrect) {
+                    correctAnswers++;
+                    topicScores[question.topic].correct++;
+                    questionDiv.classList.add('correct');
+                    feedbackDiv.className = 'feedback correct show';
+                    feedbackDiv.innerHTML = `<strong>✓ Correct!</strong> ${question.explanation}`;
+                } else {
+                    questionDiv.classList.add('incorrect');
+                    feedbackDiv.className = 'feedback incorrect show';
+                    feedbackDiv.innerHTML = `<strong>✗ Incorrect.</strong> ${question.explanation}`;
+                }
+                
+                buttons.forEach((btn, index) => {
+                    if (index === question.answer) {
+                        btn.classList.add('correct');
+                    } else if (index === userAnswer && !isCorrect) {
+                        btn.classList.add('incorrect');
+                    }
+                });
+            });
+
+            displayResults(correctAnswers, topicScores);
+        }
+
+        function displayResults(correctAnswers, topicScores) {
+            const percentage = (correctAnswers / questions.length) * 100;
+            const resultsDiv = document.getElementById('results');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const percentageDisplay = document.getElementById('percentageDisplay');
+            const breakdownDisplay = document.getElementById('breakdownDisplay');
+            const messageDisplay = document.getElementById('messageDisplay');
+            
+            scoreDisplay.textContent = `${correctAnswers} / ${questions.length}`;
+            percentageDisplay.textContent = `${percentage.toFixed(0)}%`;
+            
+            // Topic breakdown
+            let breakdownHTML = '';
+            for (const [topic, scores] of Object.entries(topicScores)) {
+                breakdownHTML += `
+                    <div class="breakdown-item">
+                        <h4>${topic}</h4>
+                        <p>${scores.correct} / ${scores.total}</p>
+                    </div>
+                `;
+            }
+            breakdownDisplay.innerHTML = breakdownHTML;
+            
+            let message = '';
+            if (percentage === 100) {
+                message = '🌟 Perfect Score! Outstanding work on all topics!';
+            } else if (percentage >= 90) {
+                message = '🎯 Excellent! You have mastered the fundamentals!';
+            } else if (percentage >= 80) {
+                message = '👍 Great job! Strong understanding of Python basics!';
+            } else if (percentage >= 70) {
+                message = '✅ Good effort! Review the topics you missed.';
+            } else if (percentage >= 60) {
+                message = '📚 Keep practicing! Focus on the areas that need improvement.';
+            } else {
+                message = '💪 Don\'t give up! Review the material and try the practice problems.';
+            }
+            
+            messageDisplay.textContent = message;
+            resultsDiv.classList.add('show');
+            
+            document.getElementById('screenshotInstructions').classList.add('show');
+            
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('submitBtn').textContent = 'Quiz Completed';
+            
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>

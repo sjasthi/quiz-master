@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz 15: Python Exceptions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .quiz-header h2 {
+            margin-bottom: 10px;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .question-number {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .code-snippet {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+
+        .code-snippet pre {
+            margin: 0;
+            white-space: pre;
+            line-height: 1.6;
+        }
+
+        .code-snippet .keyword {
+            color: #c586c0;
+        }
+
+        .code-snippet .string {
+            color: #ce9178;
+        }
+
+        .code-snippet .number {
+            color: #b5cea8;
+        }
+
+        .code-snippet .comment {
+            color: #6a9955;
+        }
+
+        .code-snippet .string {
+            color: #ce9178;
+        }
+
+        .code-snippet .number {
+            color: #b5cea8;
+        }
+
+        .code-snippet .comment {
+            color: #6a9955;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .option.selected {
+            background: #e7f3ff;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .submit-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: white;
+            color: #667eea;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .score-display {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .grade-message {
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+
+        .score-breakdown {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .submission-form {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .submission-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .submission-form input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 25px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .explanation {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+            border-left: 4px solid #667eea;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation strong {
+            color: #667eea;
+        }
+
+        @keyframes celebration {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .celebrate {
+            animation: celebration 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Quiz 15: Python Exceptions</h1>
+        <p class="subtitle">Test your exception handling skills!</p>
+
+        <div class="quiz-header">
+            <h2>Quiz Instructions</h2>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>Answer all 11 questions</li>
+                <li>Each question is worth 1 point (Total: 11 points)</li>
+                <li>Click "Submit Quiz" when finished</li>
+                <li>You'll see your score and can submit it to Google Classroom</li>
+                <li>Good luck! 🍀</li>
+            </ul>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar" style="width: 0%">0/11</div>
+        </div>
+
+        <form id="quizForm">
+            <!-- Question 1 -->
+            <div class="question-card">
+                <div class="question-number">Question 1</div>
+                <div class="question-text">Which of the following is used to handle exceptions in Python?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q1" value="A" id="q1a">
+                        <label for="q1a">try-catch</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q1" value="B" id="q1b">
+                        <label for="q1b">catch - throw</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q1" value="C" id="q1c">
+                        <label for="q1c">try - except</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q1" value="D" id="q1d">
+                        <label for="q1d">if-else</label>
+                    </div>
+                </div>
+                <div class="explanation" id="exp1">
+                    <strong>✅ Correct Answer: C - try - except</strong><br>
+                    Python uses try-except blocks for exception handling, not try-catch like Java/C++.
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question-card">
+                <div class="question-number">Question 2</div>
+                <div class="question-text">What exception is raised when you try to access an undefined variable?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q2" value="A" id="q2a">
+                        <label for="q2a">NameError</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q2" value="B" id="q2b">
+                        <label for="q2b">AttributeError</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q2" value="C" id="q2c">
+                        <label for="q2c">KeyError</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q2" value="D" id="q2d">
+                        <label for="q2d">IndexError</label>
+                    </div>
+                </div>
+                <div class="explanation" id="exp2">
+                    <strong>✅ Correct Answer: A - NameError</strong><br>
+                    NameError is raised when you try to use a variable that hasn't been defined yet.
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question-card">
+                <div class="question-number">Question 3</div>
+                <div class="question-text">Which block is always executed, even if an exception is not raised?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q3" value="A" id="q3a">
+                        <label for="q3a">try</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q3" value="B" id="q3b">
+                        <label for="q3b">finally</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q3" value="C" id="q3c">
+                        <label for="q3c">except</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q3" value="D" id="q3d">
+                        <label for="q3d">else</label>
+                    </div>
+                </div>
+                <div class="explanation" id="exp3">
+                    <strong>✅ Correct Answer: B - finally</strong><br>
+                    The finally block always executes, whether an exception occurs or not.
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question-card">
+                <div class="question-number">Question 4</div>
+                <div class="question-text">What would Python print?</div>
+                <div class="code-snippet"><pre><span class="keyword">try</span>:
+    <span class="keyword">print</span>(<span class="number">1</span> / <span class="number">0</span>)
+<span class="keyword">except</span> ZeroDivisionError:
+    <span class="keyword">print</span>(<span class="string">"Cannot divide by zero!"</span>)</pre></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q4" value="A" id="q4a">
+                        <label for="q4a">1 / 0</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q4" value="B" id="q4b">
+                        <label for="q4b">Cannot divide by zero!</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q4" value="C" id="q4c">
+                        <label for="q4c">ZeroDivisionError</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q4" value="D" id="q4d">
+                        <label for="q4d">No output</label>
+                    </div>
+                </div>
+                <div class="explanation" id="exp4">
+                    <strong>✅ Correct Answer: B - Cannot divide by zero!</strong><br>
+                    The division by zero raises ZeroDivisionError, which is caught by the except block.
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question-card">
+                <div class="question-number">Question 5</div>
+                <div class="question-text">What will happen if no exception occurs in a try block?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q5" value="A" id="q5a">
+                        <label for="q5a">The except block will run.</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q5" value="B" id="q5b">
+                        <label for="q5b">The else block will run (if present).</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q5" value="C" id="q5c">
+                        <label for="q5c">The finally block will not execute.</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q5" value="D" id="q5d">
+                        <label for="q5d">The program will stop execution.</label>
+                    </div>
+                </div>
+                <div class="explanation" id="exp5">
+                    <strong>✅ Correct Answer: B - The else block will run (if present).</strong><br>
+                    The else block only runs when NO exception occurs in the try block.
+                </div>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="question-card">
+                <div class="question-number">Question 6</div>
+                <div class="question-text">What would Python print?</div>
+                <div class="code-snippet"><pre><span class="keyword">try</span>:
+    x = <span class="string">"Hello"</span>
+    x = <span class="keyword">len</span>(x)
+<span class="keyword">except</span> KeyError:
+    x = <span class="number">20</span>
+<span class="keyword">except</span> IndexError:
+    x = <span class="number">10</span>
+<span class="keyword">finally</span>:
+    <span class="keyword">print</span>(x)</pre></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q6" value="A" id="q6a">
+                        <label for="q6a">10</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q6" value="B" id="q6b">
+                        <label for="q6b">20</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q6" value="C" id="q6c">
+                        <label for="q6c">5</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q6" value="D" id="q6d">
+                        <label for="q6d">Error</label>
+                    </div>
+                </div>
+                <div class="explanation" id="exp6">
+                    <strong>✅ Correct Answer: C - 5</strong><br>
+                    No exception occurs: x = "Hello" (5 characters), x = len(x) = 5, finally prints 5.
+                </div>
+            </div>
+
+            <!-- Question 7 -->
+            <div class="question-card">
+                <div class="question-number">Question 7</div>
+                <div class="question-text">What would Python print?</div>
+                <div class="code-snippet"><pre>x = <span class="number">10</span>
+<span class="keyword">try</span>:
+    x = <span class="number">10</span>/<span class="number">0</span>
+<span class="keyword">except</span>:
+    <span class="keyword">pass</span>
+
+<span class="keyword">print</span>(x)</pre></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q7" value="A" id="q7a">
+                        <label for="q7a">10</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q7" value="B" id="q7b">
+                        <label for="q7b">0</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q7" value="C" id="q7c">
+                        <label for="q7c">infinity</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q7" value="D" id="q7d">
+                        <label for="q7d">Error</label>
+                    </div>
+                </div>
+                <div class="explanation" id="exp7">
+                    <strong>✅ Correct Answer: A - 10</strong><br>
+                    x starts as 10, the division fails, except catches it but does nothing (pass), so x remains 10.
+                </div>
+            </div>
+
+            <!-- Question 8 -->
+            <div class="question-card">
+                <div class="question-number">Question 8</div>
+                <div class="question-text">What would Python print?</div>
+                <div class="code-snippet"><pre>x = <span class="number">2</span>
+<span class="keyword">try</span>:
+    x = x // <span class="number">2</span>
+<span class="keyword">except</span>:
+    <span class="keyword">print</span>(x, end=<span class="string">''</span>)
+<span class="keyword">else</span>:
+    <span class="keyword">print</span>(x+<span class="number">1</span>, end=<span class="string">''</span>)
+<span class="keyword">finally</span>:
+    <span class="keyword">print</span>(x, end=<span class="string">''</span>)
+
+<span class="keyword">print</span>(x)</pre></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q8" value="A" id="q8a">
+                        <label for="q8a">212</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q8" value="B" id="q8b">
+                        <label for="q8b">221</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q8" value="C" id="q8c">
+                        <label for="q8c">211</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q8" value="D" id="q8d">
+                        <label for="q8d">222</label>
+                    </div>
+                </div>
+                <div class="explanation" id="exp8">
+                    <strong>✅ Correct Answer: C - 211</strong><br>
+                    x=2, try: x=1, no error so else: print(2), finally: print(1), then: print(1) → Output: 211
+                </div>
+            </div>
+
+            <!-- Question 9 -->
+            <div class="question-card">
+                <div class="question-number">Question 9</div>
+                <div class="question-text">What does the <code>raise</code> keyword do in Python?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q9" value="A" id="q9a">
+                        <label for="q9a">Silently logs an exception.</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q9" value="B" id="q9b">
+                        <label for="q9b">Re-raises a caught exception.</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q9" value="C" id="q9c">
+                        <label for="q9c">Stops the program without raising an exception.</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q9" value="D" id="q9d">
+                        <label for="q9d">Triggers an exception manually.</label>
+                    </div>
+                </div>
+                <div class="explanation" id="exp9">
+                    <strong>✅ Correct Answer: D - Triggers an exception manually.</strong><br>
+                    The raise keyword is used to manually trigger exceptions in Python.
+                </div>
+            </div>
+
+            <!-- Question 10 -->
+            <div class="question-card">
+                <div class="question-number">Question 10</div>
+                <div class="question-text">What type of error will the following code raise?</div>
+                <div class="code-snippet"><pre>a = <span class="keyword">int</span>(<span class="string">"hello"</span>)</pre></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q10" value="A" id="q10a">
+                        <label for="q10a">TypeError</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q10" value="B" id="q10b">
+                        <label for="q10b">ValueError</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q10" value="C" id="q10c">
+                        <label for="q10c">IndexError</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q10" value="D" id="q10d">
+                        <label for="q10d">KeyError</label>
+                    </div>
+                </div>
+                <div class="explanation" id="exp10">
+                    <strong>✅ Correct Answer: B - ValueError</strong><br>
+                    ValueError is raised when int() receives a string that can't be converted to an integer.
+                </div>
+            </div>
+
+            <!-- Question 11 -->
+            <div class="question-card">
+                <div class="question-number">Question 11</div>
+                <div class="question-text">Which statement about exception handling is TRUE?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q11" value="A" id="q11a">
+                        <label for="q11a">You can have multiple except blocks for different exceptions</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q11" value="B" id="q11b">
+                        <label for="q11b">The try block is optional in exception handling</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q11" value="C" id="q11c">
+                        <label for="q11c">The else block runs when an exception occurs</label>
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q11" value="D" id="q11d">
+                        <label for="q11d">Finally block prevents all exceptions from occurring</label>
+                    </div>
+                </div>
+                <div class="explanation" id="exp11">
+                    <strong>✅ Correct Answer: A - You can have multiple except blocks for different exceptions</strong><br>
+                    Python allows multiple except blocks to handle different types of exceptions separately.
+                </div>
+            </div>
+        </form>
+
+        <div class="submit-section">
+            <h2 style="color: white; margin-bottom: 20px;">Ready to see your results?</h2>
+            <button class="btn" onclick="gradeQuiz()">Submit Quiz 📝</button>
+        </div>
+
+        <div class="results-card" id="resultsCard">
+            <h2 style="color: #667eea;">🎉 Quiz Results 🎉</h2>
+            <div class="score-display" id="scoreDisplay">0/100</div>
+            <div class="grade-message" id="gradeMessage"></div>
+            
+            <div class="score-breakdown" id="breakdown"></div>
+
+            <div class="submission-form">
+                <h3 style="margin-bottom: 15px;">📤 Submit to Google Classroom</h3>
+                <p style="margin-bottom: 15px;">Enter your information to record your score:</p>
+                <input type="text" id="studentName" placeholder="Your Full Name" required>
+                <input type="email" id="studentEmail" placeholder="Your Email (optional)">
+                <input type="text" id="finalScore" readonly style="background: #e7f3ff; font-weight: bold; font-size: 20px; text-align: center;">
+                
+                <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px;">
+                    <strong>📋 Instructions:</strong>
+                    <ol style="margin-left: 20px; margin-top: 10px; text-align: left;">
+                        <li>Copy your score shown above</li>
+                        <li>Go to Google Classroom</li>
+                        <li>Find the "Quiz 15: Exceptions" assignment</li>
+                        <li>Paste your score in the assignment submission</li>
+                        <li>Click "Turn In"</li>
+                    </ol>
+                </div>
+
+                <button class="btn" style="background: #667eea; color: white; margin-top: 20px;" onclick="copyScore()">
+                    📋 Copy Score to Clipboard
+                </button>
+            </div>
+
+            <button class="btn" style="background: #28a745; color: white; margin-top: 20px;" onclick="resetQuiz()">
+                🔄 Take Quiz Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const answers = {
+            q1: 'C',
+            q2: 'A',
+            q3: 'B',
+            q4: 'B',
+            q5: 'B',
+            q6: 'C',
+            q7: 'A',
+            q8: 'C',
+            q9: 'D',
+            q10: 'B',
+            q11: 'A'
+        };
+
+        let answeredQuestions = new Set();
+
+        function selectOption(element) {
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            // Remove selected class from siblings
+            const siblings = element.parentElement.querySelectorAll('.option');
+            siblings.forEach(sib => sib.classList.remove('selected'));
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Track answered question
+            answeredQuestions.add(radio.name);
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = 11;
+            const answered = answeredQuestions.size;
+            const percentage = (answered / total) * 100;
+            
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = `${answered}/${total}`;
+        }
+
+        function gradeQuiz() {
+            let score = 0;
+            let results = [];
+            const pointsPerQuestion = 1; // 1 point each
+
+            // Check each question
+            for (let q in answers) {
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                const correctAnswer = answers[q];
+                
+                if (selected) {
+                    const isCorrect = selected.value === correctAnswer;
+                    if (isCorrect) {
+                        score += pointsPerQuestion;
+                        results.push({ question: q, correct: true });
+                        
+                        // Mark correct answer
+                        selected.parentElement.classList.add('correct');
+                    } else {
+                        results.push({ question: q, correct: false });
+                        
+                        // Mark incorrect answer
+                        selected.parentElement.classList.add('incorrect');
+                        
+                        // Show correct answer
+                        const correctOption = document.querySelector(`input[name="${q}"][value="${correctAnswer}"]`);
+                        correctOption.parentElement.classList.add('correct');
+                    }
+                    
+                    // Show explanation
+                    document.getElementById('exp' + q.substring(1)).classList.add('show');
+                } else {
+                    results.push({ question: q, correct: false });
+                }
+            }
+
+            displayResults(score, results);
+            
+            // Scroll to results
+            document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function displayResults(score, results) {
+            const resultsCard = document.getElementById('resultsCard');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const gradeMessage = document.getElementById('gradeMessage');
+            const breakdown = document.getElementById('breakdown');
+            const finalScoreInput = document.getElementById('finalScore');
+
+            // Show results card
+            resultsCard.style.display = 'block';
+            
+            // Animate score
+            scoreDisplay.classList.add('celebrate');
+            scoreDisplay.textContent = score + '/11';
+            
+            // Set grade message based on score out of 11
+            let message = '';
+            let emoji = '';
+            let percentage = Math.round((score / 11) * 100);
+            
+            if (score >= 10) {
+                message = 'Outstanding! You\'re an Exception Handling Expert! 🏆';
+                emoji = '🌟';
+            } else if (score >= 9) {
+                message = 'Great job! You really understand exceptions! 👏';
+                emoji = '🎯';
+            } else if (score >= 8) {
+                message = 'Good work! Keep practicing! 👍';
+                emoji = '💪';
+            } else if (score >= 7) {
+                message = 'Not bad! Review the concepts and try again! 📚';
+                emoji = '📖';
+            } else {
+                message = 'Keep learning! Practice makes perfect! 🚀';
+                emoji = '🌱';
+            }
+            
+            gradeMessage.innerHTML = emoji + ' ' + message;
+
+            // Show breakdown
+            let correctCount = results.filter(r => r.correct).length;
+            let incorrectCount = 11 - correctCount;
+            
+            breakdown.innerHTML = `
+                <h3 style="margin-bottom: 15px;">📊 Score Breakdown</h3>
+                <div style="display: flex; justify-content: space-around; margin: 20px 0;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 3em;">✅</div>
+                        <div style="font-size: 2em; font-weight: bold; color: #28a745;">${correctCount}</div>
+                        <div>Correct</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 3em;">❌</div>
+                        <div style="font-size: 2em; font-weight: bold; color: #dc3545;">${incorrectCount}</div>
+                        <div>Incorrect</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 3em;">💯</div>
+                        <div style="font-size: 2em; font-weight: bold; color: #667eea;">${percentage}%</div>
+                        <div>Percentage</div>
+                    </div>
+                </div>
+            `;
+
+            // Set final score in submission form
+            const studentName = document.getElementById('studentName').value || 'Student';
+            finalScoreInput.value = `Score: ${score}/11 points (${correctCount} correct out of 11 questions)`;
+        }
+
+        function copyScore() {
+            const studentName = document.getElementById('studentName').value;
+            const finalScore = document.getElementById('finalScore').value;
+            
+            if (!studentName) {
+                alert('Please enter your name first!');
+                return;
+            }
+
+            const submissionText = `
+Name: ${studentName}
+Quiz: Quiz 15 - Python Exceptions
+${finalScore}
+Date: ${new Date().toLocaleDateString()}
+            `.trim();
+
+            navigator.clipboard.writeText(submissionText).then(() => {
+                alert('✅ Score copied to clipboard! Now paste it in Google Classroom assignment.');
+            }).catch(err => {
+                alert('❌ Could not copy. Please manually copy: ' + finalScore);
+            });
+        }
+
+        function resetQuiz() {
+            // Reset all selections
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+            });
+            
+            // Reset all option styles
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            // Hide all explanations
+            document.querySelectorAll('.explanation').forEach(exp => {
+                exp.classList.remove('show');
+            });
+            
+            // Hide results card
+            document.getElementById('resultsCard').style.display = 'none';
+            
+            // Reset form inputs
+            document.getElementById('studentName').value = '';
+            document.getElementById('studentEmail').value = '';
+            
+            // Reset progress
+            answeredQuestions.clear();
+            updateProgress();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
