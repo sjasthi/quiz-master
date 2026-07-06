@@ -1,20 +1,9 @@
-/* Parent-side logic for the quiz page (student/quiz_take.php).
- *
- * The quiz itself lives in an <iframe> (quizzes/python/quiz1.html). When the
- * student finishes, the iframe posts its score up to this page with
- * window.parent.postMessage(...). We listen for that here, reveal the score,
- * and enable the Submit button so the student can record the attempt.
- *
- * Submitting saves the attempt to localStorage for this demo (no database
- * yet) using the same keys the dashboard and results pages read.
- */
-
 let latestResult = null;
+let isSubmitting = false;
 
 window.addEventListener("message", function (event) {
     const data = event.data;
 
-    // Ignore unrelated messages (browser extensions, etc.).
     if (!data || data.score === undefined) {
         return;
     }
@@ -23,6 +12,7 @@ window.addEventListener("message", function (event) {
 
     const scoreBox = document.getElementById("scoreBox");
     const submitButton = document.getElementById("submitButton");
+    const submitError = document.getElementById("submitError");
 
     if (scoreBox) {
         scoreBox.style.display = "block";
@@ -33,33 +23,59 @@ window.addEventListener("message", function (event) {
             "<br>Click <em>Record My Score</em> below to save this attempt.";
     }
 
+    if (submitError) {
+        submitError.style.display = "none";
+    }
+
     if (submitButton) {
         submitButton.disabled = false;
     }
 });
 
-function recordScore() {
-    if (!latestResult) {
+async function recordScore() {
+    if (!latestResult || isSubmitting) {
         return;
     }
 
-    const attempts =
-        JSON.parse(localStorage.getItem("pythonQuizAttempts")) || [];
+    const submitButton = document.getElementById("submitButton");
+    const submitError = document.getElementById("submitError");
 
-    attempts.push({
-        quiz: latestResult.quizTitle,
-        attempt: attempts.length + 1,
-        score: latestResult.score,
-        correct: latestResult.correctAnswers,
-        total: latestResult.totalQuestions,
-        status: "Submitted",
-        date: new Date().toLocaleDateString()
-    });
+    isSubmitting = true;
 
-    localStorage.setItem("pythonQuizAttempts", JSON.stringify(attempts));
-    localStorage.setItem("pythonQuizScore", latestResult.score);
-    localStorage.setItem("pythonQuizCorrect", latestResult.correctAnswers);
-    localStorage.setItem("pythonQuizTotal", latestResult.totalQuestions);
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = "Saving...";
+    }
 
-    window.location.href = "quiz_results.php";
+    if (submitError) {
+        submitError.style.display = "none";
+    }
+
+    try {
+        const response = await fetch("../api/submit_score.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(latestResult)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(result.error || "Could not save your score.");
+        }
+
+        window.location.href = "quiz_results.php?attempt=" + result.attempt_id;
+    } catch (err) {
+        isSubmitting = false;
+
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = "Record My Score";
+        }
+
+        if (submitError) {
+            submitError.style.display = "block";
+            submitError.textContent = err.message;
+        }
+    }
 }
