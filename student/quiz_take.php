@@ -25,8 +25,6 @@
             Your score then appears here so you can record the attempt.</p>
     </div>
 
-    <!-- The quiz HTML file is loaded inside an iframe. When the student submits,
-         it posts the score up to this page (see assets/js/quiz_parent.js). -->
     <iframe
         id="quizFrame"
         class="quiz-frame mt-4"
@@ -35,6 +33,8 @@
     </iframe>
 
     <div id="scoreBox" class="score-box"></div>
+
+    <div id="submitError" class="alert alert-danger mt-3" style="display:none;"></div>
 
     <div class="mt-4 mb-2">
         <button id="submitButton" class="btn btn-main btn-lg w-100" onclick="recordScore()" disabled>
