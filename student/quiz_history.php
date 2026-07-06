@@ -1,4 +1,11 @@
-<?php session_start(); ?>
+<?php
+session_start();
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/functions.php';
+
+$studentId = get_or_create_demo_student($pdo);
+$attempts  = get_attempts_for_student($pdo, $studentId);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,38 +43,33 @@
                     <th>Status</th>
                 </tr>
             </thead>
-            <tbody id="historyTable">
-                <tr>
-                    <td colspan="6" class="text-muted">No quiz attempts yet.</td>
-                </tr>
+            <tbody>
+                <?php if (count($attempts) === 0): ?>
+                    <tr>
+                        <td colspan="6" class="text-muted">No quiz attempts yet.</td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach ($attempts as $attempt): ?>
+                        <?php $summary = get_answer_summary($pdo, (int) $attempt['attempt_id']); ?>
+                        <tr>
+                            <td><?= htmlspecialchars($attempt['quiz_title']) ?></td>
+                            <td><?= (int) $attempt['attempt_number'] ?></td>
+                            <td><?= (int) $attempt['score'] ?>%</td>
+                            <td>
+                                <?= $summary['total'] > 0
+                                    ? (int) $summary['correct'] . '/' . (int) $summary['total']
+                                    : '&mdash;' ?>
+                            </td>
+                            <td><?= htmlspecialchars(date('M j, Y g:i A', strtotime($attempt['submitted_at']))) ?></td>
+                            <td><span class="badge bg-success"><?= htmlspecialchars($attempt['status']) ?></span></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
 
 </div>
-
-<script>
-    const attempts = JSON.parse(localStorage.getItem("pythonQuizAttempts")) || [];
-
-    if (attempts.length > 0) {
-        let rows = "";
-
-        attempts.forEach(function (attempt) {
-            rows += `
-                <tr>
-                    <td>${attempt.quiz}</td>
-                    <td>${attempt.attempt}</td>
-                    <td>${attempt.score}%</td>
-                    <td>${attempt.correct}/${attempt.total}</td>
-                    <td>${attempt.date}</td>
-                    <td><span class="badge bg-success">${attempt.status}</span></td>
-                </tr>
-            `;
-        });
-
-        document.getElementById("historyTable").innerHTML = rows;
-    }
-</script>
 
 </body>
 </html>
