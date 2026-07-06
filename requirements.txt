@@ -18,4 +18,6 @@ FP3: 8 week plan including something to show for FP3  (code structure, database 
 FP6: How do these quizzes plug-in to the project?
 https://github.com/sjasthi/python101/tree/main/Quizzes
 
+FP7: All 30 quizzes must show up in UI. You can reformat the quizzes automatically or offline if needed.
+
                                                                           
