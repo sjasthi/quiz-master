@@ -1,4 +1,4 @@
-CREATE DATABASE quiz_master;
+CREATE DATABASE IF NOT EXISTS quiz_master;
 USE quiz_master;
 
 CREATE TABLE users (
