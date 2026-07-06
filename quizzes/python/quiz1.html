@@ -80,27 +80,37 @@
 
 <script>
     function submitQuiz() {
+        const answerKey = { q1: "b", q2: "c", q3: "b" };
+        const answers = [];
         let score = 0;
 
-        if (document.querySelector('input[name="q1"]:checked')?.value === "b") {
-            score += 1;
-        }
+        Object.keys(answerKey).forEach(function (name, index) {
+            const selected = document.querySelector('input[name="' + name + '"]:checked');
+            const studentAnswer = selected ? selected.value : "";
+            const correctAnswer = answerKey[name];
+            const isCorrect = studentAnswer === correctAnswer;
 
-        if (document.querySelector('input[name="q2"]:checked')?.value === "c") {
-            score += 1;
-        }
+            if (isCorrect) {
+                score += 1;
+            }
 
-        if (document.querySelector('input[name="q3"]:checked')?.value === "b") {
-            score += 1;
-        }
+            answers.push({
+                questionNumber: index + 1,
+                studentAnswer: studentAnswer,
+                correctAnswer: correctAnswer,
+                isCorrect: isCorrect
+            });
+        });
 
-        const finalScore = Math.round((score / 3) * 100);
+        const finalScore = Math.round((score / answers.length) * 100);
 
         window.parent.postMessage({
             quizTitle: "Python Quiz 1",
+            quizFile: "quizzes/python/quiz1.html",
             score: finalScore,
             correctAnswers: score,
-            totalQuestions: 3
+            totalQuestions: answers.length,
+            answers: answers
         }, "*");
     }
 </script>
