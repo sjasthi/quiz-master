@@ -2,15 +2,14 @@
 
 Editable GitHub Markdown version generated from the spreadsheet.
 
-| Week       | Day                                                                                             | Iterations   | Abdi   | Ali   | Jama   | Salmaan   | All                                             |
-|:-----------|:------------------------------------------------------------------------------------------------|:-------------|:-------|:------|:-------|:----------|:------------------------------------------------|
-| 5          | 2026-06-15 00:00:00                                                                             | FP3          | ?      | Reviewed, created and discussed the Database Schema and how we how implement features.     | Database schema for users, quizzes, quiz attempts, and student answers.      | ?         | integration; promote to github; all are in sync |
-| 6          | 2026-06-22 00:00:00                                                                             | FP4          | ?      | Created the instructor dashboard under a new "instructor" folder anf four static PHP pages.     | Student Dashboard and  pages for taking quizzes     |     Oversaw progress, reviewed completed work, and helped ensure project components stayed organized and aligned|    | integration; promote to github; all are in sync |
-| 7          | 2026-06-29 00:00:00                                                                             | FP5          | ?      |   Wired the student quiz flow end-to-end, unified the student and instructor pages, and set up a demo landing page + run instructions.   | Enhance student dashboard with UI updates, attempts, and submit button     |   Oversaw progress, reviewed completed work, and helped ensure project components stayed organized and aligned     | integration; promote to github; all are in sync |
-just write this in the fp6 row with the column that has my name:
-Worked on the student dashboard, quiz access workflow, and quiz demo.|
-| 9          | 2026-07-13 00:00:00                                                                             | FP7          | ?      | ?     | ?      | ?         | integration; promote to github; all are in sync |
-| 10         | 2026-07-20 00:00:00                                                                             | FP8          | ?      | ?     | ?      | ?         | integration; promote to github; all are in sync |
-| 11         | 2026-07-27 00:00:00                                                                             | FP9          | ?      | ?     | ?      | ?         | integration; promote to github; all are in sync |
-| 12         | 2026-08-03 00:00:00                                                                             | FP10         | ?      | ?     | ?      | ?         | integration; promote to github; all are in sync |
-| 13         | 2026-08-10 00:00:00                                                                             | FP-Final     | ?      | ?     | ?      | ?         | integration; promote to github; all are in sync |
+| Week | Day | Iterations | Abdi | Ali | Jama | Salmaan | All |
+|:-----|:----|:-----------|:-----|:----|:-----|:--------|:----|
+| 5 | 2026-06-15 00:00:00 | FP3 | ? | Reviewed, created and discussed the Database Schema and how we how implement features. | Database schema for users, quizzes, quiz attempts, and student answers. | ? | integration; promote to github; all are in sync |
+| 6 | 2026-06-22 00:00:00 | FP4 | ? | Created the instructor dashboard under a new "instructor" folder anf four static PHP pages. | Student Dashboard and pages for taking quizzes | Oversaw progress, reviewed completed work, and helped ensure project components stayed organized and aligned | integration; promote to github; all are in sync |
+| 7 | 2026-06-29 00:00:00 | FP5 | ? | Wired the student quiz flow end-to-end, unified the student and instructor pages, and set up a demo landing page + run instructions. | Enhance student dashboard with UI updates, attempts, and submit button | Oversaw progress, reviewed completed work, and helped ensure project components stayed organized and aligned | integration; promote to github; all are in sync |
+| 8 | 2026-07-06 00:00:00 | FP6 | ? | ? | Worked on the student dashboard, quiz access workflow, and quiz demo. | ? | integration; promote to github; all are in sync |
+| 9 | 2026-07-13 00:00:00 | FP7 | ? | ? | ? | ? | integration; promote to github; all are in sync |
+| 10 | 2026-07-20 00:00:00 | FP8 | ? | ? | ? | ? | integration; promote to github; all are in sync |
+| 11 | 2026-07-27 00:00:00 | FP9 | ? | ? | ? | ? | integration; promote to github; all are in sync |
+| 12 | 2026-08-03 00:00:00 | FP10 | ? | ? | ? | ? | integration; promote to github; all are in sync |
+| 13 | 2026-08-10 00:00:00 | FP-Final | ? | ? | ? | ? | integration; promote to github; all are in sync |
