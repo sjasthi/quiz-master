@@ -2,6 +2,9 @@
 session_start();
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/quiz_repo.php';
+
+$allQuizzes = qm_all_quizzes($pdo);
 
 $studentId = get_or_create_demo_student($pdo);
 $pythonQuiz = get_or_create_quiz($pdo, 'quizzes/python/quiz1.html', 'Python Quiz 1');
@@ -43,8 +46,8 @@ $javaUnlocked = $bestPythonScore !== null && $bestPythonScore >= 75;
     <div class="row mt-4">
         <div class="col-md-4 mb-3">
             <div class="card-box">
-                <div class="stat-number">1</div>
-                <p class="mb-0 text-muted">Available Quiz</p>
+                <div class="stat-number"><?= count($allQuizzes) ?></div>
+                <p class="mb-0 text-muted">Available Quizzes</p>
             </div>
         </div>
 
@@ -66,43 +69,24 @@ $javaUnlocked = $bestPythonScore !== null && $bestPythonScore >= 75;
     <h3 class="section-title">Available Quizzes</h3>
 
     <div class="row">
-
-        <div class="col-md-6 mb-4">
-            <div class="card-box">
-                <span class="quiz-tag tag-open">Open</span>
-                <h4>Python Quiz 1</h4>
-                <p class="text-muted">Basic Python data types and syntax.</p>
-
-                <a href="quiz_take.php" class="btn btn-main w-100">
-                    Start Quiz
-                </a>
+        <?php if (count($allQuizzes) === 0): ?>
+            <div class="col-12">
+                <p class="text-muted">No quizzes available yet. Ask your instructor to add some.</p>
             </div>
-        </div>
-
-        <div class="col-md-6 mb-4">
-            <div class="card-box">
-                <?php if ($javaUnlocked): ?>
-                    <span class="quiz-tag tag-open">Open</span>
-                    <h4>Java Quiz 1</h4>
-                    <p class="text-muted">
-                        Unlocked because you passed Python Quiz 1 with at least 75%.
-                    </p>
-                    <button class="btn btn-main w-100" disabled>
-                        Coming Soon
-                    </button>
-                <?php else: ?>
-                    <span class="quiz-tag tag-locked">Locked</span>
-                    <h4>Java Quiz 1</h4>
-                    <p class="text-muted">
-                        Complete Python Quiz 1 with at least 75% to unlock this quiz.
-                    </p>
-                    <button class="btn btn-secondary w-100" disabled>
-                        Locked
-                    </button>
-                <?php endif; ?>
-            </div>
-        </div>
-
+        <?php else: ?>
+            <?php foreach ($allQuizzes as $q): ?>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card-box h-100 d-flex flex-column">
+                        <span class="quiz-tag tag-open">Open</span>
+                        <h4><?= htmlspecialchars($q['title']) ?></h4>
+                        <p class="text-muted"><?= htmlspecialchars($q['class_name'] ?? 'Python 101') ?></p>
+                        <a href="quiz_take.php?quiz_id=<?= (int) $q['quiz_id'] ?>" class="btn btn-main w-100 mt-auto">
+                            Start Quiz
+                        </a>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 
     <h3 class="section-title">Quiz Attempts</h3>

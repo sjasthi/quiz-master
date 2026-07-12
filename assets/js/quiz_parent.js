@@ -51,11 +51,24 @@ async function recordScore() {
         submitError.style.display = "none";
     }
 
+    // The parent page (quiz_take.php) tells us which registered quiz this is,
+    // via window.QM_QUIZ. That is the source of truth for the quiz identity —
+    // the score/answers come from whatever quiz ran inside the iframe.
+    const quiz = window.QM_QUIZ || {};
+    const payload = {
+        quizTitle: quiz.title || latestResult.quizTitle,
+        quizFile: quiz.file || latestResult.quizFile,
+        score: latestResult.score,
+        correctAnswers: latestResult.correctAnswers,
+        totalQuestions: latestResult.totalQuestions,
+        answers: latestResult.answers || []
+    };
+
     try {
         const response = await fetch("../api/submit_score.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(latestResult)
+            body: JSON.stringify(payload)
         });
 
         const result = await response.json();

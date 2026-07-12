@@ -1,4 +1,25 @@
-<?php session_start(); ?>
+<?php
+session_start();
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/quiz_repo.php';
+
+$rows = [];
+$dbError = null;
+try {
+    $rows = qm_quiz_overview($pdo);
+} catch (Throwable $e) {
+    $dbError = $e->getMessage();
+}
+
+$totalQuizzes = count($rows);
+$totalSubs = 0;
+$weightedScore = 0;
+foreach ($rows as $r) {
+    $totalSubs += (int) $r['submissions'];
+    $weightedScore += (int) $r['submissions'] * (int) $r['average_score'];
+}
+$overallAvg = $totalSubs > 0 ? round($weightedScore / $totalSubs) : null;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,24 +51,28 @@
         <a href="quiz_upload.php" class="btn btn-light btn-lg mt-3 mt-md-0">+ Upload New Quiz</a>
     </div>
 
+    <?php if ($dbError): ?>
+        <div class="alert alert-danger mt-4">
+            Database not reachable: <?= htmlspecialchars($dbError) ?>
+        </div>
+    <?php endif; ?>
+
     <div class="row mt-4">
         <div class="col-md-4 mb-3">
             <div class="card-box">
-                <div class="stat-number">1</div>
-                <p class="mb-0 text-muted">Published Quiz</p>
+                <div class="stat-number"><?= $totalQuizzes ?></div>
+                <p class="mb-0 text-muted">Quizzes</p>
             </div>
         </div>
-
         <div class="col-md-4 mb-3">
             <div class="card-box">
-                <div class="stat-number" id="totalSubmissions">0</div>
+                <div class="stat-number"><?= $totalSubs ?></div>
                 <p class="mb-0 text-muted">Submissions</p>
             </div>
         </div>
-
         <div class="col-md-4 mb-3">
             <div class="card-box">
-                <div class="stat-number" id="averageScore">N/A</div>
+                <div class="stat-number"><?= $overallAvg === null ? 'N/A' : $overallAvg . '%' ?></div>
                 <p class="mb-0 text-muted">Average Score</p>
             </div>
         </div>
@@ -67,39 +92,35 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Python Quiz 1</td>
-                    <td>Python 101</td>
-                    <td id="rowSubmissions">0</td>
-                    <td id="rowAverage">N/A</td>
-                    <td>
-                        <a href="quiz_results.php" class="btn btn-sm btn-outline-secondary">Results</a>
-                        <a href="quiz_edit.php" class="btn btn-sm btn-outline-secondary">Edit</a>
-                    </td>
-                </tr>
+                <?php if ($totalQuizzes === 0 && !$dbError): ?>
+                    <tr>
+                        <td colspan="5" class="text-muted">
+                            No quizzes yet. <a href="quiz_upload.php">Upload one or import the existing quizzes.</a>
+                        </td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach ($rows as $r): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($r['title']) ?></td>
+                            <td><?= htmlspecialchars($r['class_name'] ?? '') ?></td>
+                            <td><?= (int) $r['submissions'] ?></td>
+                            <td><?= (int) $r['submissions'] > 0 ? (int) $r['average_score'] . '%' : '—' ?></td>
+                            <td>
+                                <a href="../student/quiz_take.php?quiz_id=<?= (int) $r['quiz_id'] ?>"
+                                   class="btn btn-sm btn-outline-secondary" target="_blank">Preview</a>
+                                <a href="quiz_results.php?quiz_id=<?= (int) $r['quiz_id'] ?>"
+                                   class="btn btn-sm btn-outline-secondary">Results</a>
+                                <a href="quiz_edit.php?quiz_id=<?= (int) $r['quiz_id'] ?>"
+                                   class="btn btn-sm btn-outline-secondary">Edit</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
 
 </div>
-
-<script>
-    // For this demo the instructor view reads the same localStorage attempts the
-    // student writes, so taking the quiz as a student shows up here right away.
-    const attempts = JSON.parse(localStorage.getItem("pythonQuizAttempts")) || [];
-
-    if (attempts.length > 0) {
-        const total = attempts.length;
-        const average = Math.round(
-            attempts.reduce((sum, a) => sum + Number(a.score), 0) / total
-        );
-
-        document.getElementById("totalSubmissions").textContent = total;
-        document.getElementById("averageScore").textContent = average + "%";
-        document.getElementById("rowSubmissions").textContent = total;
-        document.getElementById("rowAverage").textContent = average + "%";
-    }
-</script>
 
 </body>
 </html>

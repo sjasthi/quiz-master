@@ -1997,5 +1997,73 @@ function submitQuiz() {
 // ── INIT ──
 buildQuiz();
 </script>
+<!-- quizmaster:instrumented -->
+<script>
+(function () {
+  if (window.__qmInstalled) return;
+  window.__qmInstalled = true;
+
+  var last = null;
+  function post(correct, total, source) {
+    correct = Number(correct); total = Number(total);
+    if (!(total > 0) || correct < 0 || correct > total) return;
+    var key = correct + '/' + total + '/' + source;
+    if (key === last) return;
+    last = key;
+    try {
+      window.parent.postMessage({
+        quizTitle: (document.title || 'Quiz').trim(),
+        score: Math.round((correct / total) * 100),
+        correctAnswers: correct,
+        totalQuestions: total,
+        source: source
+      }, '*');
+    } catch (e) {}
+  }
+
+  // 1) Explicit contract for quiz authors who want a precise report.
+  window.QuizMaster = window.QuizMaster || {};
+  window.QuizMaster.report = function (c, t) { post(c, t, 'explicit'); };
+
+  // 2) Auto-capture: find a visible "final score" element and read X / Y.
+  var SCORE_RE = /(\d+)\s*\/\s*(\d+)/;
+  function isScoreEl(el) {
+    var s = ((el.id || '') + ' ' +
+             (typeof el.className === 'string' ? el.className : '')).toLowerCase();
+    if (!s.trim()) return false;
+    if (/progress|timer|current|counter|question|qnum|streak|level|remaining/.test(s)) return false;
+    return /score|result|grade|final/.test(s);
+  }
+  function visible(el) {
+    return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+  }
+  function scan() {
+    var els = document.querySelectorAll('[id],[class]'), best = null;
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (!isScoreEl(el) || !visible(el)) continue;
+      var m = (el.textContent || '').match(SCORE_RE);
+      if (m) {
+        var c = +m[1], t = +m[2];
+        if (t >= 2 && t <= 200 && c <= t) best = { c: c, t: t };
+      }
+    }
+    if (best) post(best.c, best.t, 'auto');
+  }
+
+  var pending;
+  function schedule() { clearTimeout(pending); pending = setTimeout(scan, 250); }
+  function start() {
+    try {
+      new MutationObserver(schedule).observe(document.body, {
+        subtree: true, childList: true, characterData: true,
+        attributes: true, attributeFilter: ['class', 'style']
+      });
+    } catch (e) {}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script>
 </body>
 </html>
