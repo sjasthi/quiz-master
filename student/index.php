@@ -1,19 +1,30 @@
 <?php
 session_start();
+
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/quiz_repo.php';
 
-$allQuizzes = qm_all_quizzes($pdo);
-
 $studentId = get_or_create_demo_student($pdo);
-$pythonQuiz = get_or_create_quiz($pdo, 'quizzes/python/quiz1.html', 'Python Quiz 1');
+
+// Create or retrieve the sample quiz first.
+$pythonQuiz = get_or_create_quiz(
+    $pdo,
+    'quizzes/python/quiz1.html',
+    'Python Quiz 1'
+);
+
 $pythonQuizId = (int) $pythonQuiz['quiz_id'];
+
+// Now load all quizzes.
+$allQuizzes = qm_all_quizzes($pdo);
 
 $attempts = get_attempts_for_student($pdo, $studentId);
 
 $completedQuizCount = count(array_unique(array_column($attempts, 'quiz_id')));
-$currentScore = count($attempts) > 0 ? $attempts[count($attempts) - 1]['score'] . '%' : 'N/A';
+$currentScore = count($attempts) > 0
+    ? $attempts[count($attempts) - 1]['score'] . '%'
+    : 'N/A';
 
 $bestPythonScore = get_best_score($pdo, $studentId, $pythonQuizId);
 $javaUnlocked = $bestPythonScore !== null && $bestPythonScore >= 75;
@@ -78,9 +89,15 @@ $javaUnlocked = $bestPythonScore !== null && $bestPythonScore >= 75;
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card-box h-100 d-flex flex-column">
                         <span class="quiz-tag tag-open">Open</span>
+
                         <h4><?= htmlspecialchars($q['title']) ?></h4>
-                        <p class="text-muted"><?= htmlspecialchars($q['class_name'] ?? 'Python 101') ?></p>
-                        <a href="quiz_take.php?quiz_id=<?= (int) $q['quiz_id'] ?>" class="btn btn-main w-100 mt-auto">
+
+                        <p class="text-muted">
+                            <?= htmlspecialchars($q['class_name'] ?? 'Python 101') ?>
+                        </p>
+
+                        <a href="quiz_take.php?quiz_id=<?= (int) $q['quiz_id'] ?>"
+                           class="btn btn-main w-100 mt-auto">
                             Start Quiz
                         </a>
                     </div>
@@ -115,7 +132,11 @@ $javaUnlocked = $bestPythonScore !== null && $bestPythonScore >= 75;
                             <td><?= (int) $attempt['attempt_number'] ?></td>
                             <td><?= (int) $attempt['score'] ?>%</td>
                             <td><?= htmlspecialchars(date('M j, Y', strtotime($attempt['submitted_at']))) ?></td>
-                            <td><span class="badge bg-success"><?= htmlspecialchars($attempt['status']) ?></span></td>
+                            <td>
+                                <span class="badge bg-success">
+                                    <?= htmlspecialchars($attempt['status']) ?>
+                                </span>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
