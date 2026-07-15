@@ -206,3 +206,17 @@ body {
     font-size: 46px;
     margin-bottom: 12px;
 }
+
+
+.btn-progress-outline {
+    border: 2px solid #2f5fe3;
+    color: #2f5fe3;
+    background: transparent;
+    font-weight: 600;
+}
+
+.btn-progress-outline:hover {
+    background: #2f5fe3;
+    border-color: #2f5fe3;
+    color: #ffffff;
+}
