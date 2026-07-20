@@ -1,4 +1,9 @@
-<?php session_start(); ?>
+<?php
+session_start();
+
+require_once __DIR__ . '/../includes/auth.php';
+require_role('instructor', '../login.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,23 +12,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/quizmaster.css?v=1">
 </head>
-
 <body>
-
 <div class="topbar">
     <div class="container d-flex justify-content-between align-items-center">
         <div class="brand">Quiz Master</div>
         <a href="dashboard.php" class="btn btn-outline-primary btn-sm">Back to Dashboard</a>
     </div>
 </div>
-
 <div class="container">
-
     <div class="hero">
         <h1>Quiz Results</h1>
         <p class="mb-0">Student submissions for <strong>Python Quiz 1</strong>.</p>
     </div>
-
     <div class="row mt-4">
         <div class="col-md-6 mb-3">
             <div class="card-box">
@@ -38,7 +38,6 @@
             </div>
         </div>
     </div>
-
     <div class="card-box mb-5">
         <table class="data-table">
             <thead>
@@ -57,22 +56,17 @@
             </tbody>
         </table>
     </div>
-
 </div>
-
 <script>
     // Reads the same localStorage attempts the student writes for this demo.
     const attempts = JSON.parse(localStorage.getItem("pythonQuizAttempts")) || [];
-
     if (attempts.length > 0) {
         const total = attempts.length;
         const average = Math.round(
             attempts.reduce((sum, a) => sum + Number(a.score), 0) / total
         );
-
         document.getElementById("submissionCount").textContent = total;
         document.getElementById("averageScore").textContent = average + "%";
-
         let rows = "";
         attempts.forEach(function (attempt) {
             rows += `
@@ -85,10 +79,8 @@
                 </tr>
             `;
         });
-
         document.getElementById("resultsTable").innerHTML = rows;
     }
 </script>
-
 </body>
 </html>
