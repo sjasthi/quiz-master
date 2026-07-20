@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+require_once __DIR__ . '/../includes/auth.php';
+require_role('student', '../login.php');
+
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/quiz_repo.php';
 
@@ -7,7 +11,6 @@ $quizId = isset($_GET['quiz_id']) ? (int) $_GET['quiz_id'] : 0;
 
 $quiz = $quizId ? qm_quiz_by_id($pdo, $quizId) : null;
 
-// Fallback to the sample quiz (registering it if needed) so the page always works.
 if (!$quiz) {
     [$fid] = qm_register_quiz($pdo, [
         'title'                => 'Python Quiz 1',
@@ -71,7 +74,6 @@ $iframeSrc = '../' . ltrim($quiz['html_file_path'], '/');
 </div>
 
 <script>
-    // Identity of the registered quiz being taken (source of truth for saving).
     window.QM_QUIZ = {
         id: <?= (int) $quiz['quiz_id'] ?>,
         title: <?= json_encode($quiz['title']) ?>,
