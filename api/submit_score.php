@@ -3,6 +3,7 @@
 session_start();
 header('Content-Type: application/json');
 
+require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
 
@@ -11,6 +12,10 @@ function reject(int $httpStatus, string $message): void
     http_response_code($httpStatus);
     echo json_encode(['success' => false, 'error' => $message]);
     exit;
+}
+
+if (!is_logged_in() || current_user_role() !== 'student') {
+    reject(401, 'You must be logged in as a student to submit a quiz score.');
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -62,7 +67,7 @@ if (count($answers) > 0 && count($answers) !== $total) {
 }
 
 try {
-    $studentId = get_or_create_demo_student($pdo);
+    $studentId = current_user_id();
     $quiz      = get_or_create_quiz($pdo, $quizFile, $quizTitle);
 
     $quizId              = (int) $quiz['quiz_id'];
