@@ -72,9 +72,11 @@ $overallAvg = $totalSubs > 0
                 Student View
             </a>
 
-            <span class="ms-2">
-                Instructor Dashboard
-            </span>
+           <span class="ms-2">
+    <?= htmlspecialchars(current_user_name()) ?>
+</span>
+
+<a href="../logout.php" class="btn btn-outline-secondary btn-sm ms-2">Log Out</a>
         </div>
 
     </div>
