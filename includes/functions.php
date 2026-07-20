@@ -1,38 +1,8 @@
 <?php
-
-function get_or_create_demo_student(PDO $pdo): int
-{
-    if (!empty($_SESSION['student_id'])) {
-        return (int) $_SESSION['student_id'];
-    }
-
-    $email = 'demo.student@quizmaster.local';
-
-    $stmt = $pdo->prepare('SELECT user_id FROM users WHERE email = :email');
-    $stmt->execute(['email' => $email]);
-    $existingId = $stmt->fetchColumn();
-
-    if ($existingId) {
-        $_SESSION['student_id'] = (int) $existingId;
-        return (int) $existingId;
-    }
-
-    $insert = $pdo->prepare(
-        'INSERT INTO users (name, email, password, role)
-         VALUES (:name, :email, :password, :role)'
-    );
-    $insert->execute([
-        'name'     => 'Demo Student',
-        'email'    => $email,
-        'password' => password_hash('demo-password', PASSWORD_DEFAULT),
-        'role'     => 'student',
-    ]);
-
-    $studentId = (int) $pdo->lastInsertId();
-    $_SESSION['student_id'] = $studentId;
-
-    return $studentId;
-}
+// Note: get_or_create_demo_student() used to live here as a placeholder
+// student identity before real login existed. Now that includes/auth.php
+// provides current_user_id() from a real logged-in session, that shim has
+// been removed -- every caller now uses current_user_id() instead.
 
 function get_or_create_quiz(PDO $pdo, string $htmlFilePath, string $title): array
 {
