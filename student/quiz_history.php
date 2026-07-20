@@ -1,9 +1,13 @@
 <?php
 session_start();
+
+require_once __DIR__ . '/../includes/auth.php';
+require_role('student', '../login.php');
+
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
 
-$studentId = get_or_create_demo_student($pdo);
+$studentId = current_user_id();
 $attempts  = get_attempts_for_student($pdo, $studentId);
 ?>
 <!DOCTYPE html>
