@@ -1,24 +1,19 @@
 <?php
 session_start();
 
+require_once __DIR__ . '/../includes/auth.php';
+require_role('student', '../login.php');
+
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/quiz_repo.php';
 
-$studentId = get_or_create_demo_student($pdo);
+$studentId = current_user_id();
 
-// Create or retrieve the sample quiz first.
-$pythonQuiz = get_or_create_quiz(
-    $pdo,
-    'quizzes/python/quiz1.html',
-    'Python Quiz 1'
-);
-
+$pythonQuiz = get_or_create_quiz($pdo, 'quizzes/python/quiz1.html', 'Python Quiz 1');
 $pythonQuizId = (int) $pythonQuiz['quiz_id'];
 
-// Now load all quizzes.
 $allQuizzes = qm_all_quizzes($pdo);
-
 $attempts = get_attempts_for_student($pdo, $studentId);
 
 $completedQuizCount = count(array_unique(array_column($attempts, 'quiz_id')));
@@ -43,7 +38,10 @@ $javaUnlocked = $bestPythonScore !== null && $bestPythonScore >= 75;
 <div class="topbar">
     <div class="container d-flex justify-content-between align-items-center">
         <div class="brand">Quiz Master</div>
-        <div>Student Dashboard</div>
+        <div>
+            <?= htmlspecialchars(current_user_name()) ?>
+            <a href="../logout.php" class="btn btn-outline-secondary btn-sm ms-2">Log Out</a>
+        </div>
     </div>
 </div>
 
