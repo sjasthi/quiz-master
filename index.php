@@ -1,4 +1,11 @@
-<?php session_start(); ?>
+<?php
+require_once __DIR__ . '/includes/auth.php';
+
+if (is_logged_in()) {
+    header('Location: ' . (current_user_role() === 'instructor' ? 'instructor/dashboard.php' : 'student/index.php'));
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,29 +30,23 @@
         <p class="mb-0">Take quizzes, track your progress, and manage your class — all in one place.</p>
     </div>
 
-    <h3 class="section-title text-center">Choose how you want to sign in</h3>
-
     <div class="row justify-content-center mb-5">
         <div class="col-md-5 mb-4">
-            <a href="student/index.php" class="text-decoration-none text-dark">
-                <div class="role-card">
-                    <div class="role-emoji">🎓</div>
-                    <h4>I'm a Student</h4>
-                    <p class="text-muted mb-3">Take quizzes and see your scores and attempt history.</p>
-                    <span class="btn btn-main">Enter Student Dashboard</span>
-                </div>
-            </a>
+            <div class="role-card text-center">
+                <div class="role-emoji">🔑</div>
+                <h4>Already have an account?</h4>
+                <p class="text-muted mb-3">Log in as a student or instructor.</p>
+                <a href="login.php" class="btn btn-main">Log In</a>
+            </div>
         </div>
 
         <div class="col-md-5 mb-4">
-            <a href="instructor/dashboard.php" class="text-decoration-none text-dark">
-                <div class="role-card">
-                    <div class="role-emoji">🧑‍🏫</div>
-                    <h4>I'm an Instructor</h4>
-                    <p class="text-muted mb-3">Upload quizzes, edit settings, and review student results.</p>
-                    <span class="btn btn-main">Enter Instructor Dashboard</span>
-                </div>
-            </a>
+            <div class="role-card text-center">
+                <div class="role-emoji">📝</div>
+                <h4>New here?</h4>
+                <p class="text-muted mb-3">Create a student or instructor account.</p>
+                <a href="register.php" class="btn btn-main">Sign Up</a>
+            </div>
         </div>
     </div>
 
