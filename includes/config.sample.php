@@ -15,3 +15,4 @@ define('DB_NAME', 'quiz_master');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
+define('INSTRUCTOR_SIGNUP_CODE', 'change-me'); // pick your own secret
