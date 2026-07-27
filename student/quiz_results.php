@@ -8,26 +8,39 @@ require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 $studentId = current_user_id();
-$quiz      = get_or_create_quiz($pdo, 'quizzes/python/quiz1.html', 'Python Quiz 1');
-$quizId    = (int) $quiz['quiz_id'];
-
-$attempts = get_attempts_for_student($pdo, $studentId, $quizId);
-
 $requestedId = isset($_GET['attempt']) ? (int) $_GET['attempt'] : null;
-$latest = null;
 
-foreach ($attempts as $attempt) {
-    if ($requestedId !== null && (int) $attempt['attempt_id'] === $requestedId) {
-        $latest = $attempt;
-        break;
+// Every attempt this student has made, across all quizzes.
+$allAttempts = get_attempts_for_student($pdo, $studentId);
+
+// Feature the attempt we were redirected to (?attempt=N); otherwise the newest.
+$latest = null;
+if ($requestedId !== null) {
+    foreach ($allAttempts as $attempt) {
+        if ((int) $attempt['attempt_id'] === $requestedId) {
+            $latest = $attempt;
+            break;
+        }
     }
 }
-
-if ($latest === null && count($attempts) > 0) {
-    $latest = $attempts[count($attempts) - 1];
+if ($latest === null && count($allAttempts) > 0) {
+    $latest = $allAttempts[count($allAttempts) - 1];
 }
 
-$summary = $latest ? get_answer_summary($pdo, (int) $latest['attempt_id']) : null;
+// Show that attempt's quiz and its full attempt history for this student.
+$quizTitle = $latest['quiz_title'] ?? 'Quiz';
+$quizId    = $latest ? (int) $latest['quiz_id'] : 0;
+$attempts  = $quizId ? get_attempts_for_student($pdo, $studentId, $quizId) : [];
+$summary   = $latest ? get_answer_summary($pdo, (int) $latest['attempt_id']) : null;
+
+// Correct answers: prefer the counts stored on the attempt; fall back to the
+// per-question data (older quiz1-style attempts) if they aren't set.
+$correctCount = $latest['correct_answers'] ?? null;
+$totalCount   = $latest['total_questions'] ?? null;
+if (empty($totalCount) && $summary && $summary['total'] > 0) {
+    $correctCount = $summary['correct'];
+    $totalCount   = $summary['total'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -56,7 +69,7 @@ $summary = $latest ? get_answer_summary($pdo, (int) $latest['attempt_id']) : nul
     </div>
 
     <div class="card-box mt-4 mb-5">
-        <h3><?= htmlspecialchars($quiz['title']) ?></h3>
+        <h3><?= htmlspecialchars($quizTitle) ?></h3>
 
         <?php if ($latest): ?>
             <div class="row mt-4">
@@ -70,8 +83,8 @@ $summary = $latest ? get_answer_summary($pdo, (int) $latest['attempt_id']) : nul
                 <div class="col-md-4 mb-3">
                     <div class="card-box">
                         <div class="stat-number">
-                            <?= $summary['total'] > 0
-                                ? (int) $summary['correct'] . '/' . (int) $summary['total']
+                            <?= !empty($totalCount)
+                                ? (int) $correctCount . '/' . (int) $totalCount
                                 : '&mdash;' ?>
                         </div>
                         <p class="mb-0 text-muted">Correct Answers</p>
@@ -87,14 +100,14 @@ $summary = $latest ? get_answer_summary($pdo, (int) $latest['attempt_id']) : nul
             </div>
 
             <div class="alert alert-success mt-3">
-                Your <?= htmlspecialchars($quiz['title']) ?> score was saved to the database.
+                Your <?= htmlspecialchars($quizTitle) ?> score was saved to the database.
             </div>
 
-            <a href="quiz_take.php" class="btn btn-outline-primary mt-3">Retake Quiz</a>
+            <a href="quiz_take.php?quiz_id=<?= $quizId ?>" class="btn btn-outline-primary mt-3">Retake Quiz</a>
             <a href="index.php" class="btn btn-main mt-3">Return to Dashboard</a>
         <?php else: ?>
             <p class="text-muted">No quiz result found yet.</p>
-            <a href="quiz_take.php" class="btn btn-main">Take Quiz</a>
+            <a href="index.php" class="btn btn-main">Return to Dashboard</a>
         <?php endif; ?>
     </div>
 

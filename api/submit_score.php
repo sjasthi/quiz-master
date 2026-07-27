@@ -98,15 +98,18 @@ try {
     $pdo->beginTransaction();
 
     $insertAttempt = $pdo->prepare(
-        'INSERT INTO quiz_attempts (quiz_id, student_id, attempt_number, score, status)
-         VALUES (:quiz_id, :student_id, :attempt_number, :score, :status)'
+        'INSERT INTO quiz_attempts
+            (quiz_id, student_id, attempt_number, score, correct_answers, total_questions, status)
+         VALUES (:quiz_id, :student_id, :attempt_number, :score, :correct_answers, :total_questions, :status)'
     );
     $insertAttempt->execute([
-        'quiz_id'        => $quizId,
-        'student_id'     => $studentId,
-        'attempt_number' => $attemptNumber,
-        'score'          => $score,
-        'status'         => 'Submitted',
+        'quiz_id'         => $quizId,
+        'student_id'      => $studentId,
+        'attempt_number'  => $attemptNumber,
+        'score'           => $score,
+        'correct_answers' => $correct,
+        'total_questions' => $total,
+        'status'          => 'Submitted',
     ]);
 
     $attemptId = (int) $pdo->lastInsertId();

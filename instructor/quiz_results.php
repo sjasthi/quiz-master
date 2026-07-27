@@ -1,8 +1,19 @@
 <?php
 session_start();
-
 require_once __DIR__ . '/../includes/auth.php';
 require_role('instructor', '../login.php');
+
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/quiz_repo.php';
+
+$quizId = isset($_GET['quiz_id']) ? (int) $_GET['quiz_id'] : 0;
+$quiz = $quizId ? qm_quiz_by_id($pdo, $quizId) : null;
+
+$submissions = $quiz ? qm_quiz_submissions($pdo, $quizId) : [];
+$count = count($submissions);
+$average = $count > 0
+    ? (int) round(array_sum(array_column($submissions, 'score')) / $count)
+    : null;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,67 +32,66 @@ require_role('instructor', '../login.php');
     </div>
 </div>
 <div class="container">
-    <div class="hero">
-        <h1>Quiz Results</h1>
-        <p class="mb-0">Student submissions for <strong>Python Quiz 1</strong>.</p>
-    </div>
-    <div class="row mt-4">
-        <div class="col-md-6 mb-3">
-            <div class="card-box">
-                <div class="stat-number" id="submissionCount">0</div>
-                <p class="mb-0 text-muted">Submissions</p>
+
+    <?php if (!$quiz): ?>
+        <div class="alert alert-warning mt-5">
+            That quiz could not be found. <a href="dashboard.php">Back to dashboard</a>.
+        </div>
+    <?php else: ?>
+        <div class="hero">
+            <h1>Quiz Results</h1>
+            <p class="mb-0">Student submissions for <strong><?= htmlspecialchars($quiz['title']) ?></strong>.</p>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6 mb-3">
+                <div class="card-box">
+                    <div class="stat-number"><?= $count ?></div>
+                    <p class="mb-0 text-muted">Submissions</p>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card-box">
+                    <div class="stat-number"><?= $average === null ? 'N/A' : $average . '%' ?></div>
+                    <p class="mb-0 text-muted">Average Score</p>
+                </div>
             </div>
         </div>
-        <div class="col-md-6 mb-3">
-            <div class="card-box">
-                <div class="stat-number" id="averageScore">N/A</div>
-                <p class="mb-0 text-muted">Average Score</p>
+
+        <div class="card-box mb-5">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Attempt</th>
+                            <th>Score</th>
+                            <th>Status</th>
+                            <th>Submitted At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if ($count === 0): ?>
+                            <tr>
+                                <td colspan="5" class="text-muted">No submissions yet.</td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($submissions as $s): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($s['student_name']) ?></td>
+                                    <td><?= (int) $s['attempt_number'] ?></td>
+                                    <td><?= (int) $s['score'] ?>%</td>
+                                    <td><span class="badge bg-success"><?= htmlspecialchars($s['status']) ?></span></td>
+                                    <td><?= htmlspecialchars(date('M j, Y g:i A', strtotime($s['submitted_at']))) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div>
-    <div class="card-box mb-5">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Student</th>
-                    <th>Attempt</th>
-                    <th>Score</th>
-                    <th>Status</th>
-                    <th>Submitted At</th>
-                </tr>
-            </thead>
-            <tbody id="resultsTable">
-                <tr>
-                    <td colspan="5" class="text-muted">No submissions yet.</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <?php endif; ?>
+
 </div>
-<script>
-    // Reads the same localStorage attempts the student writes for this demo.
-    const attempts = JSON.parse(localStorage.getItem("pythonQuizAttempts")) || [];
-    if (attempts.length > 0) {
-        const total = attempts.length;
-        const average = Math.round(
-            attempts.reduce((sum, a) => sum + Number(a.score), 0) / total
-        );
-        document.getElementById("submissionCount").textContent = total;
-        document.getElementById("averageScore").textContent = average + "%";
-        let rows = "";
-        attempts.forEach(function (attempt) {
-            rows += `
-                <tr>
-                    <td>Demo Student</td>
-                    <td>${attempt.attempt}</td>
-                    <td>${attempt.score}% (${attempt.correct}/${attempt.total})</td>
-                    <td><span class="badge bg-success">${attempt.status}</span></td>
-                    <td>${attempt.date}</td>
-                </tr>
-            `;
-        });
-        document.getElementById("resultsTable").innerHTML = rows;
-    }
-</script>
 </body>
 </html>

@@ -30,6 +30,8 @@ CREATE TABLE quiz_attempts (
     student_id INT NOT NULL,
     attempt_number INT NOT NULL,
     score INT DEFAULT 0,
+    correct_answers INT NULL,
+    total_questions INT NULL,
     status VARCHAR(30) DEFAULT 'Submitted',
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 

@@ -53,6 +53,20 @@ function qm_quiz_overview(PDO $pdo): array
     )->fetchAll();
 }
 
+/** All submissions (attempts) for one quiz, with student names, newest first. */
+function qm_quiz_submissions(PDO $pdo, int $quizId): array
+{
+    $stmt = $pdo->prepare(
+        'SELECT a.*, u.name AS student_name
+         FROM quiz_attempts a
+         JOIN users u ON u.user_id = a.student_id
+         WHERE a.quiz_id = :quiz_id
+         ORDER BY a.submitted_at DESC'
+    );
+    $stmt->execute(['quiz_id' => $quizId]);
+    return $stmt->fetchAll();
+}
+
 /** Turn "7_5_list_comprehension_playbook_and_quiz.html" into a readable title. */
 function qm_pretty_title(string $filename): string
 {

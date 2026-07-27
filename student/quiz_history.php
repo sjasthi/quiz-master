@@ -55,14 +55,21 @@ $attempts  = get_attempts_for_student($pdo, $studentId);
                     </tr>
                 <?php else: ?>
                     <?php foreach ($attempts as $attempt): ?>
-                        <?php $summary = get_answer_summary($pdo, (int) $attempt['attempt_id']); ?>
+                        <?php
+                            $corr = $attempt['correct_answers'] ?? null;
+                            $tot  = $attempt['total_questions'] ?? null;
+                            if (empty($tot)) {
+                                $sum = get_answer_summary($pdo, (int) $attempt['attempt_id']);
+                                if ($sum['total'] > 0) { $corr = $sum['correct']; $tot = $sum['total']; }
+                            }
+                        ?>
                         <tr>
                             <td><?= htmlspecialchars($attempt['quiz_title']) ?></td>
                             <td><?= (int) $attempt['attempt_number'] ?></td>
                             <td><?= (int) $attempt['score'] ?>%</td>
                             <td>
-                                <?= $summary['total'] > 0
-                                    ? (int) $summary['correct'] . '/' . (int) $summary['total']
+                                <?= !empty($tot)
+                                    ? (int) $corr . '/' . (int) $tot
                                     : '&mdash;' ?>
                             </td>
                             <td><?= htmlspecialchars(date('M j, Y g:i A', strtotime($attempt['submitted_at']))) ?></td>
