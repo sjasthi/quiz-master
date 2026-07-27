@@ -242,7 +242,7 @@ $overallAvg = $totalSubs > 0
                             <td>
 
                                 <a
-                                    href="../student/quiz_take.php?quiz_id=<?= (int) $r['quiz_id'] ?>"
+                                    href="quiz_preview.php?quiz_id=<?= (int) $r['quiz_id'] ?>"
                                     class="btn btn-sm btn-outline-secondary"
                                     target="_blank"
                                 >

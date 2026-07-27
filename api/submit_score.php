@@ -74,6 +74,11 @@ try {
     $attemptsAllowed      = $quiz['attempts_allowed'];
     $resubmissionAllowed = (bool) $quiz['resubmission_allowed'];
 
+    // Due-date locking: reject submissions after the quiz has closed.
+    if (!empty($quiz['due_date']) && strtotime($quiz['due_date']) < time()) {
+        reject(403, 'This quiz is past its due date and is now closed.');
+    }
+
     $countStmt = $pdo->prepare(
         'SELECT COUNT(*) FROM quiz_attempts WHERE quiz_id = :quiz_id AND student_id = :student_id'
     );

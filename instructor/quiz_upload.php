@@ -85,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'total_points'         => (int) ($_POST['total_points'] ?? 100) ?: 100,
             'attempts_allowed'     => $attempts === '' ? null : (int) $attempts,
             'resubmission_allowed' => isset($_POST['resubmission_allowed']),
+            'due_date'             => $_POST['due_date'] ?? null,
         ]);
         qm_flash_redirect('success', 'Uploaded and registered "' . htmlspecialchars($title) . '". It is now takeable and will show up in the quiz list.');
     } catch (Throwable $e) {
@@ -108,6 +109,7 @@ try {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Quiz - Quiz Master</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/quizmaster.css?v=1">
@@ -168,6 +170,12 @@ try {
                         </div>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label">Due Date <span class="text-muted">(optional)</span></label>
+                        <input type="datetime-local" name="due_date" class="form-control">
+                        <div class="hint">After this time the quiz closes and students can't submit.</div>
+                    </div>
+
                     <div class="form-check mb-4">
                         <input type="checkbox" name="resubmission_allowed" class="form-check-input" id="resubmission" checked>
                         <label class="form-check-label" for="resubmission">Allow resubmission</label>
@@ -219,7 +227,7 @@ try {
                             <td><?= htmlspecialchars($q['class_name'] ?? '') ?></td>
                             <td><code><?= htmlspecialchars($q['html_file_path'] ?? '') ?></code></td>
                             <td>
-                                <a href="../student/quiz_take.php?quiz_id=<?= (int) $q['quiz_id'] ?>"
+                                <a href="quiz_preview.php?quiz_id=<?= (int) $q['quiz_id'] ?>"
                                    class="btn btn-sm btn-outline-secondary" target="_blank">Preview</a>
                                 <a href="quiz_results.php?quiz_id=<?= (int) $q['quiz_id'] ?>"
                                    class="btn btn-sm btn-outline-secondary">Results</a>

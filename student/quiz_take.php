@@ -24,11 +24,13 @@ if (!$quiz) {
 }
 
 $iframeSrc = '../' . ltrim($quiz['html_file_path'], '/');
+$pastDue = qm_is_past_due($quiz);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($quiz['title']) ?> - Quiz Master</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/quizmaster.css?v=1">
@@ -47,32 +49,50 @@ $iframeSrc = '../' . ltrim($quiz['html_file_path'], '/');
 
     <div class="hero">
         <h1><?= htmlspecialchars($quiz['title']) ?></h1>
-        <p class="mb-0">Complete the quiz below. When it finishes, your score appears here so you can record the attempt.</p>
+        <?php if ($pastDue): ?>
+            <p class="mb-0">This quiz closed on <?= htmlspecialchars(date('M j, Y g:i A', strtotime($quiz['due_date']))) ?>.</p>
+        <?php else: ?>
+            <p class="mb-0">Complete the quiz below. When it finishes, your score appears here so you can record the attempt.</p>
+        <?php endif; ?>
     </div>
 
-    <iframe
-        id="quizFrame"
-        class="quiz-frame mt-4"
-        style="min-height:700px;"
-        src="<?= htmlspecialchars($iframeSrc) ?>"
-        title="<?= htmlspecialchars($quiz['title']) ?>">
-    </iframe>
+    <?php if ($pastDue): ?>
 
-    <div id="scoreBox" class="score-box"></div>
+        <div class="alert alert-warning mt-4">
+            <strong>This quiz is closed.</strong>
+            The due date (<?= htmlspecialchars(date('M j, Y g:i A', strtotime($quiz['due_date']))) ?>)
+            has passed, so it can no longer be taken.
+        </div>
+        <a href="index.php" class="btn btn-main mb-5">Back to Dashboard</a>
 
-    <div id="submitError" class="alert alert-danger mt-3" style="display:none;"></div>
+    <?php else: ?>
 
-    <div class="mt-4 mb-2">
-        <button id="submitButton" class="btn btn-main btn-lg w-100" onclick="recordScore()" disabled>
-            Record My Score
-        </button>
-        <p class="hint text-center">Finish the quiz above to enable this button.</p>
-    </div>
+        <iframe
+            id="quizFrame"
+            class="quiz-frame mt-4"
+            style="min-height:700px;"
+            src="<?= htmlspecialchars($iframeSrc) ?>"
+            title="<?= htmlspecialchars($quiz['title']) ?>">
+        </iframe>
 
-    <div class="mb-5"></div>
+        <div id="scoreBox" class="score-box"></div>
+
+        <div id="submitError" class="alert alert-danger mt-3" style="display:none;"></div>
+
+        <div class="mt-4 mb-2">
+            <button id="submitButton" class="btn btn-main btn-lg w-100" onclick="recordScore()" disabled>
+                Record My Score
+            </button>
+            <p class="hint text-center">Finish the quiz above to enable this button.</p>
+        </div>
+
+        <div class="mb-5"></div>
+
+    <?php endif; ?>
 
 </div>
 
+<?php if (!$pastDue): ?>
 <script>
     window.QM_QUIZ = {
         id: <?= (int) $quiz['quiz_id'] ?>,
@@ -81,6 +101,7 @@ $iframeSrc = '../' . ltrim($quiz['html_file_path'], '/');
     };
 </script>
 <script src="../assets/js/quiz_parent.js"></script>
+<?php endif; ?>
 
 </body>
 </html>

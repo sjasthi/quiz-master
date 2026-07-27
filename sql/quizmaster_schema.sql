@@ -17,6 +17,7 @@ CREATE TABLE quizzes (
     total_points INT,
     attempts_allowed INT DEFAULT 1,
     resubmission_allowed BOOLEAN DEFAULT FALSE,
+    due_date DATETIME NULL,
     created_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 

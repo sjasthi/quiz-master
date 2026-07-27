@@ -77,8 +77,8 @@ function qm_register_quiz(PDO $pdo, array $meta): array
 
     $stmt = $pdo->prepare(
         'INSERT INTO quizzes
-            (title, class_name, html_file_path, total_points, attempts_allowed, resubmission_allowed)
-         VALUES (:title, :class_name, :path, :total_points, :attempts_allowed, :resubmission_allowed)'
+            (title, class_name, html_file_path, total_points, attempts_allowed, resubmission_allowed, due_date)
+         VALUES (:title, :class_name, :path, :total_points, :attempts_allowed, :resubmission_allowed, :due_date)'
     );
     $stmt->execute([
         'title'                => $meta['title'],
@@ -87,9 +87,75 @@ function qm_register_quiz(PDO $pdo, array $meta): array
         'total_points'         => $meta['total_points'] ?? 100,
         'attempts_allowed'     => $meta['attempts_allowed'] ?? null,
         'resubmission_allowed' => !empty($meta['resubmission_allowed']) ? 1 : 0,
+        'due_date'             => qm_normalize_datetime($meta['due_date'] ?? null),
     ]);
 
     return [(int) $pdo->lastInsertId(), true];
+}
+
+/** Update an existing quiz's metadata (used by the edit form). */
+function qm_update_quiz(PDO $pdo, int $id, array $meta): void
+{
+    $stmt = $pdo->prepare(
+        'UPDATE quizzes SET
+            title = :title,
+            class_name = :class_name,
+            total_points = :total_points,
+            attempts_allowed = :attempts_allowed,
+            resubmission_allowed = :resubmission_allowed,
+            due_date = :due_date
+         WHERE quiz_id = :id'
+    );
+    $stmt->execute([
+        'title'                => $meta['title'],
+        'class_name'           => $meta['class_name'] ?? 'Python 101',
+        'total_points'         => $meta['total_points'] ?? 100,
+        'attempts_allowed'     => $meta['attempts_allowed'] ?? null,
+        'resubmission_allowed' => !empty($meta['resubmission_allowed']) ? 1 : 0,
+        'due_date'             => qm_normalize_datetime($meta['due_date'] ?? null),
+        'id'                   => $id,
+    ]);
+}
+
+/** Delete a quiz and its attempts/answers (used by the edit form). */
+function qm_delete_quiz(PDO $pdo, int $id): void
+{
+    $pdo->prepare(
+        'DELETE sa FROM student_answers sa
+         JOIN quiz_attempts a ON a.attempt_id = sa.attempt_id
+         WHERE a.quiz_id = :id'
+    )->execute(['id' => $id]);
+    $pdo->prepare('DELETE FROM quiz_attempts WHERE quiz_id = :id')->execute(['id' => $id]);
+    $pdo->prepare('DELETE FROM quizzes WHERE quiz_id = :id')->execute(['id' => $id]);
+}
+
+/**
+ * Normalize an <input type="datetime-local"> value ("2026-07-20T15:30") to a
+ * MySQL DATETIME ("2026-07-20 15:30:00"), or null if empty.
+ */
+function qm_normalize_datetime($value): ?string
+{
+    $value = trim((string) $value);
+    if ($value === '') {
+        return null;
+    }
+    $ts = strtotime($value);
+    return $ts === false ? null : date('Y-m-d H:i:s', $ts);
+}
+
+/** True if the quiz has a due date that has already passed. */
+function qm_is_past_due(array $quiz): bool
+{
+    return !empty($quiz['due_date']) && strtotime($quiz['due_date']) < time();
+}
+
+/** A datetime-local input value ("2026-07-20T15:30") for a stored due_date, or ''. */
+function qm_due_date_input_value(?array $quiz): string
+{
+    if (!$quiz || empty($quiz['due_date'])) {
+        return '';
+    }
+    return date('Y-m-d\TH:i', strtotime($quiz['due_date']));
 }
 
 /**

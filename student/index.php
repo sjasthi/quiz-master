@@ -28,6 +28,7 @@ $javaUnlocked = $bestPythonScore !== null && $bestPythonScore >= 75;
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard - Quiz Master</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/quizmaster.css?v=1">
@@ -84,20 +85,36 @@ $javaUnlocked = $bestPythonScore !== null && $bestPythonScore >= 75;
             </div>
         <?php else: ?>
             <?php foreach ($allQuizzes as $q): ?>
+                <?php $closed = qm_is_past_due($q); ?>
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card-box h-100 d-flex flex-column">
-                        <span class="quiz-tag tag-open">Open</span>
+                        <?php if ($closed): ?>
+                            <span class="quiz-tag tag-locked">Closed</span>
+                        <?php else: ?>
+                            <span class="quiz-tag tag-open">Open</span>
+                        <?php endif; ?>
 
                         <h4><?= htmlspecialchars($q['title']) ?></h4>
 
-                        <p class="text-muted">
+                        <p class="text-muted mb-1">
                             <?= htmlspecialchars($q['class_name'] ?? 'Python 101') ?>
                         </p>
 
-                        <a href="quiz_take.php?quiz_id=<?= (int) $q['quiz_id'] ?>"
-                           class="btn btn-main w-100 mt-auto">
-                            Start Quiz
-                        </a>
+                        <?php if (!empty($q['due_date'])): ?>
+                            <p class="hint mt-0">
+                                <?= $closed ? 'Closed' : 'Due' ?>:
+                                <?= htmlspecialchars(date('M j, Y g:i A', strtotime($q['due_date']))) ?>
+                            </p>
+                        <?php endif; ?>
+
+                        <?php if ($closed): ?>
+                            <button class="btn btn-secondary w-100 mt-auto" disabled>Closed</button>
+                        <?php else: ?>
+                            <a href="quiz_take.php?quiz_id=<?= (int) $q['quiz_id'] ?>"
+                               class="btn btn-main w-100 mt-auto">
+                                Start Quiz
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endforeach; ?>
