@@ -74,6 +74,11 @@ try {
     $attemptsAllowed      = $quiz['attempts_allowed'];
     $resubmissionAllowed = (bool) $quiz['resubmission_allowed'];
 
+    // Published check: reject submissions for quizzes hidden from students.
+    if (array_key_exists('is_active', $quiz) && (int) $quiz['is_active'] !== 1) {
+        reject(403, 'This quiz is not currently available.');
+    }
+
     // Due-date locking: reject submissions after the quiz has closed.
     if (!empty($quiz['due_date']) && strtotime($quiz['due_date']) < time()) {
         reject(403, 'This quiz is past its due date and is now closed.');

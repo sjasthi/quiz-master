@@ -10,12 +10,22 @@
 
 require_once __DIR__ . '/quiz_instrument.php';
 
-/** All quizzes, newest first. */
-function qm_all_quizzes(PDO $pdo): array
+/** All quizzes, newest first. Pass $publishedOnly for the student-facing list. */
+function qm_all_quizzes(PDO $pdo, bool $publishedOnly = false): array
 {
-    return $pdo->query(
-        'SELECT * FROM quizzes ORDER BY quiz_id DESC'
-    )->fetchAll();
+    $sql = 'SELECT * FROM quizzes';
+    if ($publishedOnly) {
+        $sql .= ' WHERE is_active = 1';
+    }
+    $sql .= ' ORDER BY quiz_id DESC';
+    return $pdo->query($sql)->fetchAll();
+}
+
+/** True if a quiz is published (visible to students). */
+function qm_is_published(array $quiz): bool
+{
+    // Default to published when the column is absent (older rows).
+    return !array_key_exists('is_active', $quiz) || (int) $quiz['is_active'] === 1;
 }
 
 /** A single quiz row, or null. */
@@ -57,7 +67,7 @@ function qm_quiz_overview(PDO $pdo): array
 function qm_quiz_submissions(PDO $pdo, int $quizId): array
 {
     $stmt = $pdo->prepare(
-        'SELECT a.*, u.name AS student_name
+        'SELECT a.*, u.name AS student_name, u.email AS student_email
          FROM quiz_attempts a
          JOIN users u ON u.user_id = a.student_id
          WHERE a.quiz_id = :quiz_id
@@ -89,10 +99,13 @@ function qm_register_quiz(PDO $pdo, array $meta): array
         return [(int) $existing['quiz_id'], false];
     }
 
+    // Published by default unless the caller explicitly sets is_active to false.
+    $isActive = array_key_exists('is_active', $meta) ? (!empty($meta['is_active']) ? 1 : 0) : 1;
+
     $stmt = $pdo->prepare(
         'INSERT INTO quizzes
-            (title, class_name, html_file_path, total_points, attempts_allowed, resubmission_allowed, due_date)
-         VALUES (:title, :class_name, :path, :total_points, :attempts_allowed, :resubmission_allowed, :due_date)'
+            (title, class_name, html_file_path, total_points, attempts_allowed, resubmission_allowed, due_date, is_active)
+         VALUES (:title, :class_name, :path, :total_points, :attempts_allowed, :resubmission_allowed, :due_date, :is_active)'
     );
     $stmt->execute([
         'title'                => $meta['title'],
@@ -102,6 +115,7 @@ function qm_register_quiz(PDO $pdo, array $meta): array
         'attempts_allowed'     => $meta['attempts_allowed'] ?? null,
         'resubmission_allowed' => !empty($meta['resubmission_allowed']) ? 1 : 0,
         'due_date'             => qm_normalize_datetime($meta['due_date'] ?? null),
+        'is_active'            => $isActive,
     ]);
 
     return [(int) $pdo->lastInsertId(), true];
@@ -117,7 +131,8 @@ function qm_update_quiz(PDO $pdo, int $id, array $meta): void
             total_points = :total_points,
             attempts_allowed = :attempts_allowed,
             resubmission_allowed = :resubmission_allowed,
-            due_date = :due_date
+            due_date = :due_date,
+            is_active = :is_active
          WHERE quiz_id = :id'
     );
     $stmt->execute([
@@ -127,13 +142,54 @@ function qm_update_quiz(PDO $pdo, int $id, array $meta): void
         'attempts_allowed'     => $meta['attempts_allowed'] ?? null,
         'resubmission_allowed' => !empty($meta['resubmission_allowed']) ? 1 : 0,
         'due_date'             => qm_normalize_datetime($meta['due_date'] ?? null),
+        'is_active'            => !empty($meta['is_active']) ? 1 : 0,
         'id'                   => $id,
     ]);
 }
 
-/** Delete a quiz and its attempts/answers (used by the edit form). */
+/** Latest score override per attempt for a quiz, keyed by attempt_id. */
+function qm_overrides_for_quiz(PDO $pdo, int $quizId): array
+{
+    $stmt = $pdo->prepare(
+        'SELECT o.* FROM score_overrides o
+         JOIN quiz_attempts a ON a.attempt_id = o.attempt_id
+         WHERE a.quiz_id = :quiz_id
+         ORDER BY o.overridden_at ASC'
+    );
+    $stmt->execute(['quiz_id' => $quizId]);
+
+    $map = [];
+    foreach ($stmt->fetchAll() as $o) {
+        $map[(int) $o['attempt_id']] = $o; // ASC order -> last write wins = latest
+    }
+    return $map;
+}
+
+/** Record an instructor score override for one attempt. */
+function qm_add_override(PDO $pdo, int $attemptId, int $instructorId, int $originalScore, int $overrideScore, string $note): void
+{
+    $stmt = $pdo->prepare(
+        'INSERT INTO score_overrides
+            (attempt_id, instructor_id, original_score, override_score, note)
+         VALUES (:attempt_id, :instructor_id, :original_score, :override_score, :note)'
+    );
+    $stmt->execute([
+        'attempt_id'     => $attemptId,
+        'instructor_id'  => $instructorId,
+        'original_score' => $originalScore,
+        'override_score' => $overrideScore,
+        'note'           => $note,
+    ]);
+}
+
+/** Delete a quiz and its attempts/answers/overrides (used by the edit form). */
 function qm_delete_quiz(PDO $pdo, int $id): void
 {
+    $pdo->prepare(
+        'DELETE o FROM score_overrides o
+         JOIN quiz_attempts a ON a.attempt_id = o.attempt_id
+         WHERE a.quiz_id = :id'
+    )->execute(['id' => $id]);
     $pdo->prepare(
         'DELETE sa FROM student_answers sa
          JOIN quiz_attempts a ON a.attempt_id = sa.attempt_id

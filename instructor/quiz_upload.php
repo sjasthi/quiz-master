@@ -86,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'attempts_allowed'     => $attempts === '' ? null : (int) $attempts,
             'resubmission_allowed' => isset($_POST['resubmission_allowed']),
             'due_date'             => $_POST['due_date'] ?? null,
+            'is_active'            => isset($_POST['is_active']),
         ]);
         qm_flash_redirect('success', 'Uploaded and registered "' . htmlspecialchars($title) . '". It is now takeable and will show up in the quiz list.');
     } catch (Throwable $e) {
@@ -176,9 +177,14 @@ try {
                         <div class="hint">After this time the quiz closes and students can't submit.</div>
                     </div>
 
-                    <div class="form-check mb-4">
+                    <div class="form-check mb-2">
                         <input type="checkbox" name="resubmission_allowed" class="form-check-input" id="resubmission" checked>
                         <label class="form-check-label" for="resubmission">Allow resubmission</label>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input type="checkbox" name="is_active" class="form-check-input" id="is_active" checked>
+                        <label class="form-check-label" for="is_active">Published (visible to students)</label>
                     </div>
 
                     <button type="submit" class="btn btn-main btn-lg">Upload Quiz</button>
@@ -216,6 +222,7 @@ try {
                     <tr>
                         <th>Title</th>
                         <th>Class</th>
+                        <th>Status</th>
                         <th>File</th>
                         <th>Actions</th>
                     </tr>
@@ -225,6 +232,13 @@ try {
                         <tr>
                             <td><?= htmlspecialchars($q['title']) ?></td>
                             <td><?= htmlspecialchars($q['class_name'] ?? '') ?></td>
+                            <td>
+                                <?php if (qm_is_published($q)): ?>
+                                    <span class="badge bg-success">Published</span>
+                                <?php else: ?>
+                                    <span class="badge bg-secondary">Draft</span>
+                                <?php endif; ?>
+                            </td>
                             <td><code><?= htmlspecialchars($q['html_file_path'] ?? '') ?></code></td>
                             <td>
                                 <a href="quiz_preview.php?quiz_id=<?= (int) $q['quiz_id'] ?>"

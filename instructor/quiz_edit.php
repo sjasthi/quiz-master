@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $quizId > 0) {
             'attempts_allowed'     => $attempts === '' ? null : (int) $attempts,
             'resubmission_allowed' => isset($_POST['resubmission_allowed']),
             'due_date'             => $_POST['due_date'] ?? null,
+            'is_active'            => isset($_POST['is_active']),
         ]);
         $_SESSION['flash'] = ['type' => 'success', 'msg' => 'Changes saved.'];
     } catch (Throwable $e) {
@@ -111,10 +112,16 @@ $quiz = $quizId ? qm_quiz_by_id($pdo, $quizId) : null;
                     <div class="hint">After this time the quiz closes and students can't submit.</div>
                 </div>
 
-                <div class="form-check mb-4">
+                <div class="form-check mb-2">
                     <input type="checkbox" name="resubmission_allowed" class="form-check-input" id="resubmission"
                         <?= !empty($quiz['resubmission_allowed']) ? 'checked' : '' ?>>
                     <label class="form-check-label" for="resubmission">Allow resubmission</label>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input type="checkbox" name="is_active" class="form-check-input" id="is_active"
+                        <?= qm_is_published($quiz) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="is_active">Published (visible to students)</label>
                 </div>
 
                 <button type="submit" class="btn btn-main btn-lg">Save Changes</button>

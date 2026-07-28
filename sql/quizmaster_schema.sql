@@ -18,6 +18,7 @@ CREATE TABLE quizzes (
     attempts_allowed INT DEFAULT 1,
     resubmission_allowed BOOLEAN DEFAULT FALSE,
     due_date DATETIME NULL,
+    is_active TINYINT(1) DEFAULT 1,
     created_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
@@ -48,4 +49,17 @@ CREATE TABLE student_answers (
     points_earned INT DEFAULT 0,
 
     FOREIGN KEY (attempt_id) REFERENCES quiz_attempts(attempt_id)
+);
+
+CREATE TABLE score_overrides (
+    override_id INT AUTO_INCREMENT PRIMARY KEY,
+    attempt_id INT NOT NULL,
+    instructor_id INT NOT NULL,
+    original_score INT NOT NULL,
+    override_score INT NOT NULL,
+    note TEXT NOT NULL,
+    overridden_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (attempt_id) REFERENCES quiz_attempts(attempt_id),
+    FOREIGN KEY (instructor_id) REFERENCES users(user_id)
 );

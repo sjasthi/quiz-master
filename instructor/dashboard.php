@@ -65,18 +65,8 @@ $overallAvg = $totalSubs > 0
         </div>
 
         <div>
-            <a
-                href="../student/index.php"
-                class="btn btn-outline-secondary btn-sm"
-            >
-                Student View
-            </a>
-
-           <span class="ms-2">
-    <?= htmlspecialchars(current_user_name()) ?>
-</span>
-
-<a href="../logout.php" class="btn btn-outline-secondary btn-sm ms-2">Log Out</a>
+            <span class="ms-2"><?= htmlspecialchars(current_user_name()) ?></span>
+            <a href="../logout.php" class="btn btn-outline-secondary btn-sm ms-2">Log Out</a>
         </div>
 
     </div>
@@ -185,6 +175,7 @@ $overallAvg = $totalSubs > 0
                     <tr>
                         <th>Title</th>
                         <th>Class</th>
+                        <th>Status</th>
                         <th>Submissions</th>
                         <th>Average Score</th>
                         <th>Actions</th>
@@ -196,7 +187,7 @@ $overallAvg = $totalSubs > 0
                 <?php if ($totalQuizzes === 0 && !$dbError): ?>
 
                     <tr>
-                        <td colspan="5" class="text-muted">
+                        <td colspan="6" class="text-muted">
 
                             No quizzes yet.
 
@@ -221,6 +212,14 @@ $overallAvg = $totalSubs > 0
                                 <?= htmlspecialchars(
                                     $r['class_name'] ?? ''
                                 ) ?>
+                            </td>
+
+                            <td>
+                                <?php if (qm_is_published($r)): ?>
+                                    <span class="badge bg-success">Published</span>
+                                <?php else: ?>
+                                    <span class="badge bg-secondary">Draft</span>
+                                <?php endif; ?>
                             </td>
 
                             <td>

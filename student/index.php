@@ -13,7 +13,7 @@ $studentId = current_user_id();
 $pythonQuiz = get_or_create_quiz($pdo, 'quizzes/python/quiz1.html', 'Python Quiz 1');
 $pythonQuizId = (int) $pythonQuiz['quiz_id'];
 
-$allQuizzes = qm_all_quizzes($pdo);
+$allQuizzes = qm_all_quizzes($pdo, true); // students see published quizzes only
 $attempts = get_attempts_for_student($pdo, $studentId);
 
 $completedQuizCount = count(array_unique(array_column($attempts, 'quiz_id')));

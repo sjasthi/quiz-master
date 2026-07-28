@@ -25,6 +25,8 @@ if (!$quiz) {
 
 $iframeSrc = '../' . ltrim($quiz['html_file_path'], '/');
 $pastDue = qm_is_past_due($quiz);
+$unpublished = !qm_is_published($quiz);
+$blocked = $pastDue || $unpublished;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,19 +51,26 @@ $pastDue = qm_is_past_due($quiz);
 
     <div class="hero">
         <h1><?= htmlspecialchars($quiz['title']) ?></h1>
-        <?php if ($pastDue): ?>
+        <?php if ($unpublished): ?>
+            <p class="mb-0">This quiz is not currently available.</p>
+        <?php elseif ($pastDue): ?>
             <p class="mb-0">This quiz closed on <?= htmlspecialchars(date('M j, Y g:i A', strtotime($quiz['due_date']))) ?>.</p>
         <?php else: ?>
             <p class="mb-0">Complete the quiz below. When it finishes, your score appears here so you can record the attempt.</p>
         <?php endif; ?>
     </div>
 
-    <?php if ($pastDue): ?>
+    <?php if ($blocked): ?>
 
         <div class="alert alert-warning mt-4">
-            <strong>This quiz is closed.</strong>
-            The due date (<?= htmlspecialchars(date('M j, Y g:i A', strtotime($quiz['due_date']))) ?>)
-            has passed, so it can no longer be taken.
+            <?php if ($unpublished): ?>
+                <strong>This quiz is not available.</strong>
+                It has not been published by your instructor.
+            <?php else: ?>
+                <strong>This quiz is closed.</strong>
+                The due date (<?= htmlspecialchars(date('M j, Y g:i A', strtotime($quiz['due_date']))) ?>)
+                has passed, so it can no longer be taken.
+            <?php endif; ?>
         </div>
         <a href="index.php" class="btn btn-main mb-5">Back to Dashboard</a>
 
@@ -92,7 +101,7 @@ $pastDue = qm_is_past_due($quiz);
 
 </div>
 
-<?php if (!$pastDue): ?>
+<?php if (!$blocked): ?>
 <script>
     window.QM_QUIZ = {
         id: <?= (int) $quiz['quiz_id'] ?>,
