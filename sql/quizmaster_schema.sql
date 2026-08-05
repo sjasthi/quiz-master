@@ -21,7 +21,6 @@ CREATE TABLE quizzes (
     is_active TINYINT(1) DEFAULT 1,
     created_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
     FOREIGN KEY (created_by) REFERENCES users(user_id)
 );
 
