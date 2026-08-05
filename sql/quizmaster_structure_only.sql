@@ -53,6 +53,8 @@ CREATE TABLE `quiz_attempts` (
   `student_id` int(11) NOT NULL,
   `attempt_number` int(11) NOT NULL,
   `score` int(11) DEFAULT 0,
+  `correct_answers` int(11) DEFAULT NULL,
+  `total_questions` int(11) DEFAULT NULL,
   `status` varchar(30) DEFAULT 'Submitted',
   `submitted_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
