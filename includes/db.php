@@ -12,7 +12,12 @@
  *   $quizzes = $stmt->fetchAll();
  */
 
-require_once __DIR__ . '/config.php';
+if (file_exists(__DIR__ . '/config.php')) {
+    require_once __DIR__ . '/config.php';
+} else {
+    http_response_code(500);
+    die('Setup needed: copy includes/config.sample.php to includes/config.php, then add your database details.');
+}
 
 $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=' . DB_CHARSET;
 
@@ -25,7 +30,7 @@ $options = [
 try {
     $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
 } catch (PDOException $e) {
-    // For development we show the error. Before deploying to learnandhelp.com,
+    // For development we show the error. 
     // switch this to a generic message and log the real error server-side.
     die('Database connection failed: ' . $e->getMessage());
 }
