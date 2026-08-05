@@ -35,6 +35,8 @@ CREATE TABLE `quizzes` (
   `total_points` int(11) DEFAULT NULL,
   `attempts_allowed` int(11) DEFAULT 1,
   `resubmission_allowed` tinyint(1) DEFAULT 0,
+  `due_date` DATETIME NULL,
+`is_active` TINYINT(1) DEFAULT 1,
   `created_by` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
