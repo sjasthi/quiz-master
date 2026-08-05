@@ -33,6 +33,8 @@ CREATE TABLE `quizzes` (
   `class_name` varchar(100) DEFAULT NULL,
   `html_file_path` varchar(255) DEFAULT NULL,
   `total_points` int(11) DEFAULT NULL,
+  `due_date` DATETIME NULL,
+`is_active` TINYINT(1) DEFAULT 1,
   `attempts_allowed` int(11) DEFAULT 1,
   `resubmission_allowed` tinyint(1) DEFAULT 0,
   `created_by` int(11) DEFAULT NULL,
